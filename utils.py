@@ -16,12 +16,23 @@ def getDBConfig():
 
     return "postgresql://" + dbUser + ":" + dbPass + "@" + dbUrl + "/" + dbName
 
+def createAdmin():
+    email = "root@root.com"
+    passw = "1234567"
+    userRole = "ADMIN"
+
+    admin = user(emailAddress=email,
+                password=encryptPass(passw),
+                userRole=userRole)
+    
+    db.session.add(admin)
+    db.session.commit()
+
 def isValidEmail(emailAddr):
 
     if not re.match(r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b", emailAddr):
         return False
     return True
-
 
 def isValidPass(password):
 
@@ -57,8 +68,8 @@ def signin(email, passw):
 
     try:
         account = getAccountbyEmail(email)
-
         encryptedPass = account.password
+
         if passMatches(encryptedPass, passw):
             return account.id
 
@@ -94,6 +105,12 @@ def getAccData(accId):
     account = getAccountbyID(accId)
     return account.serialize()
 
+def isAdmin(accId):
+    try:
+        return getAccountbyID(accId).userRole == "ADMIN"
+    except:
+        return False
+
 def getAccountbyID(AccID):
 
     return user.query.filter_by(id=AccID).first()
@@ -106,11 +123,16 @@ def accountExists(postEmail):
 
     return getAccountbyEmail(postEmail) != None
 
-def getIdtFromToken(jwt_token):
+def getIdFromToken(jwt_token):
 
     try:
         payload = jwt.decode(str(jwt_token), JWT_SECRET, algorithms=[JWT_ALGORITHM])
         userId = int(payload["userId"])
-        
+        acc = getAccountbyID(userId)
+
+        if acc:
+            return acc.id
+        else:
+            return None
     except:
         return None

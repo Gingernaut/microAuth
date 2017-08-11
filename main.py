@@ -16,7 +16,6 @@ db.init_app(app)
 
 @app.route("/drop")
 def drop():
-    db.reflect()
     db.drop_all()
     db.session.commit()
     return "dropped"
@@ -87,30 +86,53 @@ def login():
     accId = utils.signin(postEmail, postPass)
 
     if not accId:
-        return custResponse(400, "No Account exists with for " + postEmail + ".")
+        return custResponse(400, "Login failed. Incorrect email or password")
 
-    accData = utils.getAccData(accId)
+    token = utils.genToken(accId)
 
-    return custResponse(200, "Login Successful", accData)
+    return custResponse(200, "Login Successful",  {"token": token })
 
 @app.route("/account", methods=["GET", "PUT", "DELETE"])
 def modifyAccount():
 
-    ## authenticate user
+    token = request.headers["Authorization"] or None
+
+    if not token:
+        return custResponse(401, "Unauthorized. Sign in required.")
+    
+    accId = utils.getIdFromToken(token)
+
+    if not accId:
+        return custResponse(401, "Unauthorized. Invalid token.")
+
+    if request.data:
+        res = json.loads(request.data)
 
     if request.method == 'GET':
-        return "ECHO: GET\n"
+
+        data = utils.getAccData(accId)
+        return custResponse(200, "Account access successful", data)
 
     elif request.method == 'PUT':
-        return "ECHO: PUT\n"
+
+        return "hi"
 
     elif request.method == 'DELETE':
-        return "ECHO: DELETE"
+
+        return "oh nooooo"
 
 @app.route("/accounts", methods=["GET"])
 def allAccounts():
 
-    # If an admin account
+    token = request.headers["Authorization"] or None
+
+    if not token:
+        return custResponse(401, "Unauthorized. Sign in required.")
+    
+    accId = utils.getIdFromToken(token)
+
+    if not accId or not utils.isAdmin(accId):
+        return custResponse(401, "Unauthorized. Invalid token.")
 
     results = [user.serialize() for user in user.query.all()]
     return jsonify(results)
@@ -122,7 +144,13 @@ def allAccounts():
 @app.route("/")
 def index():
 
-    return "hello there"
+    return """
+        Available endpoints: \n
+                \n
+        /signup \n
+        /login  \n
+        /account \n
+            """
 
 @app.errorhandler(404)
 def custResponse(code=404, message="Error: Not Found", data=None):
@@ -143,7 +171,8 @@ def custResponse(code=404, message="Error: Not Found", data=None):
 
 if __name__ == "__main__":
         with app.app_context():
-            # drop()
+            drop()
             db.create_all()
+            utils.createAdmin()
             db.session.commit()
             app.run(host="0.0.0.0")
