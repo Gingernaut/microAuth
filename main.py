@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from models import user
 from models import db
-import random, string, json
+import random, string, json, pendulum
 import utils
 
 configFile = json.loads(open('config.json').read())
@@ -41,10 +41,10 @@ def signup():
         return custResponse(400, "An account with this email address already exists.")
 
     if postFName:
-        postFName = postFName.title().trim()
+        postFName = postFName.title()
 
     if postLName:
-        postLName = postLName.title().trim()
+        postLName = postLName.title()
 
     encryptedPass = utils.encryptPass(postPass)
 
@@ -92,6 +92,7 @@ def login():
 
     return custResponse(200, "Login Successful",  {"token": token })
 
+
 @app.route("/account", methods=["GET", "PUT", "DELETE"])
 def modifyAccount():
 
@@ -105,17 +106,55 @@ def modifyAccount():
     if not accId:
         return custResponse(401, "Unauthorized. Invalid token.")
 
-    if request.data:
-        res = json.loads(request.data)
-
     if request.method == 'GET':
 
         data = utils.getAccData(accId)
         return custResponse(200, "Account access successful", data)
 
     elif request.method == 'PUT':
+        
+        payload = {"id": accId }
+        res = json.loads(request.data) or None
 
-        return "hi"
+        if not res:
+            return custResponse(400, "data required for update")
+
+        if "firstName" in res:
+            payload["firstName"] = res["firstName"].title()
+        
+        if "lastName" in res:
+            payload["lastName"] = res["lastName"].title()
+
+        if "emailAddress" in res:
+            if not utils.isValidEmail(res["emailAddress"]):
+                return custResponse(400, "Invalid email address.")
+
+            if utils.getAccData(accId)["emailAddress"] != res["emailAddress"] and utils.accountExists(res["emailAddress"]):
+                return custResponse(400, "Another account exists already with that email. Update not allowed.")
+
+            payload["emailAddress"] =res["emailAddress"].lower()
+
+        if "password" in res:
+            payload["password"] = utils.encryptPass(res["password"])
+
+        if "phoneNumber" in res:
+            payload["phoneNumber"] == res["phoneNumber"]
+
+        if "userRole" in res:
+            if not utils.isAdmin(accId):
+                return custResponse(403, "User role update not allowed.")
+            else:
+                payload["userRole"] = res["userRole"].upper()
+
+        if "isValidated" in res:
+            payload["isValidated"] = True if res["isValided"] == "True" else False
+        
+
+        utils.updateAccount(payload)
+
+        newData = utils.getAccData(accId)
+        return custResponse(200, "Success", newData)
+
 
     elif request.method == 'DELETE':
 

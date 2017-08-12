@@ -44,6 +44,7 @@ def encryptPass(password):
     ph = PasswordHasher()
     return ph.hash(password)
 
+
 # do this on the account class?
 def passMatches(accountPass, postPass):
 
@@ -96,6 +97,34 @@ def createAccount(payload):
         print(e)
         return None
 
+def updateAccount(payload):
+    account = getAccountbyID(payload["id"])
+    account.modifiedDate = pendulum.utcnow()
+
+    if "firstName" in payload:
+        account.firstName = payload["firstName"]
+
+    if "lastName" in payload:
+        account.lastName = payload["lastName"]
+    
+    if "emailAddress" in payload:
+        account.emailAddress = payload["emailAddress"]
+
+    if "password" in payload:
+        account.password = payload["password"]
+
+    if "phoneNumber" in payload:
+        account.phoneNumber = payload["phoneNumber"]
+
+    if "userRole" in payload:
+        account.userRole = payload["userRole"]
+    
+    if "isValidated" in payload:
+        account.isValidated = payload["isValidated"]
+
+    db.session.commit()
+    
+    
 def genToken(accId):
     account = getAccountbyID(accId)
     return account.genToken()
