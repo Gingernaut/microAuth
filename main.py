@@ -1,16 +1,16 @@
 from flask import Flask, jsonify, request
+import random, string, json, pendulum
 from models import user
 from models import db
-import random, string, json, pendulum
-import utils
+import utils, accFunctions
 
-configFile = json.loads(open('config.json').read())
+configFile = json.loads(open("config.json").read())
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = utils.getDBConfig()
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['DEBUG'] = True
-app.config['TESTING'] = True
+app.config["DEBUG"] = True
+app.config["TESTING"] = True
 
 db.init_app(app)
 
@@ -37,7 +37,7 @@ def signup():
     if not utils.isValidPass(postPass):
         return custResponse(400, "Invalid password. Must be at least " + configFile["Security"]["minPassLength"] + " characters long.")
 
-    if utils.accountExists(postEmail):
+    if accFunctions.accountExists(postEmail):
         return custResponse(400, "An account with this email address already exists.")
 
     if postFName:
@@ -55,14 +55,15 @@ def signup():
         "lastName": postLName
     }
 
-    accId = utils.createAccount(payload)
+    accId = accFunctions.createAccount(payload)
 
     if not accId:
         return custResponse(500, "Account creation failed.")
 
-    token = utils.genToken(accId)
+    accData = accFunctions.getAccData(accId)
+    accData["token"] =  accFunctions.genToken(accId)
     
-    return custResponse(201, "Signup Successful", {"token": token })
+    return custResponse(201, "Signup Successful", accData)
 
     # except Exception as e:
     #     print("*-*-*-*")
@@ -83,82 +84,56 @@ def login():
     if not utils.isValidPass(postPass):
         return custResponse(400, "Invalid password. Must be at least " + configFile["Security"]["minPassLength"] + " characters long.")
 
-    accId = utils.signin(postEmail, postPass)
+    accId = accFunctions.signin(postEmail, postPass)
 
     if not accId:
         return custResponse(400, "Login failed. Incorrect email or password")
 
-    token = utils.genToken(accId)
+    accData = accFunctions.getAccData(accId)
+    accData["token"] =  accFunctions.genToken(accId)
 
-    return custResponse(200, "Login Successful",  {"token": token })
+    return custResponse(200, "Login Successful", accData)
 
 
 @app.route("/account", methods=["GET", "PUT", "DELETE"])
 def modifyAccount():
 
     token = request.headers["Authorization"] or None
-
     if not token:
         return custResponse(401, "Unauthorized. Sign in required.")
     
-    accId = utils.getIdFromToken(token)
-
+    accId = accFunctions.getIdFromToken(token)
     if not accId:
         return custResponse(401, "Unauthorized. Invalid token.")
 
-    if request.method == 'GET':
-
-        data = utils.getAccData(accId)
+    if request.method == "GET":
+        data = accFunctions.getAccData(accId)
         return custResponse(200, "Account access successful", data)
 
-    elif request.method == 'PUT':
-        
-        payload = {"id": accId }
-        res = json.loads(request.data) or None
-
-        if not res:
+    elif request.method == "PUT":
+        putData = json.loads(request.data) or None
+        if not putData:
             return custResponse(400, "data required for update")
 
-        if "firstName" in res:
-            payload["firstName"] = res["firstName"].title()
-        
-        if "lastName" in res:
-            payload["lastName"] = res["lastName"].title()
+        payload = accFunctions.cleanPayload(accId, putData)
 
-        if "emailAddress" in res:
-            if not utils.isValidEmail(res["emailAddress"]):
-                return custResponse(400, "Invalid email address.")
+        if "Error" in payload:
+            return custResponse(payload["errStat"], payload["Error"])
 
-            if utils.getAccData(accId)["emailAddress"] != res["emailAddress"] and utils.accountExists(res["emailAddress"]):
-                return custResponse(400, "Another account exists already with that email. Update not allowed.")
+        accFunctions.updateAccount(payload)
+        newData = accFunctions.getAccData(accId)
 
-            payload["emailAddress"] =res["emailAddress"].lower()
-
-        if "password" in res:
-            payload["password"] = utils.encryptPass(res["password"])
-
-        if "phoneNumber" in res:
-            payload["phoneNumber"] == res["phoneNumber"]
-
-        if "userRole" in res:
-            if not utils.isAdmin(accId):
-                return custResponse(403, "User role update not allowed.")
-            else:
-                payload["userRole"] = res["userRole"].upper()
-
-        if "isValidated" in res:
-            payload["isValidated"] = True if res["isValided"] == "True" else False
-        
-
-        utils.updateAccount(payload)
-
-        newData = utils.getAccData(accId)
         return custResponse(200, "Success", newData)
 
 
-    elif request.method == 'DELETE':
+    elif request.method == "DELETE":
+        
+        result = accFunctions.deleteAccount(accId)
 
-        return "oh nooooo"
+        if result == True:
+            return custResponse(200,"Account deleted.")
+        else:
+            return custResponse(500, "Account deletion failed.")
 
 @app.route("/accounts", methods=["GET"])
 def allAccounts():
@@ -168,9 +143,9 @@ def allAccounts():
     if not token:
         return custResponse(401, "Unauthorized. Sign in required.")
     
-    accId = utils.getIdFromToken(token)
+    accId = accFunctions.getIdFromToken(token)
 
-    if not accId or not utils.isAdmin(accId):
+    if not accId or not accFunctions.isAdmin(accId):
         return custResponse(401, "Unauthorized. Invalid token.")
 
     results = [user.serialize() for user in user.query.all()]
@@ -178,6 +153,50 @@ def allAccounts():
 
 
 # add same as above for put del on /accounts/id
+@app.route("/accounts/<accId>", methods=["GET", "PUT", "DELETE"])
+def manageAccounts(accId):
+
+    token = request.headers["Authorization"] or None
+
+    if not token:
+        return custResponse(401, "Unauthorized. Sign in required.")
+    
+    authUserId= accFunctions.getIdFromToken(token)
+
+    if not authUserId or not accFunctions.isAdmin(authUserId):
+        return custResponse(401, "Unauthorized. Invalid token.")
+
+    if request.method == "GET":
+
+        data = accFunctions.getAccData(accId)
+        return custResponse(200, "Account access successful", data)
+
+    elif request.method == "PUT":
+
+        putData = json.loads(request.data) or None
+        if not putData:
+            return custResponse(400, "data required for update")
+
+        payload = accFunctions.cleanPayload(accId, putData)
+        if "Error" in payload:
+            return custResponse(payload["errStat"], payload["Error"])
+        
+        if "userRole" in putData:
+            payload["userRole"] = putData["userRole"].upper()
+
+        accFunctions.updateAccount(payload)
+        newData = accFunctions.getAccData(accId)
+
+        return custResponse(200, "Success", newData)
+    
+    elif request.method == "DELETE":
+        
+        result = accFunctions.deleteAccount(accId)
+
+        if result == True:
+            return custResponse(200,"Account deleted.")
+        else:
+            return custResponse(500, "Account deletion failed.")
 
 
 @app.route("/")
@@ -195,8 +214,8 @@ def index():
 def custResponse(code=404, message="Error: Not Found", data=None):
 
     message = {
-        'status': code,
-        'message': message
+        "status": code,
+        "message": message
     }
 
     if data:
@@ -212,6 +231,6 @@ if __name__ == "__main__":
         with app.app_context():
             drop()
             db.create_all()
-            utils.createAdmin()
+            accFunctions.createAdmin()
             db.session.commit()
             app.run(host="0.0.0.0")
