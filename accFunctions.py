@@ -48,7 +48,6 @@ def createAccount(payload):
         return None
 
 def updateAccount(payload):
-    print(payload["id"])
     account = getAccountbyID(payload["id"])
 
     account.modifiedDate = pendulum.utcnow()
@@ -129,7 +128,7 @@ def cleanPayload(accId, res):
         if not res:
             return {"errStat": 400, "Error": "data required for update"}
 
-        if "emailAddress" in res:
+        if res.get("emailAddress", None):
             if not utils.isValidEmail(res["emailAddress"]):
                 return {"errStat": 400, "Error": "Invalid email address."}
 
@@ -138,19 +137,19 @@ def cleanPayload(accId, res):
 
             payload["emailAddress"] =res["emailAddress"].lower()
 
-        if "firstName" in res:
+        if res.get("firstName", None):
             payload["firstName"] = res["firstName"].title()
         
-        if "lastName" in res:
+        if res.get("lastName", None):
             payload["lastName"] = res["lastName"].title()
 
-        if "password" in res:
+        if res.get("password", None):
             payload["password"] = utils.encryptPass(res["password"])
 
-        if "phoneNumber" in res:
+        if res.get("phoneNumber", None):
             payload["phoneNumber"] == res["phoneNumber"]
 
-        if "isValidated" in res:
+        if res.get("isValidated", None):
             payload["isValidated"] = True if res["isValided"] == "True" else False
         
         return payload

@@ -3,3 +3,6 @@ Psycopg2==2.7.3
 Flask-SQLAlchemy==2.2
 pendulum==1.2.4
 argon2-cffi==16.3.0
+jwt==0.5.2
+flask-cors==3.0.3
+sendgrid==3.6.3

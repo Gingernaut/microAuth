@@ -1,6 +1,9 @@
 from argon2 import PasswordHasher
 import jwt, json, re, os, pendulum
 from models import user, db
+import sendgrid
+from sendgrid.helpers.mail import *
+
 configFile = json.loads(open('config.json').read())
 
 JWT_SECRET = configFile["Security"]["JWT_SECRET"]
@@ -49,3 +52,29 @@ def validPhone(phonenum):
         return False
     return True
 
+
+# def genConfirmEmailURL(accData):
+
+#     tok = str
+#     urlToken = str(genToken(emailAddr, postPass),'utf-8')
+#     customUrl = configFile["General"]["hostAddress"]+ "/confirm/" + urlToken + "/"
+#     return customUrl
+
+
+# def sendConfirmationEmail(accData):
+
+#     fromEmail = configFile["SendGrid"]["SendGridFromEmail"]
+#     fromName = configFile["SendGrid"]["SendGridFromName"]
+#     templateID = configFile["SendGrid"]["SendGridTemplateID"]
+#     uniqueURL = genConfirmEmailURL(accData)
+
+#     from_email = sendgrid.Email(email=fromEmail, name=fromName)
+#     to_email = sendgrid.Email(email=accData["emailAddress"], name=accData["firstName"])
+#     content = Content('text/html', ' ')
+#     mail = Mail(from_email=from_email, subject=str("Please Confirm your account with " + fromName), to_email=to_email, content=content)
+    
+#     mail.personalizations[0].add_substitution(Substitution("-confirmURL-", uniqueURL))
+#     mail.personalizations[0].add_substitution(Substitution("-firstName-", firstName))
+#     mail.personalizations[0].add_substitution(Substitution("-fromName-", fromName))
+#     mail.set_template_id(configFile["SendGrid"]["SendGridTemplateID"])
+#     sg.client.mail.send.post(request_body=mail.get())
