@@ -64,7 +64,7 @@ def signup():
         accData = accFunctions.getAccData(accId)
         accData["authToken"] =  accFunctions.genToken(accId)
 
-        if configFile["SendGrid"]["useSendGrid"] == "TRUE":
+        if configFile["SendGrid"]["useSendGrid"] == True:
             utils.sendConfirmationEmail(accData)
         
         return custResponse(201, "Signup Successful", accData)
@@ -83,8 +83,6 @@ def login():
 
         if not res:
             return custResponse(400, "data required for update")
-
-        print(res)
 
         postEmail = res.get("emailAddress")
         postPass = res.get("password")
@@ -117,12 +115,10 @@ def modifyAccount():
 
         token = request.headers["Authorization"] or None
         if not token:
-            print("unauthorized")
             return custResponse(401, "Unauthorized. Sign in required.")
         
         accId = accFunctions.getIdFromToken(token)
         if not accId:
-            print("invalid token")
             return custResponse(401, "Unauthorized. Invalid token.")
 
         if request.method == "GET":
@@ -246,21 +242,23 @@ def index():
         /account \n
             """
 
-@app.route("/confirm/<token>", methods=["GET", "PUT", "OPTIONS"])
+@app.route("/confirm/<token>", methods=["GET", "OPTIONS"])
 @cross_origin()
-def manageAccounts(token):
+def confirm(token):
     try:
+        token = token.replace("*", ".")
         payload = jwt.decode(str(token), utils.JWT_SECRET, algorithms=[utils.JWT_ALGORITHM])
         accId = int(payload["userId"])
-
         payload = accFunctions.cleanPayload(accId, {"isValidated": True})
 
         if "Error" in payload:
             return custResponse(payload["errStat"], payload["Error"])
 
         accFunctions.updateAccount(payload)
-        return custResponse(200, "Successfully validated account.")
-    except:
+        accData = accFunctions.getAccData(accId)
+        return custResponse(200, "Successfully validated account.", accData)
+    except Exception as e:
+        print(e)
         return custResponse(400, "Error validating account")
 
 
