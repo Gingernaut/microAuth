@@ -261,9 +261,6 @@ def confirm(token):
         print(e)
         return custResponse(400, "Error validating account")
 
-
-
-
 @app.errorhandler(404)
 def custResponse(code=404, message="Error: Not Found", data=None):
 
