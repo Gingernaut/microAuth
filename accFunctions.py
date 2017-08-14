@@ -26,6 +26,8 @@ def signin(email, passw):
             return account.id
 
     except Exception as e:
+        print("****")
+        print(e)
         print(e)
     
     return None
@@ -150,6 +152,6 @@ def cleanPayload(accId, res):
             payload["phoneNumber"] == res["phoneNumber"]
 
         if res.get("isValidated", None):
-            payload["isValidated"] = True if res["isValided"] == "True" else False
+            payload["isValidated"] = True if res["isValidated"] == "True" else False
         
         return payload
