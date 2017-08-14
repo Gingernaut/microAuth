@@ -11,7 +11,8 @@ def createAdmin():
 
     admin = user(emailAddress=configFile["Security"]["initEmail"],
                 password=utils.encryptPass(configFile["Security"]["initPass"]),
-                userRole="ADMIN")
+                userRole="ADMIN",
+                isValidated=True)
     
     db.session.add(admin)
     db.session.commit()
