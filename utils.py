@@ -53,28 +53,34 @@ def validPhone(phonenum):
     return True
 
 
-# def genConfirmEmailURL(accData):
+def genConfirmEmailURL(accData):
 
-#     tok = str
-#     urlToken = str(genToken(emailAddr, postPass),'utf-8')
-#     customUrl = configFile["General"]["hostAddress"]+ "/confirm/" + urlToken + "/"
-#     return customUrl
+    payload = {
+        "userId": accData["id"],
+        "emailAddress": accData["emailAddress"]
+        "exp": pendulum.utcnow().add(days=3)
+    }
+
+    token = str(jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM).decode("utf-8"))
+
+    customUrl = configFile["General"]["hostAddress"]+ "/confirm/" + token
+    return customUrl
 
 
-# def sendConfirmationEmail(accData):
+def sendConfirmationEmail(accData):
 
-#     fromEmail = configFile["SendGrid"]["SendGridFromEmail"]
-#     fromName = configFile["SendGrid"]["SendGridFromName"]
-#     templateID = configFile["SendGrid"]["SendGridTemplateID"]
-#     uniqueURL = genConfirmEmailURL(accData)
+    fromEmail = configFile["SendGrid"]["SendGridFromEmail"]
+    fromName = configFile["SendGrid"]["SendGridFromName"]
+    templateID = configFile["SendGrid"]["SendGridTemplateID"]
+    uniqueURL = genConfirmEmailURL(accData)
 
-#     from_email = sendgrid.Email(email=fromEmail, name=fromName)
-#     to_email = sendgrid.Email(email=accData["emailAddress"], name=accData["firstName"])
-#     content = Content('text/html', ' ')
-#     mail = Mail(from_email=from_email, subject=str("Please Confirm your account with " + fromName), to_email=to_email, content=content)
+    from_email = sendgrid.Email(email=fromEmail, name=fromName)
+    to_email = sendgrid.Email(email=accData["emailAddress"], name=accData["firstName"])
+    content = Content('text/html', ' ')
+    mail = Mail(from_email=from_email, subject=str("Please Confirm your account with " + fromName), to_email=to_email, content=content)
     
-#     mail.personalizations[0].add_substitution(Substitution("-confirmURL-", uniqueURL))
-#     mail.personalizations[0].add_substitution(Substitution("-firstName-", firstName))
-#     mail.personalizations[0].add_substitution(Substitution("-fromName-", fromName))
-#     mail.set_template_id(configFile["SendGrid"]["SendGridTemplateID"])
-#     sg.client.mail.send.post(request_body=mail.get())
+    mail.personalizations[0].add_substitution(Substitution("-confirmURL-", uniqueURL))
+    mail.personalizations[0].add_substitution(Substitution("-firstName-", accData["firstName"]))
+    mail.personalizations[0].add_substitution(Substitution("-fromName-", fromName))
+    mail.set_template_id(configFile["SendGrid"]["SendGridTemplateID"])
+    sg.client.mail.send.post(request_body=mail.get())

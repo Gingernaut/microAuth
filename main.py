@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
-import random, string, json, pendulum
+import random, string, json, pendulum, jwt
 from flask_cors import CORS, cross_origin
 from models import user
 from models import db
@@ -64,8 +64,8 @@ def signup():
         accData = accFunctions.getAccData(accId)
         accData["authToken"] =  accFunctions.genToken(accId)
 
-        # if configFile["SendGrid"]["useSendGrid"] == "TRUE":
-        #     utils.sendConfirmationEmail(accData)
+        if configFile["SendGrid"]["useSendGrid"] == "TRUE":
+            utils.sendConfirmationEmail(accData)
         
         return custResponse(201, "Signup Successful", accData)
 
@@ -245,6 +245,26 @@ def index():
         /login  \n
         /account \n
             """
+
+@app.route("/confirm/<token>", methods=["GET", "PUT", "OPTIONS"])
+@cross_origin()
+def manageAccounts(token):
+    try:
+        payload = jwt.decode(str(token), utils.JWT_SECRET, algorithms=[utils.JWT_ALGORITHM])
+        accId = int(payload["userId"])
+
+        payload = accFunctions.cleanPayload(accId, {"isValidated": True})
+
+        if "Error" in payload:
+            return custResponse(payload["errStat"], payload["Error"])
+
+        accFunctions.updateAccount(payload)
+        return custResponse(200, "Successfully validated account.")
+    except:
+        return custResponse(400, "Error validating account")
+
+
+
 
 @app.errorhandler(404)
 def custResponse(code=404, message="Error: Not Found", data=None):
