@@ -65,7 +65,7 @@ def signup():
         accData["authToken"] =  accFunctions.genToken(accId)
 
         if configFile["SendGrid"]["useSendGrid"] == True:
-            utils.sendConfirmationEmail(accData)
+            utils.sendConfirmationEmail(accData, "confirm")
         
         return custResponse(201, "Signup Successful", accData)
 
@@ -236,11 +236,49 @@ def index():
 
     return """
         Available endpoints: \n
-                \n
-        /signup \n
-        /login  \n
-        /account \n
+                    \n
+            /signup \n
+            /login  \n
+            /account \n
+            /confirm/<token> \n
+            /accounts \n
+            /accounts/<id> \n
             """
+
+@app.route("/initreset/<email>", methods=["GET", "OPTIONS"])
+@cross_origin()
+def initReset(email):
+    try:
+        accId = accFunctions.getAccountbyEmail(email)
+        accData = accFunctions.getAccData(accId)
+
+        if accId:
+            utils.sendConfirmationEmail(accData, "reset")
+            return custResponse(200, "Resetting Account")
+        
+        return custResponse(400, "Invalid email for reset")
+
+    except Exception as e:
+        print(e)
+        return custResponse(400, "Error resetting email")
+
+
+@app.route("/reset/<token>", methods=["GET", "OPTIONS"])
+@cross_origin()
+def reset(token):
+    try:
+        token = token.replace("*", ".")
+        payload = jwt.decode(str(token), utils.JWT_SECRET, algorithms=[utils.JWT_ALGORITHM])
+        accId = int(payload["userId"])
+
+        
+        accData = accFunctions.getAccData(accId)
+        accData["authToken"] =  accFunctions.genToken(accId)
+
+        return custResponse(200, "Resetting Account", accData)
+    except Exception as e:
+        print(e)
+        return custResponse(400, "Error validating account")
 
 @app.route("/confirm/<token>", methods=["GET", "OPTIONS"])
 @cross_origin()
@@ -280,9 +318,7 @@ def custResponse(code=404, message="Error: Not Found", data=None):
 
 if __name__ == "__main__":
         with app.app_context():
-            db.reflect()
-            db.drop_all()
             db.create_all()
-            accFunctions.createAdmin()
+            # accFunctions.createAdmin()
             db.session.commit()
-            app.run(host="0.0.0.0")
+            app.run()
