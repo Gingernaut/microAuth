@@ -1,8 +1,6 @@
-FROM python:3.5
+FROM python:3.6-onbuild
 COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt 
 EXPOSE 5000
-# --no-cache-dir
-ENTRYPOINT ["python3"]
-CMD ["main.py"]
+CMD ["/bin/sh", "/app/dockerstart.sh"]
