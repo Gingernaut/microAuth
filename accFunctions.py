@@ -20,7 +20,7 @@ def createAdmin():
 def signin(email, passw):
 
     try:
-        account = getAccountbyEmail(email)
+        account = getAccountByEmail(email)
         encryptedPass = account.password
 
         if utils.passMatches(encryptedPass, passw):
@@ -96,11 +96,15 @@ def isAdmin(accId):
 def getAccountbyID(AccID):
     return user.query.filter_by(id=AccID).first()
 
-def getAccountbyEmail(emailAddr):
+def getAccountByEmail(emailAddr):
     return user.query.filter_by(emailAddress=emailAddr).first()
 
+def getAccIdByEmail(emailAddr):
+    return getAccountByEmail(emailAddr).id or None
+
+
 def accountExists(postEmail):
-    return getAccountbyEmail(postEmail) != None
+    return getAccountByEmail(postEmail) != None
 
 def deleteAccount(accId):
     try:

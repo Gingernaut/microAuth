@@ -249,11 +249,11 @@ def index():
 @cross_origin()
 def initReset(email):
     try:
-        accId = accFunctions.getAccountbyEmail(email)
+        accId = accFunctions.getAccIdByEmail(str(email))
         accData = accFunctions.getAccData(accId)
 
         if accId:
-            utils.sendConfirmationEmail(accData, "reset")
+            utils.sendEmail(accData, "reset")
             return custResponse(200, "Resetting Account")
         
         return custResponse(400, "Invalid email for reset")
@@ -268,10 +268,9 @@ def initReset(email):
 def reset(token):
     try:
         token = token.replace("*", ".")
-        payload = jwt.decode(str(token), utils.JWT_SECRET, algorithms=[utils.JWT_ALGORITHM])
-        accId = int(payload["userId"])
+        tokenData = jwt.decode(str(token), utils.JWT_SECRET, algorithms=[utils.JWT_ALGORITHM])
+        accId = int(tokenData["userId"])
 
-        
         accData = accFunctions.getAccData(accId)
         accData["authToken"] =  accFunctions.genToken(accId)
 
@@ -285,8 +284,8 @@ def reset(token):
 def confirm(token):
     try:
         token = token.replace("*", ".")
-        payload = jwt.decode(str(token), utils.JWT_SECRET, algorithms=[utils.JWT_ALGORITHM])
-        accId = int(payload["userId"])
+        tokenData = jwt.decode(str(token), utils.JWT_SECRET, algorithms=[utils.JWT_ALGORITHM])
+        accId = int(tokenData["userId"])
         payload = accFunctions.cleanPayload(accId, {"isValidated": True})
 
         if "Error" in payload:
