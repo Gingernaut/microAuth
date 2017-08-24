@@ -65,8 +65,11 @@ def signup():
         accData["authToken"] =  accFunctions.genToken(accId)
 
         if configFile["SendGrid"]["useSendGrid"] == True:
-            utils.sendConfirmationEmail(accData, "confirm")
-        
+            try:
+                utils.sendEmail(accData, "confirm")
+            except:
+                # log it 
+                pass
         return custResponse(201, "Signup Successful", accData)
 
     except Exception as e:
@@ -317,6 +320,8 @@ def custResponse(code=404, message="Error: Not Found", data=None):
 
 if __name__ == "__main__":
         with app.app_context():
+            # db.reflect()
+            # db.drop_all()
             db.create_all()
             # accFunctions.createAdmin()
             db.session.commit()

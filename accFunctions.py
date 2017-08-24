@@ -6,7 +6,6 @@ configFile = json.loads(open('config.json').read())
 JWT_SECRET = configFile["Security"]["JWT_SECRET"]
 JWT_ALGORITHM = configFile["Security"]["JWT_ALGORITHM"]
 
-
 def createAdmin():
 
     admin = user(emailAddress=configFile["Security"]["initEmail"],

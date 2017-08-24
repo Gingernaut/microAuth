@@ -18,10 +18,6 @@ class user(db.Model):
     phoneNumber = db.Column(db.String(14), nullable=True, default=None)
     isValidated = db.Column(db.Boolean, nullable=False, default=False)
     userRole = db.Column(db.String(10), nullable=False,default="USER")
-    
-
-    # def __init__(**kwargs):
-    #     super(Foo, self).__init__(**kwargs)
 
     def serialize(self):
         return {
@@ -48,8 +44,4 @@ class user(db.Model):
             "userId": self.id,
             "exp": pendulum.utcnow().add(weeks=1)
         }
-
         return str(jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM).decode("utf-8"))
-
-    def update(self, payload):
-        print("")
