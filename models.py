@@ -7,6 +7,7 @@ JWT_ALGORITHM = configFile["Security"]["JWT_ALGORITHM"]
 db = SQLAlchemy()
 
 class user(db.Model):
+    __tablename__ = 'accounts'
     id = db.Column(db.BigInteger, primary_key=True)
     firstName = db.Column(db.String(50), nullable=True, default=None)
     lastName = db.Column(db.String(50), nullable=True, default=None)
