@@ -1,13 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
 import uuid, pendulum, jwt, json
-configFile = json.loads(open('config.json').read())
+configFile = json.loads(open("config.json").read())
 JWT_SECRET = configFile["Security"]["JWT_SECRET"]
 JWT_ALGORITHM = configFile["Security"]["JWT_ALGORITHM"]
 
 db = SQLAlchemy()
 
 class user(db.Model):
-    __tablename__ = 'accounts'
+    __tablename__ = "users"
     id = db.Column(db.BigInteger, primary_key=True)
     firstName = db.Column(db.String(50), nullable=True, default=None)
     lastName = db.Column(db.String(50), nullable=True, default=None)
@@ -19,6 +19,19 @@ class user(db.Model):
     phoneNumber = db.Column(db.String(14), nullable=True, default=None)
     isValidated = db.Column(db.Boolean, nullable=False, default=False)
     userRole = db.Column(db.String(10), nullable=False,default="USER")
+
+    def __init__(self, firstName, lastName, emailAddress, password, createdDate, modifiedDate, UUId, phoneNumber, isValidated, userRole):
+        self.firstName = firstName
+        self.lastName = lastName
+        self.emailAddress = emailAddress
+        self.password = password
+        self.createdDate = createdDate
+        self.modifiedDate = modifiedDate
+        self.UUID = UUID
+        self.phoneNumber = phoneNumber
+        self.isValidated = isValidated
+        self.userRole = userRole
+
 
     def serialize(self):
         return {
@@ -43,6 +56,6 @@ class user(db.Model):
     def genToken(self):
         payload = {
             "userId": self.id,
-            "exp": pendulum.utcnow().add(weeks=1)
+            "exp": pendulum.utcnow().add(days=int(configFile["Security"]["tokenTTL_Days"]))
         }
         return str(jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM).decode("utf-8"))

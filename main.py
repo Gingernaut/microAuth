@@ -68,14 +68,17 @@ def signup():
             try:
                 utils.sendEmail(accData, "confirm")
             except:
-                # log it 
                 pass
         return custResponse(201, "Signup Successful", accData)
 
     except Exception as e:
-        print("*-*-*-*")
-        print(e)
-        return custResponse(500, str(e)) #replace with unkown error if debug is false
+
+        if app.config["DEBUG"] == True:
+            print("*-*-*-*")
+            print(e)
+            return custResponse(500,{"Err": str(e)})
+        else:
+            return custResponse(500, "An unknown error occured.")
 
 
 @app.route("/login", methods=["POST", "OPTIONS"])
@@ -105,10 +108,15 @@ def login():
         accData["authToken"] =  accFunctions.genToken(accId)
 
         return custResponse(200, "Login Successful", accData)
+
     except Exception as e:
-        print("*-*-*-*")
-        print(e)
-        return custResponse(500, str(e))
+
+        if app.config["DEBUG"] == True:
+            print("*-*-*-*")
+            print(e)
+            return custResponse(500,{"Err": str(e)})
+        else:
+            return custResponse(500, "An unknown error occured.")
 
 @app.route("/account", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 @cross_origin()
@@ -153,10 +161,12 @@ def modifyAccount():
                 return custResponse(500, "Account deletion failed.")
 
     except Exception as e:
-        print("*-*-*-*")
-        print(e)
-        return custResponse(500, str(e))
-
+        if app.config["DEBUG"] == True:
+            print("*-*-*-*")
+            print(e)
+            return custResponse(500,{"Err": str(e)})
+        else:
+            return custResponse(500, "An unknown error occured.")
 
 @app.route("/accounts", methods=["GET", "OPTIONS"])
 @cross_origin()
@@ -173,11 +183,16 @@ def allAccounts():
             return custResponse(401, "Unauthorized. Invalid token.")
 
         results = [user.serialize() for user in user.query.all()]
+
         return jsonify(results)
+
     except Exception as e:
-        print("*-*-*-*")
-        print(e)
-        return custResponse(500, str(e))
+        if app.config["DEBUG"] == True:
+            print("*-*-*-*")
+            print(e)
+            return custResponse(500,{"Err": str(e)})
+        else:
+            return custResponse(500, "An unknown error occured.")
 
 
 # add same as above for put del on /accounts/id
@@ -229,24 +244,17 @@ def manageAccounts(accId):
                 return custResponse(500, "Account deletion failed.")
             
     except Exception as e:
-        print("*-*-*-*")
-        print(e)
-        return custResponse(500, str(e))
+        if app.config["DEBUG"] == True:
+            print("*-*-*-*")
+            print(e)
+            return custResponse(500,{"Err": str(e)})
+        else:
+            return custResponse(500, "An unknown error occured.")
 
 @app.route("/")
 @cross_origin()
 def index():
-
-    return """
-        Available endpoints: \n
-                    \n
-            /signup \n
-            /login  \n
-            /account \n
-            /confirm/<token> \n
-            /accounts \n
-            /accounts/<id> \n
-            """
+    return "Documentation available at https://github.com/Gingernaut/microAuth"
 
 @app.route("/initreset/<email>", methods=["GET", "OPTIONS"])
 @cross_origin()
@@ -262,8 +270,12 @@ def initReset(email):
         return custResponse(400, "Invalid email for reset")
 
     except Exception as e:
-        print(e)
-        return custResponse(400, "Error resetting email")
+        if app.config["DEBUG"] == True:
+            print("*-*-*-*")
+            print(e)
+            return custResponse(400,{"Err": str(e)})
+        else:
+            return custResponse(400, "Error resetting email.")
 
 
 @app.route("/reset/<token>", methods=["GET", "OPTIONS"])
@@ -278,9 +290,14 @@ def reset(token):
         accData["authToken"] =  accFunctions.genToken(accId)
 
         return custResponse(200, "Resetting Account", accData)
+
     except Exception as e:
-        print(e)
-        return custResponse(400, "Error validating account")
+        if app.config["DEBUG"] == True:
+            print("*-*-*-*")
+            print(e)
+            return custResponse(400,{"Err": str(e)})
+        else:
+            return custResponse(400, "Error resetting account.")
 
 @app.route("/confirm/<token>", methods=["GET", "OPTIONS"])
 @cross_origin()
@@ -297,9 +314,14 @@ def confirm(token):
         accFunctions.updateAccount(payload)
         accData = accFunctions.getAccData(accId)
         return custResponse(200, "Successfully validated account.", accData)
+
     except Exception as e:
-        print(e)
-        return custResponse(400, "Error validating account")
+        if app.config["DEBUG"] == True:
+            print("*-*-*-*")
+            print(e)
+            return custResponse(400,{"Err": str(e)})
+        else:
+            return custResponse(400, "Error validating account.")
 
 @app.errorhandler(404)
 def custResponse(code=404, message="Error: Not Found", data=None):
@@ -319,10 +341,10 @@ def custResponse(code=404, message="Error: Not Found", data=None):
     return resp
 
 if __name__ == "__main__":
-        with app.app_context():
-            # db.reflect()
-            # db.drop_all()
-            db.create_all()
-            # accFunctions.createAdmin()
-            db.session.commit()
-            app.run()
+    with app.app_context():
+        db.reflect()
+        db.drop_all()
+        db.create_all()
+        accFunctions.createAdmin()
+        db.session.commit()
+        app.run()

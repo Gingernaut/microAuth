@@ -4,7 +4,7 @@ import sendgrid
 from sendgrid.helpers.mail import *
 from models import user, db
 
-configFile = json.loads(open('config.json').read())
+configFile = json.loads(open("config.json").read())
 
 JWT_SECRET = configFile["Security"]["JWT_SECRET"]
 JWT_ALGORITHM = configFile["Security"]["JWT_ALGORITHM"]
@@ -15,7 +15,6 @@ def getDBConfig():
     dbUrl = configFile["Database"]["dbUrl"]
     dbUser = configFile["Database"]["dbUser"]
     dbPass = configFile["Database"]["dbPass"]
-    dbPort = configFile["Database"]["dbPort"]
 
     return "postgresql://" + dbUser + ":" + dbPass + "@" + dbUrl + "/" + dbName
 
@@ -89,7 +88,7 @@ def sendEmail(accData, templateType):
 
     from_email = sendgrid.Email(email=fromEmail, name=fromName)
     to_email = sendgrid.Email(email=accData["emailAddress"], name=accData.get("firstName",""))
-    content = Content('text/html', ' ')
+    content = Content("text/html", " ")
     mail = Mail(from_email=from_email, subject=subject, to_email=to_email, content=content)
     
     mail.personalizations[0].add_substitution(Substitution("-confirmURL-", uniqueURL))

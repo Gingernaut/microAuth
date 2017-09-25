@@ -1,0 +1,27 @@
+{
+    "Security": {
+        "JWT_SECRET": "Custom_long_string",
+        "JWT_ALGORITHM": "HS256",
+        "initEmail": "root@root.com",
+        "initPass": "1234567",
+        "tokenTTL_Days": 7,
+        "minPassLength": 6
+    },
+    "SendGrid": {
+        "useSendgrid": true,
+        "SendGridAPIKEY": "",
+        "SendGridFromEmail": "example@company.com",
+        "SendGridFromName": "Example Company",
+        "SendGridResetTemplate": "",
+        "SendGridConfirmTemplate": ""
+    },
+    "Database": {
+        "dbName": "",
+        "dbUrl": "url.rds.amazonaws.com",
+        "dbUser": "",
+        "dbPass": ""
+    },
+    "General": {
+        "hostAddress": "yourwebsite.com"
+    }
+}
