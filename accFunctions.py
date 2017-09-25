@@ -2,7 +2,7 @@ import jwt, json, pendulum
 from models import user, db
 import utils
 
-configFile = json.loads(open('config.json').read())
+configFile = json.loads(open("config.json").read())
 JWT_SECRET = configFile["Security"]["JWT_SECRET"]
 JWT_ALGORITHM = configFile["Security"]["JWT_ALGORITHM"]
 
@@ -27,7 +27,6 @@ def signin(email, passw):
 
     except Exception as e:
         print("****")
-        print(e)
         print(e)
     
     return None
