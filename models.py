@@ -17,20 +17,20 @@ class user(db.Model):
     modifiedDate = db.Column(db.DateTime, nullable=False, default=pendulum.utcnow)
     UUID = db.Column(db.String(36), nullable=False, default=uuid.uuid4())
     phoneNumber = db.Column(db.String(14), nullable=True, default=None)
-    isValidated = db.Column(db.Boolean, nullable=False, default=False)
+    isValidated = db.Column(db.Boolean, nul/Qarch/blob/master/src/main/webapp/javascript/GSVPano.jslable=False, default=False)
     userRole = db.Column(db.String(10), nullable=False,default="USER")
 
-    def __init__(self, firstName, lastName, emailAddress, password, createdDate, modifiedDate, UUId, phoneNumber, isValidated, userRole):
-        self.firstName = firstName
-        self.lastName = lastName
-        self.emailAddress = emailAddress
-        self.password = password
-        self.createdDate = createdDate
-        self.modifiedDate = modifiedDate
-        self.UUID = UUID
-        self.phoneNumber = phoneNumber
-        self.isValidated = isValidated
-        self.userRole = userRole
+    # def __init__(self, firstName, lastName, emailAddress, password, createdDate, modifiedDate, UUId, phoneNumber, isValidated, userRole):
+    #     self.firstName = firstName
+    #     self.lastName = lastName
+    #     self.emailAddress = emailAddress
+    #     self.password = password
+    #     self.createdDate = createdDate
+    #     self.modifiedDate = modifiedDate
+    #     self.UUID = UUID
+    #     self.phoneNumber = phoneNumber
+    #     self.isValidated = isValidated
+    #     self.userRole = userRole
 
 
     def serialize(self):

@@ -10,8 +10,9 @@ Tired of reinventing the wheel every time you need user authentication on a new 
 * JWT based authentication, encryption with [argon2](https://github.com/P-H-C/phc-winner-argon2)
 * Built with Python3, Flask, gunicorn, AWS RDS, and the Sendgrid API. 
 
-
 ## Usage
+
+#### Endpoints without the `Authorization` Header
 
 `/signup/  HTTP Method: POST`
 
@@ -22,11 +23,6 @@ Tired of reinventing the wheel every time you need user authentication on a new 
     "emailAddress": "sample@email.com",
     "password": "123456"
 }
-```
-Response
-
-```json
-
 ```
 
 `/login/ HTTP Method: POST`
@@ -39,12 +35,8 @@ Response
 ```
 
 
-Response
-```
 
-```
-
-### Authorization Header Required
+#### `Authorization` Header Required
 
 `/account/`
 
@@ -53,7 +45,7 @@ Response
     - DELETE: Deletes the account
 
 
-#### Admin Endpoints
+#### `Authorization` Header Required, account type must be Admin
 `/accounts/`
 
     - GET: Gets all information for all accounts
@@ -63,10 +55,20 @@ Response
     - `GET`: Retrieves all the information about the account
     - `DELETE`: Deletes the account
 
+
+## Running
+
+After filling out the config file, you only need two commands to run the project as a docker image:
+```bash
+docker build -t microauth .
+docker run -p 5000:5000 microauth
+```
+
 ## Configuration
 
 Rename default.json to config.json and fill it out. 
-Create a Postres RDS instance.
+You'll need to have  a PostreSQL database instance running to connect to (This was developed and tested using AWS RDS).
+
 ```json
 {
     "Security": {
@@ -98,30 +100,137 @@ Create a Postres RDS instance.
 }
 ```
 
+### Sendgrid
 
+If you don't need or want email verification and reset, set `useSendGrid` to `false`. Otherwise, sign up for a [Sendgrid Account](https://sendgrid.com) and fill out your API Keys. Create two template emails (one for the reset email, and one for the account verficiation. Copy the HTML from `emailTemplates` into Sengrid and add the template ID to the config file.
 
+## Javascript Usage
 
-Key Generator: http://www.miniwebtool.com/django-secret-key-generator/
+Here is some starter code that you can use to hit the API endpoints and get your data ( axios is a dependency).
 
+```javascript
+const axios = require('axios')
 
+const baseInstance = function () {
+  return axios.create({
+    baseURL: 'http://localhost:5000/',
+    headers: {
+      Authorization: // get your user token 
+    }
+  })
+}
 
-## Sendgrid
+const accFunctions = {
 
-First 
+  login: function (payload) {
+    let HTTP = baseInstance()
+    return HTTP.post('login', {
+      emailAddress: payload.emailAddress,
+      password: payload.password
+    })
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res.data)
+        } else {
+          console.log('invalid response code ', res.status)
+        }
+      })
+  },
+  signup: function (payload) {
+    let HTTP = baseInstance()
+    return HTTP.post('signup', {
+      emailAddress: payload.emailAddress,
+      password: payload.password,
+      firstName: payload.firstName, // optional
+      lastName: payload.lastName // optional
+    })
+      .then(res => {
+        if (res.status === 201) {
+          console.log(res.data)
+        } else {
+          console.log('invalid response code ', res.status)
+        }
+      })
+  },
+  getOwnData: function () {
+    let HTTP = baseInstance()
+    return HTTP.get('account')
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res.data)
+        } else {
+          console.log('invalid response code ', res.status)
+        }
+      })
+  },
+  updateAcc: function (payload) {
+    let HTTP = baseInstance()
+    return HTTP.put('account', payload)
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res.data)
+        } else {
+          console.log(' response code ', res.status)
+        }
+      })
+  },
+  deleteAcc: function () {
+    let HTTP = baseInstance()
+    return HTTP.delete('account')
+      .then(res => {
+        if (res.status === 200) {
+          console.log('account deleted')
+        } else {
+          console.log('invalid response code ', res.status)
+        }
+      })
+  },
+  getAccounts: function (id = null) {
+    if (store.getters.userRole === 'ADMIN') {
+      let HTTP = baseInstance()
+      if (id) {
+        return HTTP.get('accounts/' + id)
+      } else {
+        console.log(res.data)
+      }
+    }
+  },
+  confirmToken: function (token) {
+    let HTTP = baseInstance()
+    return HTTP.get('confirm/' + token)
+      .then(res => {
+        console.log(res.data)
+      })
+  },
+  initReset: function (email) {
+    let HTTP = baseInstance()
+    return HTTP.get('initreset/' + email)
+  },
+  confirmReset: function (token) {
+    let HTTP = baseInstance()
+    return HTTP.get('reset/' + token)
+      .then(res => {
+        console.log(res.data)
+      })
+  }
+}
+```
 
-Copy and paste the provided emailTemplate.html file in userApp to your Sendgrid Template, and use that ID in the config.json file.
 
 ## Other
 
-
 [Email template source](https://github.com/leemunroe/responsive-html-email-template)
-
 
 ## Contributing 
 
 Open to suggestions, pull requests, and feedback!
 
-Possible future updates:
+TODO/Possible future updates:
+* Flask Database Migration setup
 * OAuth support
 * Revokable tokens
-* 2 Factor Authentication
+* 2 Factor Authentication (with an authenticator app)
+* Continue adding documentation
+* Restructure project and set up Flask blueprints for future additions.
+
+
