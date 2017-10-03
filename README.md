@@ -39,22 +39,24 @@ Tired of reinventing the wheel every time you need user authentication on a new 
 #### `Authorization` Header Required
 
 `/account/`
-
+```
     - PUT: Updates the account.
     - GET: Gets all the information about the account
     - DELETE: Deletes the account
-
+```
 
 #### `Authorization` Header Required, account type must be Admin
 `/accounts/`
-
+```
     - GET: Gets all information for all accounts
+```
 
 `/accounts/:userID/`
+```
     - `PUT`: Updates the users account
     - `GET`: Retrieves all the information about the account
     - `DELETE`: Deletes the account
-
+```
 
 ## Running
 
