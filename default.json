@@ -8,8 +8,7 @@
         "minPassLength": 6
     },
     "SendGrid": {
-        "useSendgrid": true,
-        "SendGridAPIKEY": "",
+        "SendGridAPIKey": "",
         "SendGridFromEmail": "example@company.com",
         "SendGridFromName": "Example Company",
         "SendGridResetTemplate": "",

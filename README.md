@@ -54,6 +54,26 @@ Response
 }
 ```
 
+Response 
+
+```json
+{
+    "UUID": "aaebe556-66b4-4120-844c-909d2f6c3420",
+    "authToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImV4cCI6MTUwNzY5Mjc0OX0.GEZXpsbNorhCnhXRmq3O0uFBDRSsPXrvq7dEcOMYbDk",
+    "createdDate": "Wed, 04 Oct 2017 00:57:43 GMT",
+    "emailAddress": "root@root.com",
+    "firstName": null,
+    "id": 1,
+    "isValidated": true,
+    "lastName": null,
+    "message": "Login Successful",
+    "modifiedDate": "Wed, 04 Oct 2017 00:57:43 GMT",
+    "phoneNumber": null,
+    "status": 200,
+    "userRole": "ADMIN"
+}
+```
+
 
 
 #### `Authorization` Header Required
@@ -102,8 +122,7 @@ You'll need to have  a PostreSQL database instance running to connect to (This w
         "minPassLength": 6
     },
     "SendGrid": {
-        "useSendgrid": true,
-        "SendGridAPIKEY": "",
+        "SendGridAPIKey": "",
         "SendGridFromEmail": "example@company.com",
         "SendGridFromName": "Example Company",
         "SendGridResetTemplate": "",
@@ -242,17 +261,18 @@ const accFunctions = {
 ## Other
 
 [Email template source](https://github.com/leemunroe/responsive-html-email-template)
-
+ 
 ## Contributing 
 
 Open to suggestions, pull requests, and feedback!
 
-TODO/Possible future updates:
-* Flask Database Migration setup
-* OAuth support
-* Revokable tokens
-* 2 Factor Authentication (with an authenticator app)
-* Continue adding documentation
-* Restructure project and set up Flask blueprints for future additions.
-
+Possible future features (would love some PR's here):
+* add endpoint to resend confirmation email.
+* Flask database migration setup.
+* OAuth support.
+* Revokable tokens.
+* 2 Factor Authentication (with an authenticator app).
+* Continue adding documentation.
+* Restructure project and set up Flask blueprints for future. additions.
+* Automatic detection if db initialization is needed.
 

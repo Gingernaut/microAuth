@@ -71,6 +71,10 @@ def sendEmail(accData, templateType):
     fromEmail = configFile["SendGrid"]["SendGridFromEmail"]
     fromName = configFile["SendGrid"]["SendGridFromName"]
 
+    for reqConfig in ["SendGridResetTemplate", "SendGridConfirmTemplate", "SendGridAPIKey"]:
+        if not configFile["SendGrid"][reqConfig]:
+            return
+
     if templateType.lower() == "reset":
 
         templateID = configFile["SendGrid"]["SendGridResetTemplate"]
@@ -84,7 +88,7 @@ def sendEmail(accData, templateType):
         subject = str("Please Confirm your account with " + fromName)
 
 
-    sg = sendgrid.SendGridAPIClient(apikey=configFile["SendGrid"]["SendGridAPIKEY"])
+    sg = sendgrid.SendGridAPIClient(apikey=configFile["SendGrid"]["SendGridAPIKey"])
 
     from_email = sendgrid.Email(email=fromEmail, name=fromName)
     to_email = sendgrid.Email(email=accData["emailAddress"], name=accData.get("firstName",""))

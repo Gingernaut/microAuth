@@ -64,11 +64,11 @@ def signup():
         accData = accFunctions.getAccData(accId)
         accData["authToken"] =  accFunctions.genToken(accId)
 
-        # if configFile["SendGrid"]["useSendGrid"] == "True":
-        #     try:
-        #         utils.sendEmail(accData, "confirm")
-        #     except:
-        #         pass
+        # if configFile["SendGrid"]["useSendGrid"]:
+        try:
+            utils.sendEmail(accData, "confirm")
+        except:
+            pass
         return custResponse(201, "Signup Successful", accData)
 
     except Exception as e:
@@ -345,6 +345,6 @@ if __name__ == "__main__":
         db.reflect()
         db.drop_all()
         db.create_all()
-        # accFunctions.createAdmin() ## comment this out after your DB is initialized
+        accFunctions.createAdmin() ## comment this out after your DB is initialized
         db.session.commit()
         app.run()
