@@ -31,7 +31,7 @@ Response
     "UUID": "e41b9c87-d9f3-4059-961f-5cc699f7d001",
     "authToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUsImV4cCI6MTUwNzY4NTc2MH0.vCKaZwSkC0uVUr55yI8udR6j-Ba_LSx4XEpOGItrrG4",
     "createdDate": "Wed, 04 Oct 2017 01:36:00 GMT",
-    "emailAddress": "sampl2@email.com",
+    "emailAddress": "sample@email.com",
     "firstName": "Erlich",
     "id": 5,
     "isValidated": false,
@@ -49,7 +49,7 @@ Response
 
 ```json
 {
-    "emailAddress": "sample@email.com",
+    "emailAddress": "root@root.com",
     "password": "123456"
 }
 ```
