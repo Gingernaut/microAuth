@@ -71,19 +71,19 @@ def sendEmail(accData, templateType):
     fromEmail = configFile["SendGrid"]["SendGridFromEmail"]
     fromName = configFile["SendGrid"]["SendGridFromName"]
 
-    for reqConfig in ["SendGridResetTemplate", "SendGridConfirmTemplate", "SendGridAPIKey"]:
+    for reqConfig in ["SendGridResetTemplateID", "SendGridConfirmTemplateID", "SendGridAPIKey"]:
         if not configFile["SendGrid"][reqConfig]:
             return
 
     if templateType.lower() == "reset":
 
-        templateID = configFile["SendGrid"]["SendGridResetTemplate"]
+        templateID = configFile["SendGrid"]["SendGridResetTemplateID"]
         uniqueURL = genEmailURL(accData, "reset")
         subject = str("Account Reset Link at " + fromName)
     
     elif templateType.lower() == "confirm":
 
-        templateID = configFile["SendGrid"]["SendGridConfirmTemplate"]
+        templateID = configFile["SendGrid"]["SendGridConfirmTemplateID"]
         uniqueURL = genEmailURL(accData, "confirm")
         subject = str("Please Confirm your account with " + fromName)
 

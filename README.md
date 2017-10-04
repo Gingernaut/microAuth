@@ -125,8 +125,8 @@ You'll need to have  a PostreSQL database instance running to connect to (This w
         "SendGridAPIKey": "",
         "SendGridFromEmail": "example@company.com",
         "SendGridFromName": "Example Company",
-        "SendGridResetTemplate": "",
-        "SendGridConfirmTemplate": ""
+        "SendGridResetTemplateID": "",
+        "SendGridConfirmTemplateID": ""
     },
     "Database": {
         "dbName": "",
@@ -143,7 +143,7 @@ You'll need to have  a PostreSQL database instance running to connect to (This w
 
 ### Sendgrid
 
-If you don't need or want email verification and reset, set `useSendGrid` to `false`. Otherwise, sign up for a [Sendgrid Account](https://sendgrid.com) and fill out your API Keys. Create two template emails (one for the reset email, and one for the account verficiation. Copy the HTML from `emailTemplates` into Sengrid and add the template ID to the config file.
+If you want to enable email reset and signup for your users, sign up for a [Sendgrid Account](https://sendgrid.com) and fill out your API Keys. Create two template emails (one for the reset email, and one for the account verification. Copy the HTML from `emailTemplates` into Sengrid and add each template ID to the config file.
 
 ## Javascript Usage
 
