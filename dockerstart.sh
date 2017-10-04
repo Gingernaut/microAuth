@@ -8,7 +8,12 @@ echo " "
 mkdir logs
 touch ./logs/gunicorn.log
 touch ./logs/gunicorn-access.log
+
+echo "successful mkdir & touch"
+
+
 tail -n 0 -f ./logs/gunicorn*.log &
+
 
 exec gunicorn main:app \
     --bind 0.0.0.0:5000 \
