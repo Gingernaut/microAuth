@@ -1,6 +1,6 @@
-FROM python:3.6-onbuild
-COPY . /app
+FROM python:3.6.1
 WORKDIR /app
-RUN pip install -r requirements.txt 
+COPY . /app
+RUN pip install -r requirements.txt
 EXPOSE 5000
 CMD ["/bin/sh", "/app/dockerstart.sh"]
