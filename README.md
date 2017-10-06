@@ -76,13 +76,6 @@ Response
 
 `/initreset/:emailAddress HTTP Method: POST`
 
-```json
-{
-    "emailAddress": "root@root.com",
-    "password": "123456"
-}
-```
-
 
 #### `Authorization` Header Required
 
