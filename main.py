@@ -11,8 +11,8 @@ configFile = json.loads(open("config.json").read())
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = utils.getDBConfig()
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["DEBUG"] = True
-app.config["TESTING"] = True
+app.config["DEBUG"] = False
+app.config["TESTING"] = False
 
 CORS(app)
 db.init_app(app)
@@ -64,7 +64,6 @@ def signup():
         accData = accFunctions.getAccData(accId)
         accData["authToken"] =  accFunctions.genToken(accId)
 
-        # if configFile["SendGrid"]["useSendGrid"]:
         try:
             utils.sendEmail(accData, "confirm")
         except:
@@ -182,9 +181,8 @@ def allAccounts():
         if not accId or not accFunctions.isAdmin(accId):
             return custResponse(401, "Unauthorized. Invalid token.")
 
-        results = [user.serialize() for user in user.query.all()]
-
-        return jsonify(results)
+        users = [user.serialize() for user in user.query.all()]
+        return custResponse(200, {"Users": users})
 
     except Exception as e:
         if app.config["DEBUG"] == True:
