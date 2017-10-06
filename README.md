@@ -74,13 +74,21 @@ Response
 }
 ```
 
+`/initreset/:emailAddress HTTP Method: POST`
+
+```json
+{
+    "emailAddress": "root@root.com",
+    "password": "123456"
+}
+```
 
 
 #### `Authorization` Header Required
 
 `/account/`
 ```
-    - PUT: Updates the account.
+    - PUT: Updates the account
     - GET: Gets all the information about the account
     - DELETE: Deletes the account
 ```
@@ -93,9 +101,9 @@ Response
 
 `/accounts/:userID/`
 ```
-    - `PUT`: Updates the users account
-    - `GET`: Retrieves all the information about the account
-    - `DELETE`: Deletes the account
+    - PUT: Updates the users account
+    - GET: Retrieves all the information about the account
+    - DELETE: Deletes the account
 ```
 
 ## Running
@@ -132,8 +140,7 @@ You'll need to have  a PostreSQL database instance running to connect to (This w
         "dbName": "",
         "dbUrl": "url.rds.amazonaws.com",
         "dbUser": "",
-        "dbPass": "",
-        "dbPort": 5432
+        "dbPass": ""
     },
     "General": {
         "hostAddress": "yourwebsite.com"
@@ -273,6 +280,6 @@ Possible future features (would love some PR's here):
 * Revokable tokens.
 * 2 Factor Authentication (with an authenticator app).
 * Continue adding documentation.
-* Restructure project and set up Flask blueprints for future. additions.
+* Restructure project and set up Flask blueprints for future additions.
 * Automatic detection if db initialization is needed.
 
