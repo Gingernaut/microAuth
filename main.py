@@ -1,9 +1,7 @@
 from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
 import random, string, json, pendulum, jwt
 from flask_cors import CORS, cross_origin
-from models import user
-from models import db
+from models import user, db
 import utils, accFunctions
 
 configFile = json.loads(open("config.json").read())
@@ -182,7 +180,7 @@ def allAccounts():
             return custResponse(401, "Unauthorized. Invalid token.")
 
         users = [user.serialize() for user in user.query.all()]
-        return custResponse(200, {"Users": users})
+        return custResponse(200, "Accounts successfully retrieved", {"Users": users})
 
     except Exception as e:
         if app.config["DEBUG"] == True:
