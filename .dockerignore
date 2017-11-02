@@ -1,1 +1,7 @@
+.git
+email-templates
+.vscode
+.venv
+.gitignore
+*.md
 __pycache__
