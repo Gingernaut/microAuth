@@ -267,12 +267,8 @@ const accFunctions = {
 Open to suggestions, pull requests, and feedback!
 
 Possible future features (would love some PR's here):
-* add endpoint to resend confirmation email.
-* Flask database migration setup.
 * OAuth support.
 * Revokable tokens.
 * 2 Factor Authentication (with an authenticator app).
-* Continue adding documentation.
-* Restructure project and set up Flask blueprints for future additions.
-* Automatic detection if db initialization is needed.
+* Set up Flask blueprints for future additions.
 

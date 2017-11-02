@@ -7,14 +7,19 @@ JWT_SECRET = configFile["Security"]["JWT_SECRET"]
 JWT_ALGORITHM = configFile["Security"]["JWT_ALGORITHM"]
 
 def createAdmin():
-
-    admin = user(emailAddress=configFile["Security"]["initEmail"],
-                password=utils.encryptPass(configFile["Security"]["initPass"]),
-                userRole="ADMIN",
-                isValidated=True)
-    
-    db.session.add(admin)
-    db.session.commit()
+    try:
+        print("Creating Admin Account")
+        admin = user(emailAddress=configFile["Security"]["initEmail"],
+                    password=utils.encryptPass(configFile["Security"]["initPass"]),
+                    userRole="ADMIN",
+                    isValidated=True)
+        
+        db.session.add(admin)
+        db.session.commit()
+    except Exception as e:
+        print("*-*-*-*")
+        print(e)
+        pass
 
 def signin(email, passw):
 

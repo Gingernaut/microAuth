@@ -9,6 +9,10 @@ mkdir logs
 touch ./logs/gunicorn.log
 touch ./logs/gunicorn-access.log
 
+flask db init
+flask db migrate
+flask db upgrade
+
 tail -n 0 -f ./logs/gunicorn*.log &
 
 exec gunicorn main:app \

@@ -3,6 +3,7 @@ import random, string, json, pendulum, jwt
 from flask_cors import CORS, cross_origin
 from models import user, db
 import utils, accFunctions
+from flask_migrate import Migrate
 
 configFile = json.loads(open("config.json").read())
 
@@ -14,6 +15,7 @@ app.config["TESTING"] = False
 
 CORS(app)
 db.init_app(app)
+migrate = Migrate(app, db)
 
 @app.route("/signup", methods=["POST", "OPTIONS"])
 @cross_origin()
@@ -338,9 +340,9 @@ def custResponse(code=404, message="Error: Not Found", data=None):
 
 if __name__ == "__main__":
     with app.app_context():
-        db.reflect()
-        db.drop_all()
+        # db.reflect()
+        # db.drop_all()
         db.create_all()
-        accFunctions.createAdmin() ## comment this out after your DB is initialized
+        accFunctions.createAdmin()
         db.session.commit()
         app.run()
