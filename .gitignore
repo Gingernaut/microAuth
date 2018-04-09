@@ -1,10 +1,7 @@
 .DS_Store
-.env
-.flaskenv
+*.env
 *.pyc
 *.pyo
-env
-env*
 dist
 build
 *.egg
@@ -15,7 +12,6 @@ _mailinglist
 .idea/
 .vscode/
 __pycache__
-htmlcov
 .coverage
 .coverage.*
-config.json
+.venv/

@@ -1,7 +1,8 @@
-FROM python:3.6.1-onbuild
+FROM python:3.7-rc-stretch
+
 WORKDIR /app
 COPY . /app
 RUN pip install -r requirements.txt
-ENV FLASK_APP=/app/main.py
 EXPOSE 5000
-CMD ["/bin/sh", "/app/dockerstart.sh"]
+
+CMD ["/bin/sh", "/app/gunicorn.sh"]
