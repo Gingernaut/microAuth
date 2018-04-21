@@ -9,8 +9,6 @@ load_dotenv(dotenv_path=env_path, verbose=True)
 
 class BaseConfig:
     """Base configuration"""
-    TESTING = False
-    API_ENV = os.getenv("API_ENV")
     DB_URL = os.getenv("DB_URL")
     DB_NAME = os.getenv("DB_NAME")
     DB_USERNAME = os.getenv("DB_USERNAME")
@@ -20,15 +18,20 @@ class BaseConfig:
     TOKEN_TTL_HOURS = 158
     JWT_ALGORITHM = "HS256"
     JWT_SECRET = os.getenv("JWT_SECRET")
-    MIN_PASS_LENGTH=6
+    MIN_PASS_LENGTH = 6
+    IS_PROD = API_ENV = os.getenv("API_ENV") == "PRODUCTION"
+    IS_TEST = API_ENV = os.getenv("API_ENV") == "TEST"
+    IS_DEV = API_ENV = os.getenv("API_ENV") == "DEVELOPMENT"
+    PORT = 5000
+
 
 
 class DevelopmentConfig(BaseConfig):
     """Development configuration"""
 
+
 class TestingConfig(BaseConfig):
     """Testing configuration"""
-    TESTING = True
     TOKEN_TTL_HOURS = 1
     DB_USERNAME = os.getenv("TEST_DB_USERNAME")
     DB_PASSWORD = os.getenv("TEST_DB_PASSWORD")

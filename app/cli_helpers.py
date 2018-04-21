@@ -1,4 +1,3 @@
-import hug
 
 from config import get_config
 from db_client import db
@@ -8,8 +7,7 @@ from utils import encrypt_pass
 
 appConfig = get_config()
 
-@hug.local()
-@hug.cli()
+
 def init_db():
     try:
         print("Creating tables and default admin account \n")

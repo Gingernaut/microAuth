@@ -1,10 +1,10 @@
-import hug
 from sqlalchemy import create_engine, orm
 
 from config import get_config
 from models.base import Base
 
 appConfig = get_config()
+
 
 class SQLAlchemy:
     def __init__(self, autocommit=False):
@@ -14,12 +14,14 @@ class SQLAlchemy:
         self._autocommit = autocommit
 
     def connect(self):
+        print('connecting to db')
         sm = orm.sessionmaker(bind=self.engine, autoflush=True,
                               autocommit=self._autocommit, expire_on_commit=True)
 
         self.session = orm.scoped_session(sm)
 
     def close(self):
+        print('closing db connection')
         self.session.flush()
         self.session.close()
         self.session.remove()
@@ -33,20 +35,9 @@ class SQLAlchemy:
 
         return "postgresql://" + dbUser + ":" + dbPass + "@" + dbUrl + "/" + dbName
 
-
-    def init_app(self, app):
+    def init_engine(self):
         self._conn_str = self.get_conn_str()
         self.engine = create_engine(self._conn_str)
-
-        @hug.request_middleware(api=app)
-        def process_data(request, response):
-            self.connect()
-
-        @hug.response_middleware(api=app)
-        def process_data(request, response, resource):
-            self.close()
-
-        return app
 
 
 db = SQLAlchemy()

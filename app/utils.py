@@ -1,5 +1,8 @@
+from functools import wraps
+
 import jwt
 from passlib.hash import argon2
+from sanic import response
 
 from config import get_config
 from db_client import db
@@ -8,23 +11,33 @@ from models.users import User
 appConfig = get_config()
 
 
-def validate_admin_jwt(jwt_token):
+def authorized(admin=False):
+    def decorator(f):
+        @wraps(f)
+        async def decorated_function(request, *args, **kwargs):
+            userId = get_id_from_jwt(request)
+
+            if not userId:
+                return response.json({'error': 'Not Authorized'}, 401)
+
+            if admin == True:
+                user = get_account_by_id(userId)
+                if not user or user.userRole != "ADMIN":
+                    return response.json({'error': 'Not Authorized'}, 401)
+
+            return await f(request, *args, **kwargs)
+
+        return decorated_function
+
+    return decorator
+
+
+def get_id_from_jwt(request):
+
+    jwt_token = request.headers.get('authorization', None)
     try:
         tokenData = jwt.decode(str(jwt_token), appConfig.JWT_SECRET, algorithms=[appConfig.JWT_ALGORITHM])
-        account = get_account_by_id(tokenData['userId'])
-
-        if account.userRole == "ADMIN":
-            return tokenData
-        else:
-            return None
-
-    except:
-        return None
-
-
-def validate_jwt_token(jwt_token):
-    try:
-        return jwt.decode(str(jwt_token), appConfig.JWT_SECRET, algorithms=[appConfig.JWT_ALGORITHM])
+        return tokenData["userId"]
     except:
         return None
 
