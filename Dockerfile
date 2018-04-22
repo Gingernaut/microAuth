@@ -1,4 +1,4 @@
-FROM python:3.7-rc-stretch
+FROM python:3.7-onbuild
 
 WORKDIR /app
 COPY . /app

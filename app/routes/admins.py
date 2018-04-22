@@ -7,63 +7,88 @@ import utils
 from config import get_config
 from db_client import db
 from models.users import User
+from sanic import Blueprint, response
+
+admin_bp = Blueprint("admin_blueprint")
 
 
 class Admin_Endpoints(HTTPMethodView):
     decorators = [utils.authorized(admin=True)]
 
-    async def get(self, id, token_data, response):
-        user = utils.get_account_by_id(id)
+    async def get(self, request, id):
+        try:
+            return utils.get_account_by_id(id).serialize()
 
-        if user:
-            return user.serialize()
-        else:
-            response.status = HTTP_400
-            return "Account retrieval failed"
+        except Exception as e:
+            res = {"error": "Account lookup failed"}
+            if not request.app.config['IS_PROD']:
+                res['detailed'] = str(e)
+            return response.json(res, 400)
 
-    async def put(self, id, token_data, response):
+    async def put(self, request, id):
 
         try:
-            user = db.session.query(User).filter_by(id=id).first()
+            user = utils.get_account_by_id(id)
 
             if not user:
-                response.status = HTTP_400
-                return "Account retrieval failed"
-
-            if body.get('password'):
-                if len(body.get('password')) < request.app.config['MIN_PASS_LENGTH']:
-                    response.status = HTTP_400
-                    return "New password does not meet length requirements"
-
-                user.password = utils.encrypt_pass(body.get('password'))
-
-            if body.get('userRole'):
-                user.userRole = body.get('userRole').upper()
-
-            cleanBody = utils.format_body_params(body)
-            for k, v in cleanBody.items():
-                user.k = v
+                return response.json({"error": "Account lookup failed"}, 400)
 
             user.modifiedDate = pendulum.utcnow()
+            cleanData = utils.format_body_params(request.json)
+            providedPassword = request.json.get("password")
+
+            if providedPassword:
+                if len(providedPassword) < request.app.config['MIN_PASS_LENGTH']:
+                    return response.json({"error": "New password does not meet length requirements"}, 400)
+
+                user.password = utils.encrypt_pass(providedPassword)
+
+            if request.json.get("userRole"):
+                user.userRole = request.json.get("userRole").uppper()
+
+            if cleanData.get("emailAddress"):
+                newEmail = cleanData.get("emailAddress")
+
+                if utils.email_account_exists(newEmail) and utils.get_account_by_email(newEmail).id != user.id:
+                    return response.json({"error": "Email address associated with another account"}, 400)
+
+                user.emailAddress = newEmail
+
+            if cleanData.get("firstName"):
+                user.firstName = cleanData.get("firstName")
+
+            if cleanData.get("lastName"):
+                user.firstName = cleanData.get("lastName")
+
+            if cleanData.get("phoneNumber"):
+                user.firstName = cleanData.get("phoneNumber")
+
+            if cleanData.get("isValidated"):
+                user.firstName = cleanData.get("isValidated")
+
             db.session.commit()
+            return response.json({"success": "Account updated"}, 200)
 
-            return "Successfully updated account"
         except Exception as e:
-            print(e)
-            response.status = HTTP_500
-            return "update failed"
+            res = {"error": "Account update failed"}
+            if not request.app.config['IS_PROD']:
+                res['detailed'] = str(e)
+            return response.json(res, 400)
 
-    async def delete(self, token_data, response):
+    async def delete(self, request, id):
         try:
-            db.session.query(User).filter_by(id=token_data["userId"]).delete()
+            db.session.query(User).filter_by(id=id).delete()
             db.session.commit()
             return "Successfully deleted account"
-        except:
-            response.status = HTTP_400
-            return "Delete operation failed"
+
+        except Exception as e:
+            res = {"error": "Account deletion failed"}
+            if not request.app.config['IS_PROD']:
+                res['detailed'] = str(e)
+            return response.json(res, 400)
 
 
-@user_bp.route("/accounts", methods=["OPTIONS", "GET"])
+@admin_bp.route("/accounts", methods=["GET"])
 @utils.authorized(admin=True)
 def get_users(request):
     users = db.session.query(User).all()
