@@ -5,6 +5,7 @@ from models.base import Base
 
 appConfig = get_config()
 
+# https://github.com/fantix/gino ?
 
 class SQLAlchemy:
     def __init__(self, autocommit=False):
@@ -14,14 +15,12 @@ class SQLAlchemy:
         self._autocommit = autocommit
 
     def connect(self):
-        print('connecting to db')
         sm = orm.sessionmaker(bind=self.engine, autoflush=True,
                               autocommit=self._autocommit, expire_on_commit=True)
 
         self.session = orm.scoped_session(sm)
 
     def close(self):
-        print('closing db connection')
         self.session.flush()
         self.session.close()
         self.session.remove()

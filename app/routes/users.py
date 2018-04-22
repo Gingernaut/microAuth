@@ -11,7 +11,7 @@ from models.users import User
 user_bp = Blueprint("user_blueprint")
 
 
-class AccountRoutes(HTTPMethodView):
+class Account_Endpoints(HTTPMethodView):
 
     decorators = [utils.authorized()]
 
@@ -32,24 +32,39 @@ class AccountRoutes(HTTPMethodView):
         try:
             userId = utils.get_id_from_jwt(request)
             user = utils.get_account_by_id(userId)
-            user.modifiedDate = pendulum.utcnow()
-            body = request.body
 
-            if body.get("password"):
-                if len(body.get("password")) < request.app.config['MIN_PASS_LENGTH']:
+            if not user:
+                return response.json({"error": "Account lookup failed"}, 400)
+
+            user.modifiedDate = pendulum.utcnow()
+            cleanData = utils.format_body_params(request.json)
+            providedPassword = request.json.get("password")
+
+            if providedPassword:
+                if len(providedPassword) < request.app.config['MIN_PASS_LENGTH']:
                     return response.json({"error": "New password does not meet length requirements"}, 400)
 
-                user.password = utils.encrypt_pass(body.get("password"))
+                user.password = utils.encrypt_pass(providedPassword)
 
-            if body.get("emailAddress"):
-                newEmail = body.get("emailAddress")
+            if cleanData.get("emailAddress"):
+                newEmail = cleanData.get("emailAddress")
 
                 if utils.email_account_exists(newEmail) and utils.get_account_by_email(newEmail).id != user.id:
                     return response.json({"error": "Email address associated with another account"}, 400)
 
-            cleanData = utils.format_body_params(body)
-            for k, v in cleanBody.items():
-                user.k = v
+                user.emailAddress = newEmail
+
+            if cleanData.get("firstName"):
+                user.firstName = cleanData.get("firstName")
+
+            if cleanData.get("lastName"):
+                user.firstName = cleanData.get("lastName")
+
+            if cleanData.get("phoneNumber"):
+                user.firstName = cleanData.get("phoneNumber")
+
+            if cleanData.get("isValidated"):
+                user.firstName = cleanData.get("isValidated")
 
             db.session.commit()
             return response.json({"success": "Account updated"}, 200)
@@ -74,14 +89,14 @@ class AccountRoutes(HTTPMethodView):
             return response.json(res, 400)
 
 
-@user_bp.route("/signup", methods=["OPTIONS", "POST"])
+@user_bp.route("/signup", methods=["POST"])
 def signup(request):
 
     try:
-        cleanData = utils.format_body_params(request.body)
+        cleanData = utils.format_body_params(request.json)
 
         emailAddress = cleanData.get('emailAddress')
-        password = request.body.get('password')
+        password = request.json.get('password')
         firstName = cleanData.get('firstName')
         lastName = cleanData.get('lastName')
         phoneNumber = cleanData.get('phoneNumber')
@@ -110,13 +125,12 @@ def signup(request):
         return response.json(res, 400)
 
 
-@user_bp.route("/login", methods=["OPTIONS", "POST"])
+@user_bp.route("/login", methods=["POST"])
 def login(request):
 
     try:
-        cleanData = utils.format_body_params(request.body)
-        emailAddress = cleanData.get('emailAddress')
-        password = request.body.get('password')
+        emailAddress = request.json.get('emailAddress')
+        password = request.json.get('password')
         user = utils.get_account_by_email(emailAddress)
 
         if not user:

@@ -50,6 +50,12 @@ def get_account_by_email(emailAddress):
     return db.session.query(User).filter_by(emailAddress=emailAddress.lower()).first()
 
 
+def email_account_exists(emailAddr):
+    if get_account_by_email(emailAddr):
+        return True
+    return False
+
+
 def get_account_by_id(id):
     return db.session.query(User).filter_by(id=id).first()
 
@@ -72,9 +78,3 @@ def format_body_params(body):
         newBody['isValidated'] = bool(body.get('isValidated'))
 
     return newBody
-
-
-def email_account_exists(emailAddr):
-    if get_account_by_email(emailAddr):
-        return True
-    return False
