@@ -5,3 +5,4 @@ email-templates
 .gitignore
 *.md
 __pycache__
+.pytest_cache

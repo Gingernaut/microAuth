@@ -12,6 +12,8 @@ def create_app(env=None):
     app = Sanic(__name__)
     app.config.from_object(get_config(env))
 
+    db.init_engine()
+
     @app.listener("before_server_start")
     async def setup_connection(app, loop):
         db.connect()
