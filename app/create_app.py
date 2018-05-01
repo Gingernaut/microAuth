@@ -1,7 +1,7 @@
 from sanic import Sanic
 
 from config import get_config
-from db_client import db
+from db.db_client import db
 from models.base import Base
 from models.users import User
 from routes.admins import Admin_Endpoints, admin_bp
@@ -11,6 +11,8 @@ from routes.users import Account_Endpoints, user_bp
 def create_app(env=None):
     app = Sanic(__name__)
     app.config.from_object(get_config(env))
+
+    db.init_engine()
 
     @app.listener("before_server_start")
     async def setup_connection(app, loop):

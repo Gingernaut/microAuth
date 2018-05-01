@@ -3,9 +3,9 @@ import pendulum
 from sanic import Blueprint, Sanic, response
 from sanic.views import HTTPMethodView
 
-import utils
+from utils import utils
 from config import get_config
-from db_client import db
+from db.db_client import db
 from models.users import User
 
 user_bp = Blueprint("user_blueprint")
@@ -23,8 +23,8 @@ class Account_Endpoints(HTTPMethodView):
             return response.json(user.serialize(), 200)
         except Exception as e:
             res = {"error": "Account lookup failed"}
-            if not request.app.config['IS_PROD']:
-                res['detailed'] = str(e)
+            if not request.app.config["IS_PROD"]:
+                res["detailed"] = str(e)
             return response.json(res, 400)
 
     async def put(self, request):
@@ -41,7 +41,7 @@ class Account_Endpoints(HTTPMethodView):
             providedPassword = request.json.get("password")
 
             if providedPassword:
-                if len(providedPassword) < request.app.config['MIN_PASS_LENGTH']:
+                if len(providedPassword) < request.app.config["MIN_PASS_LENGTH"]:
                     return response.json({"error": "New password does not meet length requirements"}, 400)
 
                 user.password = utils.encrypt_pass(providedPassword)
@@ -71,8 +71,8 @@ class Account_Endpoints(HTTPMethodView):
 
         except Exception as e:
             res = {"error": "Account update failed"}
-            if not request.app.config['IS_PROD']:
-                res['detailed'] = str(e)
+            if not request.app.config["IS_PROD"]:
+                res["detailed"] = str(e)
             return response.json(res, 400)
 
     async def delete(self, request):
@@ -84,8 +84,8 @@ class Account_Endpoints(HTTPMethodView):
 
         except Exception as e:
             res = {"error": "Account deletion failed"}
-            if not request.app.config['IS_PROD']:
-                res['detailed'] = str(e)
+            if not request.app.config["IS_PROD"]:
+                res["detailed"] = str(e)
             return response.json(res, 400)
 
 
@@ -95,16 +95,16 @@ def signup(request):
     try:
         cleanData = utils.format_body_params(request.json)
 
-        emailAddress = cleanData.get('emailAddress')
-        password = request.json.get('password')
-        firstName = cleanData.get('firstName')
-        lastName = cleanData.get('lastName')
-        phoneNumber = cleanData.get('phoneNumber')
+        emailAddress = cleanData.get("emailAddress")
+        password = request.json.get("password")
+        firstName = cleanData.get("firstName")
+        lastName = cleanData.get("lastName")
+        phoneNumber = cleanData.get("phoneNumber")
 
         if utils.email_account_exists(emailAddress):
             return response.json({"error": "An account with that email address already exists"}, 400)
 
-        if len(password) < request.app.config['MIN_PASS_LENGTH']:
+        if len(password) < request.app.config["MIN_PASS_LENGTH"]:
             return response.json({"error": "password does not meet required length requirements"}, 400)
 
         user = User(firstName=firstName,
@@ -120,8 +120,8 @@ def signup(request):
 
     except Exception as e:
         res = {"error": "Signup failed"}
-        if not request.app.config['IS_PROD']:
-            res['detailed'] = str(e)
+        if not request.app.config["IS_PROD"]:
+            res["detailed"] = str(e)
         return response.json(res, 400)
 
 
@@ -129,8 +129,8 @@ def signup(request):
 def login(request):
 
     try:
-        emailAddress = request.json.get('emailAddress')
-        password = request.json.get('password')
+        emailAddress = request.json.get("emailAddress")
+        password = request.json.get("password")
         user = utils.get_account_by_email(emailAddress)
 
         if not user:
@@ -143,6 +143,6 @@ def login(request):
 
     except Exception as e:
         res = {"error": "login failed"}
-        if not request.app.config['IS_PROD']:
-            res['detailed'] = str(e)
+        if not request.app.config["IS_PROD"]:
+            res["detailed"] = str(e)
         return response.json(res, 400)

@@ -1,12 +1,12 @@
-git+https://github.com/channelcat/sanic
-gunicorn==19.7.1
-SQLAlchemy==1.2.6
+sanic==0.7.0
+gunicorn==19.8.1
+SQLAlchemy==1.2.7
 psycopg2-binary==2.7.4
 ujson==1.35
-pendulum==1.4.4
+pendulum==1.5.1
 python-dotenv==0.8.2
 PyJWT==1.6.1
 argon2-cffi==18.1.0
 passlib==1.7.1
-pytest==3.5.0
+pytest==3.5.1
 pytest-sanic==0.1.9

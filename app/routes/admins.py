@@ -1,13 +1,12 @@
 import jwt
 import pendulum
-from sanic import response
+from sanic import Blueprint, response
 from sanic.views import HTTPMethodView
 
-import utils
+from utils import utils
 from config import get_config
-from db_client import db
+from db.db_client import db
 from models.users import User
-from sanic import Blueprint, response
 
 admin_bp = Blueprint("admin_blueprint")
 
@@ -21,8 +20,8 @@ class Admin_Endpoints(HTTPMethodView):
 
         except Exception as e:
             res = {"error": "Account lookup failed"}
-            if not request.app.config['IS_PROD']:
-                res['detailed'] = str(e)
+            if not request.app.config["IS_PROD"]:
+                res["detailed"] = str(e)
             return response.json(res, 400)
 
     async def put(self, request, id):
@@ -38,7 +37,7 @@ class Admin_Endpoints(HTTPMethodView):
             providedPassword = request.json.get("password")
 
             if providedPassword:
-                if len(providedPassword) < request.app.config['MIN_PASS_LENGTH']:
+                if len(providedPassword) < request.app.config["MIN_PASS_LENGTH"]:
                     return response.json({"error": "New password does not meet length requirements"}, 400)
 
                 user.password = utils.encrypt_pass(providedPassword)
@@ -71,8 +70,8 @@ class Admin_Endpoints(HTTPMethodView):
 
         except Exception as e:
             res = {"error": "Account update failed"}
-            if not request.app.config['IS_PROD']:
-                res['detailed'] = str(e)
+            if not request.app.config["IS_PROD"]:
+                res["detailed"] = str(e)
             return response.json(res, 400)
 
     async def delete(self, request, id):
@@ -83,8 +82,8 @@ class Admin_Endpoints(HTTPMethodView):
 
         except Exception as e:
             res = {"error": "Account deletion failed"}
-            if not request.app.config['IS_PROD']:
-                res['detailed'] = str(e)
+            if not request.app.config["IS_PROD"]:
+                res["detailed"] = str(e)
             return response.json(res, 400)
 
 

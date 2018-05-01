@@ -1,5 +1,4 @@
 .DS_Store
-*.env
 *.pyc
 *.pyo
 dist
@@ -14,5 +13,8 @@ _mailinglist
 __pycache__
 .coverage
 .coverage.*
-.venv/
 .pytest_*
+venv
+.env
+/logs
+*.log

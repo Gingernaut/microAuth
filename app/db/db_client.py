@@ -32,7 +32,7 @@ class SQLAlchemy:
         dbUser = appConfig.DB_USERNAME
         dbPass = appConfig.DB_PASSWORD
 
-        return "postgresql://" + dbUser + ":" + dbPass + "@" + dbUrl + "/" + dbName
+        return f"postgresql://{dbUser}:{dbPass}@{dbUrl}/{dbName}"
 
     def init_engine(self):
         self._conn_str = self.get_conn_str()
