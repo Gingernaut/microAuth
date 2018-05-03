@@ -1,4 +1,4 @@
-from sanic import Sanic
+from sanic import Sanic, response
 
 from config import get_config
 from db.db_client import db

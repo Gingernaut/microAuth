@@ -33,6 +33,13 @@ class SQLAlchemy:
         dbPass = appConfig.DB_PASSWORD
 
         return f"postgresql://{dbUser}:{dbPass}@{dbUrl}/{dbName}"
+    
+    def create_tables(self):
+        self.init_engine()
+        self.connect()
+        Base.metadata.create_all(bind=self.engine)
+        self.close()
+
 
     def init_engine(self):
         self._conn_str = self.get_conn_str()

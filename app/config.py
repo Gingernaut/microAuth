@@ -20,7 +20,6 @@ class BaseConfig:
     HOST = "0.0.0.0"
     PORT = 5000
     WORKERS = 4
-
     DB_USERNAME = os.getenv("TEST_DB_USERNAME")
     DB_PASSWORD = os.getenv("TEST_DB_PASSWORD")
     DB_URL = "0.0.0.0:5432"

@@ -11,10 +11,10 @@ appConfig = get_config()
 def init_db():
     try:
         print("Creating tables and default admin account \n")
-        db.init_engine()
-        db.connect()
-
-        Base.metadata.create_all(bind=db.engine)
+        try:
+            db.create_tables()
+        except:
+            pass
         admin = User(emailAddress=appConfig.ADMIN_EMAIL,
                      password=encrypt_pass(appConfig.ADMIN_PASSWORD), userRole="ADMIN", isValidated=True)
 
