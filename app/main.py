@@ -6,4 +6,4 @@ if __name__ == "__main__":
         app.run(host=app.config["HOST"],
                 port=app.config["PORT"],
                 workers=app.config["WORKERS"],
-                debug=(app.config["IS_PROD"] == False))
+                debug=(app.config["API_ENV"] != "PRODUCTION"))

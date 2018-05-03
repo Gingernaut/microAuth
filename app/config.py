@@ -1,7 +1,8 @@
+import multiprocessing
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
-import multiprocessing
 
 env_path = Path.cwd() / ".env"
 load_dotenv(dotenv_path=env_path)

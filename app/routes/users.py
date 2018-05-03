@@ -3,9 +3,9 @@ import pendulum
 from sanic import Blueprint, Sanic, response
 from sanic.views import HTTPMethodView
 
-import utils
+from utils import utils
 from config import get_config
-from db_client import db
+from db.db_client import db
 from models.users import User
 
 user_bp = Blueprint("user_blueprint")

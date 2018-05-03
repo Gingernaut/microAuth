@@ -4,5 +4,3 @@ def get_acc(emailAddr):
 
 def send_email(emailAddr, emailType):
     print("")
-
-

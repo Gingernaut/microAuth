@@ -5,7 +5,7 @@ from passlib.hash import argon2
 from sanic import response
 
 from config import get_config
-from db_client import db
+from db.db_client import db
 from models.users import User
 
 appConfig = get_config()

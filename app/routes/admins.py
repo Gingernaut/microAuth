@@ -1,13 +1,12 @@
 import jwt
 import pendulum
-from sanic import response
+from sanic import Blueprint, response
 from sanic.views import HTTPMethodView
 
-import utils
+from utils import utils
 from config import get_config
-from db_client import db
+from db.db_client import db
 from models.users import User
-from sanic import Blueprint, response
 
 admin_bp = Blueprint("admin_blueprint")
 

@@ -1,9 +1,9 @@
 
 from config import get_config
-from db_client import db
+from db.db_client import db
 from models.base import Base
 from models.users import User
-from utils import encrypt_pass
+from utils.utils import encrypt_pass
 
 appConfig = get_config()
 

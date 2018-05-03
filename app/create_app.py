@@ -1,7 +1,7 @@
 from sanic import Sanic
 
 from config import get_config
-from db_client import db
+from db.db_client import db
 from models.base import Base
 from models.users import User
 from routes.admins import Admin_Endpoints, admin_bp

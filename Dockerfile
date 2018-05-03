@@ -8,4 +8,5 @@ COPY ./app /app
 COPY .env /app
 COPY gunicorn.conf /app
 
+ENV API_ENV PRODUCTION
 ENTRYPOINT ["gunicorn", "-c", "gunicorn.conf", "main:app"]
