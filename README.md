@@ -1,6 +1,5 @@
 # microAuth
-
-hug-cli 'create admin' local function
+=============================
 
 ### User authentication and management as a ready-to-go Docker microservice.
 
@@ -14,7 +13,7 @@ Tired of reinventing the wheel every time you need user authentication on a new 
 
 
 ## Usage
-
+You could also use this application as a Sanic boilerplate with authentication built in, just add models and routes as needed.
 
 ## Running
 
@@ -45,7 +44,7 @@ Here is some starter code that you can use to hit the API endpoints and get your
 
 Open to suggestions, pull requests, and feedback!
 
-Possible future features (would love some PR's here):
+Possible future features:
 * OAuth support.
 * Revokable tokens.
 * 2 Factor Authentication (with an authenticator app).

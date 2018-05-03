@@ -16,11 +16,15 @@ class Admin_Endpoints(HTTPMethodView):
 
     async def get(self, request, id):
         try:
-            return utils.get_account_by_id(id).serialize()
+            user = utils.get_account_by_id(id)
+            if not user:
+                return response.json({"error": "User not found"}, 404)
+
+            return response.json(user.serialize(), 200)
 
         except Exception as e:
-            res = {"error": "Account lookup failed"}
-            if not request.app.config["IS_PROD"]:
+            res = {"error": "User not found"}
+            if request.app.config["API_ENV"] != "PRODUCTION":
                 res["detailed"] = str(e)
             return response.json(res, 400)
 
@@ -30,17 +34,22 @@ class Admin_Endpoints(HTTPMethodView):
             user = utils.get_account_by_id(id)
 
             if not user:
-                return response.json({"error": "Account lookup failed"}, 400)
+                return response.json({"error": "User not found"}, 404)
 
             user.modifiedDate = pendulum.utcnow()
             cleanData = utils.format_body_params(request.json)
-            providedPassword = request.json.get("password")
 
-            if providedPassword:
-                if len(providedPassword) < request.app.config["MIN_PASS_LENGTH"]:
+            if not cleanData:
+                db.session.expire(user)
+                return response.json({"error": "No valid data provided for update"}, 400)
+
+            if cleanData.get("password"):
+                providedPass = cleanData.get("password")
+                if len(providedPass) < request.app.config["MIN_PASS_LENGTH"]:
+                    db.session.expire(user)
                     return response.json({"error": "New password does not meet length requirements"}, 400)
 
-                user.password = utils.encrypt_pass(providedPassword)
+                user.password = utils.encrypt_pass(providedPass)
 
             if request.json.get("userRole"):
                 user.userRole = request.json.get("userRole").uppper()
@@ -49,6 +58,7 @@ class Admin_Endpoints(HTTPMethodView):
                 newEmail = cleanData.get("emailAddress")
 
                 if utils.email_account_exists(newEmail) and utils.get_account_by_email(newEmail).id != user.id:
+                    db.session.expire(user)
                     return response.json({"error": "Email address associated with another account"}, 400)
 
                 user.emailAddress = newEmail
@@ -70,7 +80,7 @@ class Admin_Endpoints(HTTPMethodView):
 
         except Exception as e:
             res = {"error": "Account update failed"}
-            if not request.app.config["IS_PROD"]:
+            if request.app.config["API_ENV"] != "PRODUCTION":
                 res["detailed"] = str(e)
             return response.json(res, 400)
 
@@ -82,7 +92,7 @@ class Admin_Endpoints(HTTPMethodView):
 
         except Exception as e:
             res = {"error": "Account deletion failed"}
-            if not request.app.config["IS_PROD"]:
+            if request.app.config["API_ENV"] != "PRODUCTION":
                 res["detailed"] = str(e)
             return response.json(res, 400)
 

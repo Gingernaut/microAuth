@@ -22,8 +22,8 @@ class Account_Endpoints(HTTPMethodView):
             user = utils.get_account_by_id(userId)
             return response.json(user.serialize(), 200)
         except Exception as e:
-            res = {"error": "Account lookup failed"}
-            if not request.app.config["IS_PROD"]:
+            res = {"error": "User not found"}
+            if request.app.config["API_ENV"] != "PRODUCTION":
                 res["detailed"] = str(e)
             return response.json(res, 400)
 
@@ -34,22 +34,32 @@ class Account_Endpoints(HTTPMethodView):
             user = utils.get_account_by_id(userId)
 
             if not user:
-                return response.json({"error": "Account lookup failed"}, 400)
+                return response.json({"error": "User not found"}, 400)
 
             user.modifiedDate = pendulum.utcnow()
             cleanData = utils.format_body_params(request.json)
-            providedPassword = request.json.get("password")
 
-            if providedPassword:
-                if len(providedPassword) < request.app.config["MIN_PASS_LENGTH"]:
+            if not cleanData:
+                db.session.expire(user)
+                return response.json({"error": "No valid data provided for update"}, 400)
+
+            if cleanData.get("userRole") and user.userRole != "ADMIN":
+                db.session.expire(user)
+                return response.json({"error": "Cannot update role"}, 401)
+
+            if cleanData.get("password"):
+                providedPass = cleanData.get("password")
+                if len(providedPass) < request.app.config["MIN_PASS_LENGTH"]:
+                    db.session.expire(user)
                     return response.json({"error": "New password does not meet length requirements"}, 400)
 
-                user.password = utils.encrypt_pass(providedPassword)
+                user.password = utils.encrypt_pass(providedPass)
 
             if cleanData.get("emailAddress"):
                 newEmail = cleanData.get("emailAddress")
 
                 if utils.email_account_exists(newEmail) and utils.get_account_by_email(newEmail).id != user.id:
+                    db.session.expire(user)
                     return response.json({"error": "Email address associated with another account"}, 400)
 
                 user.emailAddress = newEmail
@@ -58,20 +68,22 @@ class Account_Endpoints(HTTPMethodView):
                 user.firstName = cleanData.get("firstName")
 
             if cleanData.get("lastName"):
-                user.firstName = cleanData.get("lastName")
+                user.lastName = cleanData.get("lastName")
 
             if cleanData.get("phoneNumber"):
-                user.firstName = cleanData.get("phoneNumber")
+                user.phoneNumber = cleanData.get("phoneNumber")
 
             if cleanData.get("isValidated"):
-                user.firstName = cleanData.get("isValidated")
+                user.isValidated = cleanData.get("isValidated")
 
             db.session.commit()
-            return response.json({"success": "Account updated"}, 200)
+            res = user.serialize()
+            res["success"] = "Account updated"
+            return response.json(res, 200)
 
         except Exception as e:
             res = {"error": "Account update failed"}
-            if not request.app.config["IS_PROD"]:
+            if request.app.config["API_ENV"] != "PRODUCTION":
                 res["detailed"] = str(e)
             return response.json(res, 400)
 
@@ -84,7 +96,7 @@ class Account_Endpoints(HTTPMethodView):
 
         except Exception as e:
             res = {"error": "Account deletion failed"}
-            if not request.app.config["IS_PROD"]:
+            if request.app.config["API_ENV"] != "PRODUCTION":
                 res["detailed"] = str(e)
             return response.json(res, 400)
 
@@ -101,11 +113,17 @@ def signup(request):
         lastName = cleanData.get("lastName")
         phoneNumber = cleanData.get("phoneNumber")
 
+        if not emailAddress:
+            return response.json({"error": "No email address provided"}, 400)
+
+        if not password:
+            return response.json({"error": "No password provided"}, 400)
+
         if utils.email_account_exists(emailAddress):
             return response.json({"error": "An account with that email address already exists"}, 400)
 
         if len(password) < request.app.config["MIN_PASS_LENGTH"]:
-            return response.json({"error": "password does not meet required length requirements"}, 400)
+            return response.json({"error": "Password does not meet required length requirements"}, 400)
 
         user = User(firstName=firstName,
                     lastName=lastName,
@@ -120,7 +138,7 @@ def signup(request):
 
     except Exception as e:
         res = {"error": "Signup failed"}
-        if not request.app.config["IS_PROD"]:
+        if request.app.config["API_ENV"] != "PRODUCTION":
             res["detailed"] = str(e)
         return response.json(res, 400)
 
@@ -143,6 +161,6 @@ def login(request):
 
     except Exception as e:
         res = {"error": "login failed"}
-        if not request.app.config["IS_PROD"]:
+        if request.app.config["API_ENV"] != "PRODUCTION":
             res["detailed"] = str(e)
         return response.json(res, 400)

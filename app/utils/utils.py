@@ -35,7 +35,8 @@ def authorized(admin=False):
 def get_id_from_jwt(request):
     try:
         jwt_token = request.headers.get("authorization")
-        tokenData = jwt.decode(str(jwt_token), appConfig.JWT_SECRET, algorithms=[appConfig.JWT_ALGORITHM])
+        tokenData = jwt.decode(str(jwt_token), appConfig.JWT_SECRET, algorithms=[
+                               appConfig.JWT_ALGORITHM])
         return tokenData["userId"]
     except:
         return None
@@ -70,10 +71,16 @@ def format_body_params(body):
     if body.get("emailAddress"):
         newBody["emailAddress"] = body.get("emailAddress").lower()
 
+    if body.get("password"):
+        newBody["password"] = body.get("password")
+
     if body.get("phoneNumber"):
         newBody["phoneNumber"] = body.get("phoneNumber")
 
     if body.get("isValidated"):
         newBody["isValidated"] = bool(body.get("isValidated"))
+
+    if body.get("userRole"):
+        newBody["userRole"] = body.get("userRole").upper()
 
     return newBody
