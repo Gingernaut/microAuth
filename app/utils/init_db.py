@@ -1,4 +1,7 @@
 
+import sys
+sys.path.append('./app')
+
 from config import get_config
 from db.db_client import db
 from models.base import Base
@@ -11,10 +14,11 @@ appConfig = get_config()
 def init_db():
     try:
         print("Creating tables and default admin account \n")
-        try:
-            db.create_tables()
-        except:
-            pass
+
+        db.init_engine()
+        Base.metadata.drop_all(bind=db.engine)
+        db.create_tables()
+
         admin = User(emailAddress=appConfig.ADMIN_EMAIL,
                      password=encrypt_pass(appConfig.ADMIN_PASSWORD), userRole="ADMIN", isValidated=True)
 
