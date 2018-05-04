@@ -1,6 +1,6 @@
 
 import sys
-sys.path.append('./app')
+sys.path.append("./app")
 
 from config import get_config
 from db.db_client import db

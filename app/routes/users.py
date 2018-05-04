@@ -43,9 +43,12 @@ class Account_Endpoints(HTTPMethodView):
                 db.session.rollback()
                 return response.json({"error": "No valid data provided for update"}, 400)
 
-            if cleanData.get("userRole") and user.userRole != "ADMIN":
-                db.session.rollback()
-                return response.json({"error": "Unauthorized to update role"}, 401)
+            if cleanData.get("userRole"):
+                if user.userRole != "ADMIN":
+                    db.session.rollback()
+                    return response.json({"error": "Unauthorized to update role"}, 401)
+                
+                user.userRole = cleanData.get("userRole")
 
             if cleanData.get("password"):
                 providedPass = cleanData.get("password")
