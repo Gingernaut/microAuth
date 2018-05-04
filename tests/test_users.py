@@ -2,6 +2,17 @@ import ujson
 import pytest
 
 
+@pytest.fixture
+async def create_account_jwt(test_server):
+    payload = {
+        "emailAddress": "test@example.com",
+        "password": "123456"
+    }
+    res = await test_server.post("/signup", data=ujson.dumps(payload))
+    res_data = await res.json()
+    return res_data["jwt"]
+
+
 class TestSignup:
 
     async def test_valid_signup(self, test_server):
@@ -17,10 +28,10 @@ class TestSignup:
         assert res_data["emailAddress"] == "test@example.com"
         assert res_data["userRole"] == "USER"
 
-    async def test_short_pass(self, test_server):
+    async def test_short_pass(self, test_server, app_config):
         payload = {
             "emailAddress": "test@example.com",
-            "password": "12345"
+            "password": "x" * (app_config.MIN_PASS_LENGTH - 1)
         }
 
         res = await test_server.post("/signup", data=ujson.dumps(payload))
@@ -60,17 +71,55 @@ class TestSignup:
         assert res2_data["error"] == "An account with that email address already exists"
 
 
-class TestAccount:
+class TestLogin:
+    async def test_login(self, test_server, create_account_jwt):
+        # creates a "test@example.com" account
+        unused_jwt = await create_account_jwt
 
-    @pytest.fixture
-    async def create_account_jwt(self, test_server):
         payload = {
             "emailAddress": "test@example.com",
             "password": "123456"
         }
-        res = await test_server.post("/signup", data=ujson.dumps(payload))
+
+        res = await test_server.post("/login", data=ujson.dumps(payload))
         res_data = await res.json()
-        return res_data["jwt"]
+
+        assert res.status == 200
+        assert res_data["emailAddress"] == "test@example.com"
+        assert "jwt" in res_data
+
+    async def test_invalid_password(self, test_server, create_account_jwt):
+        # creates a "test@example.com" account
+        unused_jwt = await create_account_jwt
+
+        payload = {
+            "emailAddress": "test@example.com",
+            "password": "incorrect_password"
+        }
+
+        res = await test_server.post("/login", data=ujson.dumps(payload))
+        res_data = await res.json()
+
+        assert res.status == 400
+        assert res_data["error"] == "Invalid credentials"
+
+    async def test_invalid_email(self, test_server, create_account_jwt):
+        # creates a "test@example.com" account
+        unused_jwt = await create_account_jwt
+
+        payload = {
+            "emailAddress": "not_an_account@example.com",
+            "password": "123456"
+        }
+
+        res = await test_server.post("/login", data=ujson.dumps(payload))
+        res_data = await res.json()
+
+        assert res.status == 400
+        assert res_data["error"] == "No account for provided email address"
+
+
+class TestAccount:
 
     async def test_get_account_without_auth(self, test_server):
         res = await test_server.get("/account")
@@ -85,7 +134,6 @@ class TestAccount:
         assert "jwt" not in res_data
         assert res_data["emailAddress"] == "test@example.com"
         assert res_data["userRole"] == "USER"
-        assert res_data["firstName"] == None
         assert res_data["isValidated"] == False
 
     async def test_valid_update(self, test_server, create_account_jwt):
@@ -102,15 +150,16 @@ class TestAccount:
         assert res_data["success"] == "Account updated"
         assert res_data["firstName"] == "Jason"
         assert res_data["lastName"] == "Bourne"
+        assert res_data["emailAddress"] == "test@example.com"
 
     async def test_update_own_role(self, test_server, create_account_jwt):
         jwt_token = await create_account_jwt
-        payload = { "userRole": "ADMIN"}
+        payload = {"userRole": "ADMIN"}
         res = await test_server.put("/account", headers=[("Authorization", jwt_token)], data=ujson.dumps(payload))
         res_data = await res.json()
 
         assert res.status == 401
-        assert res_data["error"] == "Cannot update role"
+        assert res_data["error"] == "Unauthorized to update role"
 
     async def test_update_password(self, test_server, create_account_jwt):
         jwt_token = await create_account_jwt
@@ -132,6 +181,17 @@ class TestAccount:
         assert login_res.status == 200
         assert login_res_data["emailAddress"] == res_data["emailAddress"]
 
+    async def test_short_pass_update(self, test_server, create_account_jwt, app_config):
+        jwt_token = await create_account_jwt
+        payload = {
+            "password": "x" * (app_config.MIN_PASS_LENGTH - 1)
+        }
+        res = await test_server.put("/account", headers=[("Authorization", jwt_token)], data=ujson.dumps(payload))
+        res_data = await res.json()
+
+        assert res.status == 400
+        assert res_data["error"] == "New password does not meet length requirements"
+
     async def test_update_email_to_existing_account(self, test_server, create_account_jwt):
         # guarantees there is already a "test@example.com" associated account.
         unused_jwt = await create_account_jwt
@@ -150,17 +210,6 @@ class TestAccount:
 
         assert update_res.status == 400
         assert update_res_data["error"] == "Email address associated with another account"
-
-    async def test_short_pass_update(self, test_server, create_account_jwt):
-        jwt_token = await create_account_jwt
-        payload = {
-            "password": "1234"
-        }
-        res = await test_server.put("/account", headers=[("Authorization", jwt_token)], data=ujson.dumps(payload))
-        res_data = await res.json()
-
-        assert res.status == 400
-        assert res_data["error"] == "New password does not meet length requirements"
 
     async def test_access_all_accounts(self, test_server, create_account_jwt):
         jwt_token = await create_account_jwt

@@ -24,7 +24,7 @@ class User(Base):
     UUID = Column(String(36), nullable=False, default=uuid.uuid4())
     phoneNumber = Column(String(14), nullable=True, default=None)
     isValidated = Column(Boolean, nullable=False, default=False)
-    userRole = Column(String(10), nullable=False, default="USER")
+    userRole = Column(String(14), nullable=False, default="USER")
 
     def __init__(self, emailAddress, password, firstName=None, lastName=None, phoneNumber=None, userRole="USER", isValidated=False):
         self.firstName = firstName
