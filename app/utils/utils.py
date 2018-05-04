@@ -34,8 +34,8 @@ def authorized(admin=False):
 
 def get_id_from_jwt(request):
     try:
-        jwt_token = request.headers.get("authorization")
-        tokenData = jwt.decode(str(jwt_token), appConfig.JWT_SECRET, algorithms=[
+        jwtToken = request.headers.get("authorization")
+        tokenData = jwt.decode(str(jwtToken), appConfig.JWT_SECRET, algorithms=[
                                appConfig.JWT_ALGORITHM])
         return tokenData["userId"]
     except:

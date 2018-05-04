@@ -1,6 +1,6 @@
   version: '3.4'
   services:
-    db:
+    database:
       image: postgres:10.3
       ports:
       - "5432:5432"
@@ -12,4 +12,4 @@
       ports:
         - "5000:5000"
       depends_on:
-        - db
+        - database

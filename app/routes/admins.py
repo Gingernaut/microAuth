@@ -13,7 +13,7 @@ admin_bp = Blueprint("admin_blueprint")
 
 @admin_bp.route("/accounts", methods=["GET"])
 @utils.authorized(admin=True)
-def get_users(request):
+async def get_users(request):
     users = db.session.query(User).all()
     return response.json({
         "users": [u.serialize() for u in users]
@@ -76,16 +76,18 @@ class Admin_Endpoints(HTTPMethodView):
                 user.firstName = cleanData.get("firstName")
 
             if cleanData.get("lastName"):
-                user.firstName = cleanData.get("lastName")
+                user.lastName = cleanData.get("lastName")
 
             if cleanData.get("phoneNumber"):
-                user.firstName = cleanData.get("phoneNumber")
+                user.phoneNumber = cleanData.get("phoneNumber")
 
             if cleanData.get("isValidated"):
-                user.firstName = cleanData.get("isValidated")
+                user.isValidated = cleanData.get("isValidated")
 
             db.session.commit()
-            return response.json({"success": "Account updated"}, 200)
+            res = user.serialize()
+            res["success"] = "Account updated"
+            return response.json(res, 200)
 
         except Exception as e:
             res = {"error": "Account update failed"}
@@ -97,7 +99,7 @@ class Admin_Endpoints(HTTPMethodView):
         try:
             db.session.query(User).filter_by(id=id).delete()
             db.session.commit()
-            return "Successfully deleted account"
+            return response.json({"success": "Account deleted"}, 200)
 
         except Exception as e:
             res = {"error": "Account deletion failed"}
