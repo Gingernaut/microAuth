@@ -3,8 +3,6 @@ from sqlalchemy import create_engine, orm
 from config import get_config
 from models.base import Base
 
-appConfig = get_config()
-
 # https://github.com/fantix/gino ?
 
 class SQLAlchemy:
@@ -25,24 +23,26 @@ class SQLAlchemy:
         self.session.close()
         self.session.remove()
 
-    def get_conn_str(self):
+    def get_conn_str(self, config):
 
-        dbName = appConfig.DB_NAME
-        dbUrl = appConfig.DB_URL
-        dbUser = appConfig.DB_USERNAME
-        dbPass = appConfig.DB_PASSWORD
+        dbName = config.DB_NAME
+        dbUrl  = config.DB_URL
+        dbUser = config.DB_USERNAME
+        dbPass = config.DB_PASSWORD
 
         return f"postgresql://{dbUser}:{dbPass}@{dbUrl}/{dbName}"
     
     def create_tables(self):
-        self.init_engine()
+        if not self.engine:
+            self.init_engine()
         self.connect()
         Base.metadata.create_all(bind=self.engine)
         self.close()
 
 
-    def init_engine(self):
-        self._conn_str = self.get_conn_str()
+    def init_engine(self, connection_env=None):
+        appConfig = get_config(connection_env)
+        self._conn_str = self.get_conn_str(appConfig)
         self.engine = create_engine(self._conn_str)
 
 

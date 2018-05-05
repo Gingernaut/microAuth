@@ -11,7 +11,7 @@ from models.users import User
 appConfig = get_config()
 
 
-def authorized(admin=False):
+def authorized(requireAdmin=False):
     def decorator(f):
         @wraps(f)
         async def decorated_function(request, *args, **kwargs):
@@ -20,7 +20,7 @@ def authorized(admin=False):
             if not userId:
                 return response.json({"error": "Not Authorized"}, 401)
 
-            if admin == True:
+            if requireAdmin == True:
                 user = get_account_by_id(userId)
                 if not user or user.userRole != "ADMIN":
                     return response.json({"error": "Not Authorized"}, 401)

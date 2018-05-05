@@ -16,7 +16,6 @@ class Account_Endpoints(HTTPMethodView):
     decorators = [utils.authorized()]
 
     async def get(self, request):
-
         try:
             userId = utils.get_id_from_jwt(request)
             user = utils.get_account_by_id(userId)
@@ -28,7 +27,6 @@ class Account_Endpoints(HTTPMethodView):
             return response.json(res, 400)
 
     async def put(self, request):
-
         try:
             userId = utils.get_id_from_jwt(request)
             user = utils.get_account_by_id(userId)
@@ -47,7 +45,7 @@ class Account_Endpoints(HTTPMethodView):
                 if user.userRole != "ADMIN":
                     db.session.rollback()
                     return response.json({"error": "Unauthorized to update role"}, 401)
-                
+
                 user.userRole = cleanData.get("userRole")
 
             if cleanData.get("password"):
@@ -106,7 +104,6 @@ class Account_Endpoints(HTTPMethodView):
 
 @user_bp.route("/signup", methods=["POST"])
 def signup(request):
-
     try:
         cleanData = utils.format_body_params(request.json)
 
@@ -148,7 +145,6 @@ def signup(request):
 
 @user_bp.route("/login", methods=["POST"])
 def login(request):
-
     try:
         emailAddress = request.json.get("emailAddress")
         password = request.json.get("password")

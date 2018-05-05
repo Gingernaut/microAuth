@@ -12,7 +12,7 @@ admin_bp = Blueprint("admin_blueprint")
 
 
 @admin_bp.route("/accounts", methods=["GET"])
-@utils.authorized(admin=True)
+@utils.authorized(requireAdmin=True)
 async def get_users(request):
     users = db.session.query(User).all()
     return response.json({
@@ -21,7 +21,7 @@ async def get_users(request):
 
 
 class Admin_Endpoints(HTTPMethodView):
-    decorators = [utils.authorized(admin=True)]
+    decorators = [utils.authorized(requireAdmin=True)]
 
     async def get(self, request, id):
         try:
@@ -38,7 +38,6 @@ class Admin_Endpoints(HTTPMethodView):
             return response.json(res, 400)
 
     async def put(self, request, id):
-
         try:
             user = utils.get_account_by_id(id)
 

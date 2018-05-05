@@ -38,7 +38,7 @@ DELETE /accounts/:id
 1. After cloning, create a virtual environment with `python3 -m venv .venv/`. Activate it with `source .venv/bin/activate`.
 2. Install dependencies with `pip3 install -r requirements.txt`
 3. Rename `default.env` to `.env`.
-4. Run `docker-compose up -d database` to run a PostgreSQL instance in Docker.
+4. Run `docker-compose up -d database` to run a PostgreSQL instance for testing and development.
 5. Run tests with `pytest`.
 6. Run the application with `python3 app/main.py`.
 
@@ -52,19 +52,14 @@ DELETE /accounts/:id
 
 ## Configuration
 
-
+Settings can be changed in `app/config.py` on a per-environment basis if needed.
 
 ### Sendgrid
 
-If you want to enable signup verification and password resets for your users, sign up for a [Sendgrid Account](https://sendgrid.com) and add your API Keys to `.env`. In Sendgrid create two template emails: one for the password resets and one for account verification. Copy the HTML from `email-templates` into Sengrid and add each template ID to `.env`.
-
-## Javascript Usage
-
-Want to use this application from a javascript project? Here's some starter code that should get you 95% there. _(axios is a dependency)_.
-
-```javascript
-
-```
+If you want to enable signup verification and password resets for your users, take the following steps:
+1. Sign up for a [Sendgrid Account](https://sendgrid.com) and add your API Keys to `.env`.
+2. In Sendgrid create two template emails: one for the password resets and one for account verification.
+3. Copy the HTML from `email-templates` into Sengrid and add each template ID to `.env`.
 
 
 ## Other
