@@ -1,8 +1,8 @@
 FROM python:3.6.5 AS base
 
 WORKDIR /app
-COPY requirements.txt /requirements.txt
-RUN pip install --no-cache-dir -r /requirements.txt
+COPY requirements-app.txt /requirements-app.txt
+RUN pip install --no-cache-dir -r /requirements-app.txt
 
 COPY ./app /app
 COPY .env /app

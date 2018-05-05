@@ -27,17 +27,20 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     """Development configuration"""
+    API_ENV = "DEVELOPMENT"
     JWT_SECRET = "abcdefghijklmnopqrstuvwxyz12345678901234567890123456"
 
 
 class TestingConfig(BaseConfig):
     """Testing configuration"""
+    API_ENV = "TESTING"
     JWT_SECRET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     TOKEN_TTL_HOURS = 1
 
 
 class ProductionConfig(BaseConfig):
     """Production configuration"""
+    API_ENV = "PRODUCTION"
     JWT_SECRET = os.getenv("JWT_SECRET")
     DB_URL = os.getenv("DB_URL")
     DB_NAME = os.getenv("DB_NAME")

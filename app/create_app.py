@@ -12,7 +12,7 @@ def create_app(env=None):
     app = Sanic(__name__)
     app.config.from_object(get_config(env))
 
-    db.init_engine()
+    db.init_engine(env)
 
     @app.listener("before_server_start")
     async def setup_connection(app, loop):
@@ -34,6 +34,10 @@ def create_app(env=None):
         response.headers["Access-Control-Allow-Methods"] = "*"
 
     # Routes
+    @app.route("/")
+    async def index(request):
+        return response.json({"message": "/ reached"}, 200)
+
     app.blueprint(user_bp)
     app.blueprint(admin_bp)
     app.add_route(Account_Endpoints.as_view(), "/account")
