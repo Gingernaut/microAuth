@@ -1,5 +1,6 @@
 
 import sys
+
 sys.path.append("./app")
 
 import ujson
@@ -9,6 +10,7 @@ from config import get_config
 appConfig = get_config()
 
 ### Load testing. https://locust.io/
+
 
 class WebsiteTasks(TaskSet):
 

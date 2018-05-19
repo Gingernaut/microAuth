@@ -1,5 +1,6 @@
 import sys
 import pytest
+
 sys.path.append("./app")
 
 from config import get_config

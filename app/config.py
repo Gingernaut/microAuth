@@ -18,6 +18,7 @@ class BaseConfig:
     ADMIN_EMAIL = os.getenv("TEST_ADMIN_EMAIL")
     ADMIN_PASSWORD = os.getenv("TEST_ADMIN_PASSWORD")
     TOKEN_TTL_HOURS = 158
+    RESET_HOURS = 3
     MIN_PASS_LENGTH = 6
     JWT_ALGORITHM = "HS256"
     HOST = "0.0.0.0"
@@ -55,7 +56,7 @@ def get_config(env=None):
     ENV_MAPPING = {
         "DEVELOPMENT": DevelopmentConfig,
         "PRODUCTION": ProductionConfig,
-        "TESTING": TestingConfig
+        "TESTING": TestingConfig,
     }
 
     if not env:

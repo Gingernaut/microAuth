@@ -4,10 +4,7 @@ import pytest
 
 @pytest.fixture
 async def create_account_jwt(test_server):
-    payload = {
-        "emailAddress": "test@example.com",
-        "password": "123456"
-    }
+    payload = {"emailAddress": "test@example.com", "password": "123456"}
     res = await test_server.post("/signup", data=ujson.dumps(payload))
     resData = await res.json()
     return resData["jwt"]
@@ -16,10 +13,7 @@ async def create_account_jwt(test_server):
 class TestSignup:
 
     async def test_valid_signup(self, test_server):
-        payload = {
-            "emailAddress": "test@example.com",
-            "password": "123456"
-        }
+        payload = {"emailAddress": "test@example.com", "password": "123456"}
         res = await test_server.post("/signup", data=ujson.dumps(payload))
         resData = await res.json()
 
@@ -31,7 +25,7 @@ class TestSignup:
     async def test_short_pass(self, test_server, app_config):
         payload = {
             "emailAddress": "test@example.com",
-            "password": "x" * (app_config.MIN_PASS_LENGTH - 1)
+            "password": "x" * (app_config.MIN_PASS_LENGTH - 1),
         }
 
         res = await test_server.post("/signup", data=ujson.dumps(payload))
@@ -57,10 +51,7 @@ class TestSignup:
         assert resData["error"] == "No email address provided"
 
     async def test_double_signup(self, test_server):
-        payload = {
-            "emailAddress": "test@example.com",
-            "password": "123456"
-        }
+        payload = {"emailAddress": "test@example.com", "password": "123456"}
         res = await test_server.post("/signup", data=ujson.dumps(payload))
         assert res.status == 201
 
@@ -72,14 +63,12 @@ class TestSignup:
 
 
 class TestLogin:
+
     async def test_login(self, test_server, create_account_jwt):
         # creates a "test@example.com" account
         unusedJwt = await create_account_jwt
 
-        payload = {
-            "emailAddress": "test@example.com",
-            "password": "123456"
-        }
+        payload = {"emailAddress": "test@example.com", "password": "123456"}
 
         res = await test_server.post("/login", data=ujson.dumps(payload))
         resData = await res.json()
@@ -92,10 +81,7 @@ class TestLogin:
         # creates a "test@example.com" account
         unusedJwt = await create_account_jwt
 
-        payload = {
-            "emailAddress": "test@example.com",
-            "password": "incorrect_password"
-        }
+        payload = {"emailAddress": "test@example.com", "password": "incorrect_password"}
 
         res = await test_server.post("/login", data=ujson.dumps(payload))
         resData = await res.json()
@@ -107,10 +93,7 @@ class TestLogin:
         # creates a "test@example.com" account
         unusedJwt = await create_account_jwt
 
-        payload = {
-            "emailAddress": "not_an_account@example.com",
-            "password": "123456"
-        }
+        payload = {"emailAddress": "not_an_account@example.com", "password": "123456"}
 
         res = await test_server.post("/login", data=ujson.dumps(payload))
         resData = await res.json()
@@ -138,12 +121,10 @@ class TestAccount:
 
     async def test_valid_update(self, test_server, create_account_jwt):
         jwtToken = await create_account_jwt
-        payload = {
-            "firstName": "jason",
-            "lastName": "bourne",
-            "emailAddress": ""
-        }
-        res = await test_server.put("/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(payload))
+        payload = {"firstName": "jason", "lastName": "bourne", "emailAddress": ""}
+        res = await test_server.put(
+            "/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(payload)
+        )
         resData = await res.json()
 
         assert res.status == 200
@@ -155,7 +136,9 @@ class TestAccount:
     async def test_update_own_role(self, test_server, create_account_jwt):
         jwtToken = await create_account_jwt
         payload = {"userRole": "ADMIN"}
-        res = await test_server.put("/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(payload))
+        res = await test_server.put(
+            "/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(payload)
+        )
         resData = await res.json()
 
         assert res.status == 401
@@ -164,7 +147,9 @@ class TestAccount:
     async def test_update_password(self, test_server, create_account_jwt):
         jwtToken = await create_account_jwt
         payload = {"password": "super_much_secure"}
-        res = await test_server.put("/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(payload))
+        res = await test_server.put(
+            "/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(payload)
+        )
         resData = await res.json()
 
         assert res.status == 200
@@ -172,7 +157,7 @@ class TestAccount:
 
         login_data = {
             "emailAddress": resData["emailAddress"],
-            "password": "super_much_secure"
+            "password": "super_much_secure",
         }
 
         login_res = await test_server.post("/login", data=ujson.dumps(login_data))
@@ -183,29 +168,32 @@ class TestAccount:
 
     async def test_short_pass_update(self, test_server, create_account_jwt, app_config):
         jwtToken = await create_account_jwt
-        payload = {
-            "password": "x" * (app_config.MIN_PASS_LENGTH - 1)
-        }
-        res = await test_server.put("/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(payload))
+        payload = {"password": "x" * (app_config.MIN_PASS_LENGTH - 1)}
+        res = await test_server.put(
+            "/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(payload)
+        )
         resData = await res.json()
 
         assert res.status == 400
         assert resData["error"] == "New password does not meet length requirements"
 
-    async def test_update_email_to_existing_account(self, test_server, create_account_jwt):
+    async def test_update_email_to_existing_account(
+        self, test_server, create_account_jwt
+    ):
         # guarantees there is already a "test@example.com" associated account.
         unusedJwt = await create_account_jwt
 
-        payload = {
-            "emailAddress": "guy_fieri@flavortown.com",
-            "password": "123456"
-        }
+        payload = {"emailAddress": "guy_fieri@flavortown.com", "password": "123456"}
         res = await test_server.post("/signup", data=ujson.dumps(payload))
         resData = await res.json()
 
         jwtToken = resData["jwt"]
         updatePayload = {"emailAddress": "test@example.com"}
-        updateRes = await test_server.put("/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(updatePayload))
+        updateRes = await test_server.put(
+            "/account",
+            headers=[("Authorization", jwtToken)],
+            data=ujson.dumps(updatePayload),
+        )
         updateResData = await updateRes.json()
 
         assert updateRes.status == 400
@@ -219,13 +207,17 @@ class TestAccount:
 
     async def test_access_specific_account(self, test_server, create_account_jwt):
         jwtToken = await create_account_jwt
-        res = await test_server.get("/accounts/1", headers=[("Authorization", jwtToken)])
+        res = await test_server.get(
+            "/accounts/1", headers=[("Authorization", jwtToken)]
+        )
 
         assert res.status == 401
 
     async def test_delete_account(self, test_server, create_account_jwt):
         jwtToken = await create_account_jwt
-        res = await test_server.delete("/account", headers=[("Authorization", jwtToken)])
+        res = await test_server.delete(
+            "/account", headers=[("Authorization", jwtToken)]
+        )
         resData = await res.json()
 
         assert res.status == 200

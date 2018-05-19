@@ -15,9 +15,7 @@ admin_bp = Blueprint("admin_blueprint")
 @utils.authorized(requireAdmin=True)
 async def get_users(request):
     users = db.session.query(User).all()
-    return response.json({
-        "users": [u.serialize() for u in users]
-    }, 200)
+    return response.json({"users": [u.serialize() for u in users]}, 200)
 
 
 class Admin_Endpoints(HTTPMethodView):
@@ -49,13 +47,17 @@ class Admin_Endpoints(HTTPMethodView):
 
             if not cleanData:
                 db.session.rollback()
-                return response.json({"error": "No valid data provided for update"}, 400)
+                return response.json(
+                    {"error": "No valid data provided for update"}, 400
+                )
 
             if cleanData.get("password"):
                 providedPass = cleanData.get("password")
                 if len(providedPass) < request.app.config["MIN_PASS_LENGTH"]:
                     db.session.rollback()
-                    return response.json({"error": "New password does not meet length requirements"}, 400)
+                    return response.json(
+                        {"error": "New password does not meet length requirements"}, 400
+                    )
 
                 user.password = utils.encrypt_pass(providedPass)
 
@@ -65,9 +67,14 @@ class Admin_Endpoints(HTTPMethodView):
             if cleanData.get("emailAddress"):
                 newEmail = cleanData.get("emailAddress")
 
-                if utils.email_account_exists(newEmail) and utils.get_account_by_email(newEmail).id != user.id:
+                if (
+                    utils.email_account_exists(newEmail)
+                    and utils.get_account_by_email(newEmail).id != user.id
+                ):
                     db.session.rollback()
-                    return response.json({"error": "Email address associated with another account"}, 400)
+                    return response.json(
+                        {"error": "Email address associated with another account"}, 400
+                    )
 
                 user.emailAddress = newEmail
 
