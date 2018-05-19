@@ -26,7 +26,16 @@ class User(Base):
     isValidated = Column(Boolean, nullable=False, default=False)
     userRole = Column(String(14), nullable=False, default="USER")
 
-    def __init__(self, emailAddress, password, firstName=None, lastName=None, phoneNumber=None, userRole="USER", isValidated=False):
+    def __init__(
+        self,
+        emailAddress,
+        password,
+        firstName=None,
+        lastName=None,
+        phoneNumber=None,
+        userRole="USER",
+        isValidated=False,
+    ):
         self.firstName = firstName
         self.lastName = lastName
         self.emailAddress = emailAddress
@@ -46,11 +55,11 @@ class User(Base):
             "UUID": self.UUID,
             "phoneNumber": self.phoneNumber,
             "isValidated": self.isValidated,
-            "userRole": self.userRole
+            "userRole": self.userRole,
         }
 
         if jwt:
-            info['jwt'] = self.gen_token()
+            info["jwt"] = self.gen_token()
 
         return info
 
@@ -60,9 +69,13 @@ class User(Base):
     def gen_token(self, expire_hours=appConfig.TOKEN_TTL_HOURS):
         payload = {
             "userId": self.id,
-            "exp": pendulum.utcnow().add(hours=int(expire_hours))
+            "exp": pendulum.utcnow().add(hours=int(expire_hours)),
         }
-        return str(jwt.encode(payload, appConfig.JWT_SECRET, appConfig.JWT_ALGORITHM).decode("utf-8"))
+        return str(
+            jwt.encode(payload, appConfig.JWT_SECRET, appConfig.JWT_ALGORITHM).decode(
+                "utf-8"
+            )
+        )
 
     def pass_matches(self, postPass):
         return argon2.verify(postPass, self.password)

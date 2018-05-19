@@ -34,8 +34,9 @@ DELETE /accounts/:id
 ## Get up and running in minutes
 
 #### Running locally
+_requires Python3.6+, Docker, and Docker-compose_
 
-1. After cloning, create a virtual environment with `python3 -m venv .venv/`. Activate it with `source .venv/bin/activate`.
+1. Create a virtual environment with `python3 -m venv .venv/`. Activate it with `source .venv/bin/activate`.
 2. Install dependencies with `pip3 install -r requirements.txt`
 3. Rename `default.env` to `.env`.
 4. Run `docker-compose up -d database` to run a PostgreSQL instance for testing and development.
@@ -57,6 +58,7 @@ Settings can be changed in `app/config.py` on a per-environment basis if needed.
 ### Sendgrid
 
 If you want to enable signup verification and password resets for your users, take the following steps:
+
 1. Sign up for a [Sendgrid Account](https://sendgrid.com) and add your API Keys to `.env`.
 2. In Sendgrid create two template emails: one for the password resets and one for account verification.
 3. Copy the HTML from `email-templates` into Sengrid and add each template ID to `.env`.
@@ -64,8 +66,6 @@ If you want to enable signup verification and password resets for your users, ta
 
 ## Other
 
-[Credit for the email HTML template](https://github.com/leemunroe/responsive-html-email-template)
- 
 ## Contributing 
 
 Contributions are welcome and appreciated. Potential improvements include:

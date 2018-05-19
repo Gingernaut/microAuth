@@ -20,6 +20,7 @@ class Account_Endpoints(HTTPMethodView):
             userId = utils.get_id_from_jwt(request)
             user = utils.get_account_by_id(userId)
             return response.json(user.serialize(), 200)
+
         except Exception as e:
             res = {"error": "User not found"}
             if request.app.config["API_ENV"] != "PRODUCTION":
@@ -39,7 +40,9 @@ class Account_Endpoints(HTTPMethodView):
 
             if not cleanData:
                 db.session.rollback()
-                return response.json({"error": "No valid data provided for update"}, 400)
+                return response.json(
+                    {"error": "No valid data provided for update"}, 400
+                )
 
             if cleanData.get("userRole"):
                 if user.userRole != "ADMIN":
@@ -52,16 +55,23 @@ class Account_Endpoints(HTTPMethodView):
                 providedPass = cleanData.get("password")
                 if len(providedPass) < request.app.config["MIN_PASS_LENGTH"]:
                     db.session.rollback()
-                    return response.json({"error": "New password does not meet length requirements"}, 400)
+                    return response.json(
+                        {"error": "New password does not meet length requirements"}, 400
+                    )
 
                 user.password = utils.encrypt_pass(providedPass)
 
             if cleanData.get("emailAddress"):
                 newEmail = cleanData.get("emailAddress")
 
-                if utils.email_account_exists(newEmail) and utils.get_account_by_email(newEmail).id != user.id:
+                if (
+                    utils.email_account_exists(newEmail)
+                    and utils.get_account_by_email(newEmail).id != user.id
+                ):
                     db.session.rollback()
-                    return response.json({"error": "Email address associated with another account"}, 400)
+                    return response.json(
+                        {"error": "Email address associated with another account"}, 400
+                    )
 
                 user.emailAddress = newEmail
 
@@ -120,16 +130,22 @@ def signup(request):
             return response.json({"error": "No password provided"}, 400)
 
         if utils.email_account_exists(emailAddress):
-            return response.json({"error": "An account with that email address already exists"}, 400)
+            return response.json(
+                {"error": "An account with that email address already exists"}, 400
+            )
 
         if len(password) < request.app.config["MIN_PASS_LENGTH"]:
-            return response.json({"error": "Password does not meet required length requirements"}, 400)
+            return response.json(
+                {"error": "Password does not meet required length requirements"}, 400
+            )
 
-        user = User(firstName=firstName,
-                    lastName=lastName,
-                    emailAddress=emailAddress,
-                    password=utils.encrypt_pass(password),
-                    phoneNumber=phoneNumber)
+        user = User(
+            firstName=firstName,
+            lastName=lastName,
+            emailAddress=emailAddress,
+            password=utils.encrypt_pass(password),
+            phoneNumber=phoneNumber,
+        )
 
         db.session.add(user)
         db.session.commit()
@@ -151,7 +167,9 @@ def login(request):
         user = utils.get_account_by_email(emailAddress)
 
         if not user:
-            return response.json({"error": "No account for provided email address"}, 400)
+            return response.json(
+                {"error": "No account for provided email address"}, 400
+            )
 
         if not user.pass_matches(password):
             return response.json({"error": "Invalid credentials"}, 400)

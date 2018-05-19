@@ -12,7 +12,9 @@ appConfig = get_config()
 
 
 def authorized(requireAdmin=False):
+
     def decorator(f):
+
         @wraps(f)
         async def decorated_function(request, *args, **kwargs):
             userId = get_id_from_jwt(request)
@@ -35,8 +37,9 @@ def authorized(requireAdmin=False):
 def get_id_from_jwt(request):
     try:
         jwtToken = request.headers.get("authorization")
-        tokenData = jwt.decode(str(jwtToken), appConfig.JWT_SECRET, algorithms=[
-                               appConfig.JWT_ALGORITHM])
+        tokenData = jwt.decode(
+            str(jwtToken), appConfig.JWT_SECRET, algorithms=[appConfig.JWT_ALGORITHM]
+        )
         return tokenData["userId"]
     except:
         return None

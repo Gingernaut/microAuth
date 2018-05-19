@@ -1,5 +1,6 @@
 
-import sys
+import sys, time
+
 sys.path.append("./app")
 
 from config import get_config
@@ -8,24 +9,40 @@ from models.base import Base
 from models.users import User
 from passlib.hash import argon2
 
-def init_db(env=None):
-    try:
-        print(">Creating tables and default admin account. \n")
 
+def init_db(env=None):
+    print("\n")
+
+    try:
         appConfig = get_config(env)
+
+        if appConfig.API_ENV == "PRODUCTION":
+            for i in range(5, -1, -1):
+                print(
+                    f">Running initalization against PRODUCTION database in {i} seconds...",
+                    end="\r",
+                )
+                time.sleep(1)
+            print("\n")
+
+        print(">Creating tables and default admin account. \n")
         db.init_engine(env)
         Base.metadata.drop_all(bind=db.engine)
         db.create_tables()
 
-        admin = User(emailAddress=appConfig.ADMIN_EMAIL,
-                     password=argon2.hash(appConfig.ADMIN_PASSWORD), userRole="ADMIN", isValidated=True)
+        admin = User(
+            emailAddress=appConfig.ADMIN_EMAIL,
+            password=argon2.hash(appConfig.ADMIN_PASSWORD),
+            userRole="ADMIN",
+            isValidated=True,
+        )
 
         db.session.add(admin)
         db.session.commit()
         db.close()
 
         print("---------")
-        print("Database succesfully initialized")
+        print(">Database succesfully initialized")
         print("---------")
 
     except Exception as e:

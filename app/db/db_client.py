@@ -5,7 +5,9 @@ from models.base import Base
 
 # https://github.com/fantix/gino ?
 
+
 class SQLAlchemy:
+
     def __init__(self, autocommit=False):
         self.engine = None
         self.session = None
@@ -13,8 +15,12 @@ class SQLAlchemy:
         self._autocommit = autocommit
 
     def connect(self):
-        sm = orm.sessionmaker(bind=self.engine, autoflush=True,
-                              autocommit=self._autocommit, expire_on_commit=True)
+        sm = orm.sessionmaker(
+            bind=self.engine,
+            autoflush=True,
+            autocommit=self._autocommit,
+            expire_on_commit=True,
+        )
 
         self.session = orm.scoped_session(sm)
 
@@ -26,19 +32,16 @@ class SQLAlchemy:
     def get_conn_str(self, config):
 
         dbName = config.DB_NAME
-        dbUrl  = config.DB_URL
+        dbUrl = config.DB_URL
         dbUser = config.DB_USERNAME
         dbPass = config.DB_PASSWORD
 
         return f"postgresql://{dbUser}:{dbPass}@{dbUrl}/{dbName}"
-    
+
     def create_tables(self):
-        if not self.engine:
-            self.init_engine()
         self.connect()
         Base.metadata.create_all(bind=self.engine)
         self.close()
-
 
     def init_engine(self, connection_env=None):
         appConfig = get_config(connection_env)
