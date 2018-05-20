@@ -6,6 +6,7 @@ from models.base import Base
 from models.users import User
 from routes.admins import Admin_Endpoints, admin_bp
 from routes.users import Account_Endpoints, user_bp
+from routes.email import email_bp
 
 
 def create_app(env=None):
@@ -40,6 +41,7 @@ def create_app(env=None):
 
     app.blueprint(user_bp)
     app.blueprint(admin_bp)
+    app.blueprint(email_bp)
     app.add_route(Account_Endpoints.as_view(), "/account")
     app.add_route(Admin_Endpoints.as_view(), "/accounts/<id>")
 

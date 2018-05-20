@@ -3,10 +3,10 @@ import pendulum
 from sanic import Blueprint, response
 from sanic.views import HTTPMethodView
 
-from utils import utils
 from config import get_config
 from db.db_client import db
 from models.users import User
+from utils import utils
 
 admin_bp = Blueprint("admin_blueprint")
 
@@ -30,10 +30,7 @@ class Admin_Endpoints(HTTPMethodView):
             return response.json(user.serialize(), 200)
 
         except Exception as e:
-            res = {"error": "User not found"}
-            if request.app.config["API_ENV"] != "PRODUCTION":
-                res["detailed"] = str(e)
-            return response.json(res, 400)
+            return utils.exeption_handler(e, "User not found", 400)
 
     async def put(self, request, id):
         try:
@@ -42,7 +39,7 @@ class Admin_Endpoints(HTTPMethodView):
             if not user:
                 return response.json({"error": "User not found"}, 404)
 
-            user.modifiedDate = pendulum.utcnow()
+            user.modifiedTime = pendulum.utcnow()
             cleanData = utils.format_body_params(request.json)
 
             if not cleanData:
@@ -96,10 +93,7 @@ class Admin_Endpoints(HTTPMethodView):
             return response.json(res, 200)
 
         except Exception as e:
-            res = {"error": "Account update failed"}
-            if request.app.config["API_ENV"] != "PRODUCTION":
-                res["detailed"] = str(e)
-            return response.json(res, 400)
+            return utils.exeption_handler(e, "Account update failed", 400)
 
     async def delete(self, request, id):
         try:
@@ -108,7 +102,4 @@ class Admin_Endpoints(HTTPMethodView):
             return response.json({"success": "Account deleted"}, 200)
 
         except Exception as e:
-            res = {"error": "Account deletion failed"}
-            if request.app.config["API_ENV"] != "PRODUCTION":
-                res["detailed"] = str(e)
-            return response.json(res, 400)
+            return utils.exeption_handler(e, "Account deletion failed", 400)

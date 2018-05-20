@@ -1,13 +1,15 @@
 
-import sys, time
+import sys
+import time
 
 sys.path.append("./app")
+
+from passlib.hash import argon2
 
 from config import get_config
 from db.db_client import db
 from models.base import Base
 from models.users import User
-from passlib.hash import argon2
 
 
 def init_db(env=None):

@@ -13,14 +13,14 @@ appConfig = get_config()
 
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "User"
     id = Column(BigInteger, primary_key=True)
     firstName = Column(String(50), nullable=True, default=None)
     lastName = Column(String(50), nullable=True, default=None)
     emailAddress = Column(String(80), unique=True, nullable=False)
     password = Column(String(100), nullable=False)
-    createdDate = Column(DateTime, nullable=False, default=pendulum.utcnow)
-    modifiedDate = Column(DateTime, nullable=False, default=pendulum.utcnow)
+    createdTime = Column(DateTime, nullable=False, default=pendulum.utcnow)
+    modifiedTime = Column(DateTime, nullable=False, default=pendulum.utcnow)
     UUID = Column(String(36), nullable=False, default=uuid.uuid4())
     phoneNumber = Column(String(14), nullable=True, default=None)
     isValidated = Column(Boolean, nullable=False, default=False)
@@ -50,8 +50,8 @@ class User(Base):
             "firstName": self.firstName,
             "lastName": self.lastName,
             "emailAddress": self.emailAddress,
-            "createdDate": str(self.createdDate),
-            "modifiedDate": str(self.modifiedDate),
+            "createdTime": str(self.createdTime),
+            "modifiedTime": str(self.modifiedTime),
             "UUID": self.UUID,
             "phoneNumber": self.phoneNumber,
             "isValidated": self.isValidated,

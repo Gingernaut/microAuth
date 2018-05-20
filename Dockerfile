@@ -6,6 +6,7 @@ RUN pip install --no-cache-dir -r /requirements-app.txt
 
 COPY ./app /app
 COPY .env /app
+COPY ./email-templates /email-templates
 COPY gunicorn.conf /app
 
 ENTRYPOINT ["gunicorn", "-c", "gunicorn.conf", "main:app"]

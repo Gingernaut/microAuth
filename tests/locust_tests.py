@@ -1,15 +1,18 @@
 
 import sys
+import ujson
 
 sys.path.append("./app")
 
-import ujson
 from locust import HttpLocust, TaskSet, task
+
 from config import get_config
 
-appConfig = get_config()
 
-### Load testing. https://locust.io/
+appConfig = get_config()
+"""
+Load testing. https://locust.io/
+"""
 
 
 class WebsiteTasks(TaskSet):
