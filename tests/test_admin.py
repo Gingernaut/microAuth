@@ -1,5 +1,6 @@
-import ujson
 import pytest
+
+import ujson
 
 
 class TestAdminAccount:

@@ -1,8 +1,8 @@
 import sys
+
 import pytest
 
 sys.path.append("./app")
-
 from config import get_config
 from create_app import create_app
 from db.db_client import db
@@ -15,7 +15,7 @@ def app_config():
     return get_config("TESTING")
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def app():
     """
     Run for each test. init_db environment specified to prevent tests being run against
@@ -28,6 +28,14 @@ def app():
 @pytest.fixture
 def test_server(loop, app, test_client):
     return loop.run_until_complete(test_client(app))
+
+
+@pytest.fixture
+async def create_account_jwt(test_server):
+    payload = {"emailAddress": "test@example.com", "password": "123456"}
+    res = await test_server.post("/signup", data=ujson.dumps(payload))
+    resData = await res.json()
+    return resData["jwt"]
 
 
 # initialize database when tests are done.

@@ -18,12 +18,18 @@ class BaseConfig:
     ADMIN_EMAIL = os.getenv("TEST_ADMIN_EMAIL")
     ADMIN_PASSWORD = os.getenv("TEST_ADMIN_PASSWORD")
     TOKEN_TTL_HOURS = 158
-    RESET_HOURS = 3
+    PASSWORD_RESET_LINK_TTL_HOURS = 3
     MIN_PASS_LENGTH = 6
     JWT_ALGORITHM = "HS256"
     HOST = "0.0.0.0"
     PORT = 5000
     WORKERS = 4
+
+    # Sendgrid
+    SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+    FROM_EMAIL = os.getenv("FROM_EMAIL")
+    FROM_ORG_NAME = os.getenv("FROM_ORG_NAME")
+    FROM_WEBSITE_URL = os.getenv("FROM_WEBSITE_URL")
 
 
 class DevelopmentConfig(BaseConfig):

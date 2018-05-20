@@ -87,3 +87,12 @@ def format_body_params(body):
         newBody["userRole"] = body.get("userRole").upper()
 
     return newBody
+
+
+def exeption_handler(err, message, statuscode):
+
+    res = {"error": message}
+    if appConfig.API_ENV != "PRODUCTION":
+        res["detailed"] = str(err)
+
+    return response.json(res, statuscode)

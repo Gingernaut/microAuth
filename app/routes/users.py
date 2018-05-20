@@ -3,10 +3,10 @@ import pendulum
 from sanic import Blueprint, Sanic, response
 from sanic.views import HTTPMethodView
 
-from utils import utils
 from config import get_config
 from db.db_client import db
 from models.users import User
+from utils import emails, utils
 
 user_bp = Blueprint("user_blueprint")
 
@@ -22,10 +22,7 @@ class Account_Endpoints(HTTPMethodView):
             return response.json(user.serialize(), 200)
 
         except Exception as e:
-            res = {"error": "User not found"}
-            if request.app.config["API_ENV"] != "PRODUCTION":
-                res["detailed"] = str(e)
-            return response.json(res, 400)
+            return utils.exeption_handler(e, "User not found", 400)
 
     async def put(self, request):
         try:
@@ -35,7 +32,7 @@ class Account_Endpoints(HTTPMethodView):
             if not user:
                 return response.json({"error": "User not found"}, 400)
 
-            user.modifiedDate = pendulum.utcnow()
+            user.modifiedTime = pendulum.utcnow()
             cleanData = utils.format_body_params(request.json)
 
             if not cleanData:
@@ -93,10 +90,7 @@ class Account_Endpoints(HTTPMethodView):
             return response.json(res, 200)
 
         except Exception as e:
-            res = {"error": "Account update failed"}
-            if request.app.config["API_ENV"] != "PRODUCTION":
-                res["detailed"] = str(e)
-            return response.json(res, 400)
+            return utils.exeption_handler(e, "Account update failed", 400)
 
     async def delete(self, request):
         try:
@@ -106,10 +100,7 @@ class Account_Endpoints(HTTPMethodView):
             return response.json({"success": "Account deleted"}, 200)
 
         except Exception as e:
-            res = {"error": "Account deletion failed"}
-            if request.app.config["API_ENV"] != "PRODUCTION":
-                res["detailed"] = str(e)
-            return response.json(res, 400)
+            return utils.exeption_handler(e, "Account deletion failed", 400)
 
 
 @user_bp.route("/signup", methods=["POST"])
@@ -150,13 +141,14 @@ def signup(request):
         db.session.add(user)
         db.session.commit()
 
+        req_config = request.app.config
+        if req_config["SENDGRID_API_KEY"] and req_config["API_ENV"] != "TESTING":
+            emails.send_welcome_email(user)
+
         return response.json(user.serialize(jwt=True), 201)
 
     except Exception as e:
-        res = {"error": "Signup failed"}
-        if request.app.config["API_ENV"] != "PRODUCTION":
-            res["detailed"] = str(e)
-        return response.json(res, 400)
+        return utils.exeption_handler(e, "Signup failed", 400)
 
 
 @user_bp.route("/login", methods=["POST"])
@@ -177,7 +169,4 @@ def login(request):
         return response.json(user.serialize(jwt=True), 200)
 
     except Exception as e:
-        res = {"error": "login failed"}
-        if request.app.config["API_ENV"] != "PRODUCTION":
-            res["detailed"] = str(e)
-        return response.json(res, 400)
+        return utils.exeption_handler(e, "Login failed", 400)
