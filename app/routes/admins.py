@@ -1,11 +1,10 @@
-import jwt
 import pendulum
 from sanic import Blueprint, response
 from sanic.views import HTTPMethodView
 
-from config import get_config
 from db.db_client import db
 from models.users import User
+from models.resets import PasswordReset
 from utils import utils
 
 admin_bp = Blueprint("admin_blueprint")
@@ -39,7 +38,7 @@ class Admin_Endpoints(HTTPMethodView):
             if not user:
                 return response.json({"error": "User not found"}, 404)
 
-            user.modifiedTime = pendulum.utcnow()
+            user.modifiedTime = pendulum.now("UTC")
             cleanData = utils.format_body_params(request.json)
 
             if not cleanData:

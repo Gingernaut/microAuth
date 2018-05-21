@@ -1,11 +1,8 @@
 import uuid
 
-import jwt
 import pendulum
-from passlib.hash import argon2
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, String
-
-import ujson
+from sqlalchemy.dialects.postgresql import UUID
 from config import get_config
 from models.base import Base
 
@@ -14,13 +11,14 @@ appConfig = get_config()
 
 class PasswordReset(Base):
     __tablename__ = "PasswordReset"
-    id = Column(String(36), primary_key=True, default=uuid.uuid4())
+    id = Column(BigInteger, primary_key=True)
+    UUID = Column(String(36), nullable=False, default=uuid.uuid4())
     userId = Column(BigInteger, ForeignKey("User.id"), nullable=False)
-    createdTime = Column(DateTime, nullable=False, default=pendulum.utcnow)
+    createdTime = Column(DateTime, nullable=False, default=pendulum.now("UTC"))
     expireTime = Column(
         DateTime,
         nullable=False,
-        default=pendulum.utcnow().add(
+        default=pendulum.now("UTC").add(
             hours=int(appConfig.PASSWORD_RESET_LINK_TTL_HOURS)
         ),
     )

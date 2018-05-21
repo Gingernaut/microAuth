@@ -3,9 +3,9 @@ import uuid
 import jwt
 import pendulum
 from passlib.hash import argon2
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, Integer, String
-
-import ujson
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from config import get_config
 from models.base import Base
 
@@ -19,8 +19,8 @@ class User(Base):
     lastName = Column(String(50), nullable=True, default=None)
     emailAddress = Column(String(80), unique=True, nullable=False)
     password = Column(String(100), nullable=False)
-    createdTime = Column(DateTime, nullable=False, default=pendulum.utcnow)
-    modifiedTime = Column(DateTime, nullable=False, default=pendulum.utcnow)
+    createdTime = Column(DateTime, nullable=False, default=pendulum.now("UTC"))
+    modifiedTime = Column(DateTime, nullable=False, default=pendulum.now("UTC"))
     UUID = Column(String(36), nullable=False, default=uuid.uuid4())
     phoneNumber = Column(String(14), nullable=True, default=None)
     isValidated = Column(Boolean, nullable=False, default=False)
@@ -69,7 +69,7 @@ class User(Base):
     def gen_token(self, expire_hours=appConfig.TOKEN_TTL_HOURS):
         payload = {
             "userId": self.id,
-            "exp": pendulum.utcnow().add(hours=int(expire_hours)),
+            "exp": pendulum.now("UTC").add(hours=int(expire_hours)),
         }
         return str(
             jwt.encode(payload, appConfig.JWT_SECRET, appConfig.JWT_ALGORITHM).decode(

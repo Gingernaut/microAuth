@@ -1,6 +1,5 @@
 
 import sys
-import ujson
 
 sys.path.append("./app")
 
