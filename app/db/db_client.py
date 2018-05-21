@@ -29,12 +29,12 @@ class SQLAlchemy:
         self.session.close()
         self.session.remove()
 
-    def get_conn_str(self, config):
+    def get_conn_str(self):
 
-        dbName = config.DB_NAME
-        dbUrl = config.DB_URL
-        dbUser = config.DB_USERNAME
-        dbPass = config.DB_PASSWORD
+        dbName = self.config.DB_NAME
+        dbUrl = self.config.DB_URL
+        dbUser = self.config.DB_USERNAME
+        dbPass = self.config.DB_PASSWORD
 
         return f"postgresql://{dbUser}:{dbPass}@{dbUrl}/{dbName}"
 
@@ -44,8 +44,8 @@ class SQLAlchemy:
         self.close()
 
     def init_engine(self, connection_env=None):
-        appConfig = get_config(connection_env)
-        self._conn_str = self.get_conn_str(appConfig)
+        self.config = get_config(connection_env)
+        self._conn_str = self.get_conn_str()
         self.engine = create_engine(self._conn_str)
 
 

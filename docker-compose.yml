@@ -5,8 +5,8 @@
       ports:
       - "5432:5432"
       environment:
-        POSTGRES_USER: "${TEST_DB_USERNAME}"
-        POSTGRES_PASSWORD: "${TEST_DB_PASSWORD}"
+        POSTGRES_USER: "${LOCAL_DB_USERNAME}"
+        POSTGRES_PASSWORD: "${LOCAL_DB_PASSWORD}"
     microauth:
       build: .
       ports:

@@ -10,6 +10,7 @@ from config import get_config
 from db.db_client import db
 from models.base import Base
 from models.users import User
+from models.resets import PasswordReset
 
 
 def init_db(env=None):

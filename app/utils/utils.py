@@ -34,6 +34,22 @@ def authorized(requireAdmin=False):
     return decorator
 
 
+def sengrid_enabled():
+
+    def decorator(f):
+
+        @wraps(f)
+        async def decorated_function(request, *args, **kwargs):
+            if not request.app.config["SENDGRID_API_KEY"]:
+                return response.json({"error": "Sendgrid not configured"}, 500)
+
+            return await f(request, *args, **kwargs)
+
+        return decorated_function
+
+    return decorator
+
+
 def get_id_from_jwt(request):
     try:
         jwtToken = request.headers.get("authorization")

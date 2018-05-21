@@ -2,8 +2,6 @@ from sanic import Sanic, response
 
 from config import get_config
 from db.db_client import db
-from models.base import Base
-from models.users import User
 from routes.admins import Admin_Endpoints, admin_bp
 from routes.users import Account_Endpoints, user_bp
 from routes.email import email_bp
@@ -24,12 +22,12 @@ def create_app(env=None):
         db.close()
 
     @app.middleware("request")
-    async def cors(request):
+    async def req_cors(request):
         if request.method == "OPTIONS":
             return response.HTTPResponse(status=200)
 
     @app.middleware("response")
-    async def cors(request, response):
+    async def res_cors(request, response):
         response.headers["Access-Control-Allow-Origin"] = "*"
         response.headers["Access-Control-Allow-Headers"] = "*"
         response.headers["Access-Control-Allow-Methods"] = "*"

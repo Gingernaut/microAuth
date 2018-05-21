@@ -5,9 +5,14 @@ import pytest
 sys.path.append("./app")
 from config import get_config
 from create_app import create_app
-from db.db_client import db
-from models.base import Base
 from utils.init_db import init_db
+from db.db_client import db
+from models.resets import PasswordReset
+
+
+sendgrid_enabled = pytest.mark.skipif(
+    get_config("TESTING").SENDGRID_API_KEY == None, reason="Sendgrid API key required"
+)
 
 
 @pytest.fixture
@@ -31,11 +36,14 @@ def test_server(loop, app, test_client):
 
 
 @pytest.fixture
-async def create_account_jwt(test_server):
-    payload = {"emailAddress": "test@example.com", "password": "123456"}
-    res = await test_server.post("/signup", data=ujson.dumps(payload))
-    resData = await res.json()
-    return resData["jwt"]
+def test_db():
+    return db
+
+
+# Needed for DB queries against model table
+@pytest.fixture
+def test_passreset():
+    return PasswordReset
 
 
 # initialize database when tests are done.
