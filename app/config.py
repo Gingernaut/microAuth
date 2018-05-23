@@ -7,16 +7,16 @@ from dotenv import load_dotenv
 env_path = Path.cwd() / ".env"
 load_dotenv(dotenv_path=env_path)
 
-
+# fmt: off
 class BaseConfig:
     """Base configuration"""
     API_ENV = os.getenv("API_ENV", "DEVELOPMENT")
-    DB_USERNAME = os.getenv("LOCAL_DB_USERNAME")
-    DB_PASSWORD = os.getenv("LOCAL_DB_PASSWORD")
+    DB_USERNAME = os.getenv("LOCAL_DB_USERNAME", NotImplementedError("db username required"))
+    DB_PASSWORD = os.getenv("LOCAL_DB_PASSWORD", NotImplementedError("db password required"))
     DB_URL = "0.0.0.0:5432"
-    DB_NAME = os.getenv("LOCAL_DB_USERNAME")
-    ADMIN_EMAIL = os.getenv("TEST_ADMIN_EMAIL")
-    ADMIN_PASSWORD = os.getenv("TEST_ADMIN_PASSWORD")
+    DB_NAME = os.getenv("LOCAL_DB_USERNAME", NotImplementedError("db username required"))
+    ADMIN_EMAIL = os.getenv("LOCAL_ADMIN_EMAIL", NotImplementedError("admin user email required"))
+    ADMIN_PASSWORD = os.getenv("LOCAL_ADMIN_PASSWORD", NotImplementedError("admin user password required"))
     TOKEN_TTL_HOURS = 158
     PASSWORD_RESET_LINK_TTL_HOURS = 12
     MIN_PASS_LENGTH = 6
@@ -48,13 +48,13 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """Production configuration"""
     API_ENV = "PRODUCTION"
-    JWT_SECRET = os.getenv("JWT_SECRET")
-    DB_URL = os.getenv("DB_URL")
-    DB_NAME = os.getenv("DB_NAME")
-    DB_USERNAME = os.getenv("DB_USERNAME")
-    DB_PASSWORD = os.getenv("DB_PASSWORD")
-    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
-    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+    JWT_SECRET = os.getenv("JWT_SECRET",  NotImplementedError("jwt secret required"))
+    DB_URL = os.getenv("DB_URL", NotImplementedError("production db url required"))
+    DB_NAME = os.getenv("DB_NAME", NotImplementedError("production db name required"))
+    DB_USERNAME = os.getenv("DB_USERNAME", NotImplementedError("production db username required"))
+    DB_PASSWORD = os.getenv("DB_PASSWORD", NotImplementedError("production db password required"))
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", NotImplementedError("production admin email required"))
+    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", NotImplementedError("production admin password required"))
     WORKERS = multiprocessing.cpu_count() * 2 + 1
 
 
@@ -69,3 +69,4 @@ def get_config(env=None):
         env = BaseConfig.API_ENV
 
     return ENV_MAPPING[env]
+# fmt: on
