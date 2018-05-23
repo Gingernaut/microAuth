@@ -24,6 +24,7 @@ class BaseConfig:
     HOST = "0.0.0.0"
     PORT = 5000
     WORKERS = 4
+    ENABLE_CORS = True
 
     # Sendgrid
     SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")

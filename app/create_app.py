@@ -23,14 +23,16 @@ def create_app(env=None):
 
     @app.middleware("request")
     async def req_cors(request):
-        if request.method == "OPTIONS":
+        if request.app.config["ENABLE_CORS"] and request.method == "OPTIONS":
             return response.HTTPResponse(status=200)
 
     @app.middleware("response")
     async def res_cors(request, response):
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Headers"] = "*"
-        response.headers["Access-Control-Allow-Methods"] = "*"
+        if request.app.config["ENABLE_CORS"]:
+            # You should set this to the consumers host
+            response.headers["Access-Control-Allow-Origin"] = "*"
+            response.headers["Access-Control-Allow-Headers"] = "*"
+            response.headers["Access-Control-Allow-Methods"] = "*"
 
     # Routes
     @app.route("/")
