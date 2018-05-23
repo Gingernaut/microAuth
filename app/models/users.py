@@ -4,8 +4,6 @@ import jwt
 import pendulum
 from passlib.hash import argon2
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, String
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 from config import get_config
 from models.base import Base
 

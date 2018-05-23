@@ -55,8 +55,6 @@ class TestPasswordReset:
     @sendgrid_enabled
     async def test_failed_create_reset(self, test_server):
         res = await test_server.post("/reset-password/does_not_exist@example.com")
-        resData = await res.json()
-
         assert res.status == 404
 
     @sendgrid_enabled

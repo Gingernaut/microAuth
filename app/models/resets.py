@@ -2,7 +2,6 @@ import uuid
 
 import pendulum
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, String
-from sqlalchemy.dialects.postgresql import UUID
 from config import get_config
 from models.base import Base
 
