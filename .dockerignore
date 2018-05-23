@@ -1,1 +1,11 @@
+.git
+email-templates
+.vscode
+.venv
+.gitignore
+*.md
 __pycache__
+.pytest_cache
+*.log
+LICENSE.txt
+default.env

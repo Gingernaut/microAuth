@@ -1,6 +1,6 @@
 MIT License
 
-Copyright 2017 Tyler Peterson
+Copyright 2018 Tyler Peterson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

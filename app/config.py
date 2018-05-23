@@ -1,0 +1,71 @@
+import multiprocessing
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+env_path = Path.cwd() / ".env"
+load_dotenv(dotenv_path=env_path)
+
+
+class BaseConfig:
+    """Base configuration"""
+    API_ENV = os.getenv("API_ENV", "DEVELOPMENT")
+    DB_USERNAME = os.getenv("LOCAL_DB_USERNAME")
+    DB_PASSWORD = os.getenv("LOCAL_DB_PASSWORD")
+    DB_URL = "0.0.0.0:5432"
+    DB_NAME = os.getenv("LOCAL_DB_USERNAME")
+    ADMIN_EMAIL = os.getenv("TEST_ADMIN_EMAIL")
+    ADMIN_PASSWORD = os.getenv("TEST_ADMIN_PASSWORD")
+    TOKEN_TTL_HOURS = 158
+    PASSWORD_RESET_LINK_TTL_HOURS = 12
+    MIN_PASS_LENGTH = 6
+    JWT_ALGORITHM = "HS256"
+    HOST = "0.0.0.0"
+    PORT = 5000
+    WORKERS = 4
+
+    # Sendgrid
+    SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+    FROM_EMAIL = os.getenv("FROM_EMAIL")
+    FROM_ORG_NAME = os.getenv("FROM_ORG_NAME")
+    FROM_WEBSITE_URL = os.getenv("FROM_WEBSITE_URL")
+
+
+class DevelopmentConfig(BaseConfig):
+    """Development configuration"""
+    API_ENV = "DEVELOPMENT"
+    JWT_SECRET = "abcdefghijklmnopqrstuvwxyz12345678901234567890123456"
+
+
+class TestingConfig(BaseConfig):
+    """Testing configuration"""
+    API_ENV = "TESTING"
+    JWT_SECRET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    TOKEN_TTL_HOURS = 1
+
+
+class ProductionConfig(BaseConfig):
+    """Production configuration"""
+    API_ENV = "PRODUCTION"
+    JWT_SECRET = os.getenv("JWT_SECRET")
+    DB_URL = os.getenv("DB_URL")
+    DB_NAME = os.getenv("DB_NAME")
+    DB_USERNAME = os.getenv("DB_USERNAME")
+    DB_PASSWORD = os.getenv("DB_PASSWORD")
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+    WORKERS = multiprocessing.cpu_count() * 2 + 1
+
+
+def get_config(env=None):
+    ENV_MAPPING = {
+        "DEVELOPMENT": DevelopmentConfig,
+        "PRODUCTION": ProductionConfig,
+        "TESTING": TestingConfig,
+    }
+
+    if not env:
+        env = BaseConfig.API_ENV
+
+    return ENV_MAPPING[env]

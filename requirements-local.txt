@@ -1,0 +1,5 @@
+locustio==0.8.1    
+pytest==3.5.1
+pytest-sanic==0.1.9
+black==18.5b0
+pre-commit==1.9.0

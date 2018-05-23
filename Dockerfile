@@ -1,7 +1,12 @@
-FROM python:3.6.1-onbuild
+FROM python:3.6.5 AS base
+
 WORKDIR /app
-COPY . /app
-RUN pip install -r requirements.txt
-ENV FLASK_APP=/app/main.py
-EXPOSE 5000
-CMD ["/bin/sh", "/app/dockerstart.sh"]
+COPY requirements-app.txt /requirements-app.txt
+RUN pip install --no-cache-dir -r /requirements-app.txt
+
+COPY ./app /app
+COPY .env /app
+COPY ./email-templates /email-templates
+COPY gunicorn.conf /app
+
+ENTRYPOINT ["gunicorn", "-c", "gunicorn.conf", "main:app"]
