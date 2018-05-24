@@ -3,8 +3,7 @@ WORKDIR /app
 
 COPY requirements-app.txt /requirements.txt
 
-RUN set -ex \
-    && apk add --no-cache \
+RUN apk add --no-cache \
     python3-dev build-base postgresql-dev libffi-dev supervisor \
     && python3 -m ensurepip --upgrade \
     && rm -r /usr/lib/python*/ensurepip \
@@ -13,12 +12,10 @@ RUN set -ex \
     && if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi \
     && pip3 install --no-cache-dir -r /requirements.txt
 
-# RUN pip install --no-cache-dir -r /requirements.txt
-
 COPY supervisord.conf /etc/supervisord.conf
 COPY gunicorn.conf /app
 COPY .env /app
-COPY ./email-templates /email-templates
-COPY ./app /app
+COPY email-templates /email-templates
+COPY app /app
 
 ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

@@ -5,11 +5,23 @@ from db.db_client import db
 from routes.admins import Admin_Endpoints, admin_bp
 from routes.users import Account_Endpoints, user_bp
 from routes.email import email_bp
+from utils.logging import get_logger
+
+import logging, sys, json_logging, sanic
 
 
 def create_app(env=None):
     app = Sanic(__name__)
     app.config.from_object(get_config(env))
+
+    json_logging.ENABLE_JSON_LOGGING = True
+    json_logging.ENABLE_JSON_LOGGING_DEBUG = False
+    json_logging.init(framework_name="sanic")
+    json_logging.init_request_instrument(app)
+
+    logger = get_logger(__name__)
+
+    logger.warn("abelincoln")
 
     db.init_engine(env)
 
@@ -29,7 +41,7 @@ def create_app(env=None):
     @app.middleware("response")
     async def res_cors(request, response):
         if request.app.config["ENABLE_CORS"]:
-            # You should set this to the consumers host
+            # You should change this wildcard to match your host
             response.headers["Access-Control-Allow-Origin"] = "*"
             response.headers["Access-Control-Allow-Headers"] = "*"
             response.headers["Access-Control-Allow-Methods"] = "*"

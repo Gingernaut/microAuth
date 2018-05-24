@@ -9,3 +9,4 @@ PyJWT==1.6.4
 argon2-cffi==18.1.0
 passlib==1.7.1
 sendgrid==5.3.0
+json-logging==0.0.1
