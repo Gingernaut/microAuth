@@ -5,7 +5,7 @@ psycopg2-binary==2.7.4
 ujson==1.35
 pendulum==2.0.1
 python-dotenv==0.8.2
-PyJWT==1.6.3
+PyJWT==1.6.4
 argon2-cffi==18.1.0
 passlib==1.7.1
 sendgrid==5.3.0
