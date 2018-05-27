@@ -23,7 +23,7 @@ class TestValidateSignup:
 
         assert res.status == 200
         assert resData["success"] == "User account confirmed"
-        assert resData["isValidated"] == True
+        assert resData["isVerified"] == True
 
     @sendgrid_enabled
     async def test_failed_confirmation(self, test_server):
@@ -38,7 +38,7 @@ class TestValidateSignup:
         # )
         # res2Data = await res2.json()
 
-        # assert res2Data["isValidated"] == True
+        # assert res2Data["isVerified"] == True
 
 
 class TestPasswordReset:

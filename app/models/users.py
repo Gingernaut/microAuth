@@ -21,7 +21,7 @@ class User(Base):
     modifiedTime = Column(DateTime, nullable=False, default=pendulum.now("UTC"))
     UUID = Column(String(36), nullable=False, default=uuid.uuid4())
     phoneNumber = Column(String(14), nullable=True, default=None)
-    isValidated = Column(Boolean, nullable=False, default=False)
+    isVerified = Column(Boolean, nullable=False, default=False)
     userRole = Column(String(14), nullable=False, default="USER")
 
     def __init__(
@@ -32,7 +32,7 @@ class User(Base):
         lastName=None,
         phoneNumber=None,
         userRole="USER",
-        isValidated=False,
+        isVerified=False,
     ):
         self.firstName = firstName
         self.lastName = lastName
@@ -40,7 +40,7 @@ class User(Base):
         self.password = password
         self.phoneNumber = phoneNumber
         self.userRole = userRole
-        self.isValidated = isValidated
+        self.isVerified = isVerified
 
     def serialize(self, jwt=False):
         info = {
@@ -52,7 +52,7 @@ class User(Base):
             "modifiedTime": str(self.modifiedTime),
             "UUID": self.UUID,
             "phoneNumber": self.phoneNumber,
-            "isValidated": self.isValidated,
+            "isVerified": self.isVerified,
             "userRole": self.userRole,
         }
 

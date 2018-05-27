@@ -5,7 +5,7 @@ from db.db_client import db
 from routes.admins import Admin_Endpoints, admin_bp
 from routes.users import Account_Endpoints, user_bp
 from routes.email import email_bp
-from utils.logging import get_logger
+from utils.logger import get_logger
 
 import logging, sys, json_logging, sanic
 
@@ -14,14 +14,12 @@ def create_app(env=None):
     app = Sanic(__name__)
     app.config.from_object(get_config(env))
 
-    json_logging.ENABLE_JSON_LOGGING = True
-    json_logging.ENABLE_JSON_LOGGING_DEBUG = False
-    json_logging.init(framework_name="sanic")
-    json_logging.init_request_instrument(app)
+    # json_logging.ENABLE_JSON_LOGGING = app.config['JSON_LOGGING']
+    # json_logging.ENABLE_JSON_LOGGING_DEBUG = False
+    # json_logging.init(framework_name="sanic")
+    # json_logging.init_request_instrument(app)
 
-    logger = get_logger(__name__)
-
-    logger.warn("abelincoln")
+    # logger = get_logger("sanic-integration-test-app")
 
     db.init_engine(env)
 
@@ -33,18 +31,15 @@ def create_app(env=None):
     async def close_connection(app, loop):
         db.close()
 
-    @app.middleware("request")
-    async def req_cors(request):
-        if request.app.config["ENABLE_CORS"] and request.method == "OPTIONS":
-            return response.HTTPResponse(status=200)
+    if app.config["ENABLE_CORS"]:
+        from sanic_cors import CORS
 
-    @app.middleware("response")
-    async def res_cors(request, response):
-        if request.app.config["ENABLE_CORS"]:
-            # You should change this wildcard to match your host
-            response.headers["Access-Control-Allow-Origin"] = "*"
-            response.headers["Access-Control-Allow-Headers"] = "*"
-            response.headers["Access-Control-Allow-Methods"] = "*"
+        CORS(app)
+
+        @app.middleware("request")
+        async def req_cors(request):
+            if request.method == "OPTIONS":
+                return response.HTTPResponse()
 
     # Routes
     @app.route("/")

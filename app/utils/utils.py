@@ -96,8 +96,8 @@ def format_body_params(body):
     if body.get("phoneNumber"):
         newBody["phoneNumber"] = body.get("phoneNumber")
 
-    if body.get("isValidated"):
-        newBody["isValidated"] = bool(body.get("isValidated"))
+    if body.get("isVerified"):
+        newBody["isVerified"] = bool(body.get("isVerified"))
 
     if body.get("userRole"):
         newBody["userRole"] = body.get("userRole").upper()

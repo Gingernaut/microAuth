@@ -37,7 +37,7 @@ def init_db(env=None):
             emailAddress=appConfig.ADMIN_EMAIL,
             password=argon2.hash(appConfig.ADMIN_PASSWORD),
             userRole="ADMIN",
-            isValidated=True,
+            isVerified=True,
         )
 
         db.session.add(admin)

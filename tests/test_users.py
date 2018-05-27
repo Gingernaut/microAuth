@@ -118,7 +118,7 @@ class TestAccount:
         assert "jwt" not in resData
         assert resData["emailAddress"] == "test@example.com"
         assert resData["userRole"] == "USER"
-        assert resData["isValidated"] == False
+        assert resData["isVerified"] == False
 
     async def test_valid_update(self, test_server, create_account_jwt):
         jwtToken = await create_account_jwt

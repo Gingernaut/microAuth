@@ -45,13 +45,9 @@ _requires Python3.6+, Docker, and Docker-compose_
 4.  Build the project with `docker build -t microauth .`
 5.  Run with `docker run -p 5000:5000 -d microauth`
 
-### Configuration
+### Email Resets (Optional)
 
-Settings can be changed in `app/config.py` on a per-environment basis if needed.
-
-### Email Resets
-
-If you want to enable signup verification and password resets for your users, sign up for a [Sendgrid Account](https://sendgrid.com) and add your API Key to `.env`.
+To enable signup verification and password resets for your users, sign up for a [Sendgrid Account](https://sendgrid.com) and add your API Key to `.env`.
 
 [Credit for the email HTML templates](https://github.com/wildbit/postmark-templates)
 
@@ -59,6 +55,14 @@ If you want to enable signup verification and password resets for your users, si
 #### Testing
 
 Tests are always run against the local docker PostgreSQL instance. The database is re-initialized before each test, and after the last test is run.
+
+#### Logging
+
+Logs are written to stdout while testing/development, and to `/var/log/access.log` and `/var/log/error.log` when run inside Docker.
+Logs are written in JSON format for easy usage in tools like ElasticSearch/Kibana. This can be turned off if desired by setting `JSON_LOGGING` to `False` in `config.py`.
+
+You can mount the logs from inside the Dockerized app to your machine by running `command here`
+
 
 ## Contributing
 

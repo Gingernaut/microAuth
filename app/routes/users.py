@@ -34,14 +34,14 @@ class Account_Endpoints(HTTPMethodView):
             cleanData = utils.format_body_params(request.json)
 
             if not cleanData:
-                db.session.rollback()
+                # db.session.rollback()
                 return response.json(
                     {"error": "No valid data provided for update"}, 400
                 )
 
             if cleanData.get("userRole"):
                 if user.userRole != "ADMIN":
-                    db.session.rollback()
+                    # db.session.rollback()
                     return response.json({"error": "Unauthorized to update role"}, 401)
 
                 user.userRole = cleanData.get("userRole")
@@ -49,7 +49,7 @@ class Account_Endpoints(HTTPMethodView):
             if cleanData.get("password"):
                 providedPass = cleanData.get("password")
                 if len(providedPass) < request.app.config["MIN_PASS_LENGTH"]:
-                    db.session.rollback()
+                    # db.session.rollback()
                     return response.json(
                         {"error": "New password does not meet length requirements"}, 400
                     )
@@ -63,7 +63,7 @@ class Account_Endpoints(HTTPMethodView):
                     utils.email_account_exists(newEmail)
                     and utils.get_account_by_email(newEmail).id != user.id
                 ):
-                    db.session.rollback()
+                    # db.session.rollback()
                     return response.json(
                         {"error": "Email address associated with another account"}, 400
                     )
@@ -79,8 +79,8 @@ class Account_Endpoints(HTTPMethodView):
             if cleanData.get("phoneNumber"):
                 user.phoneNumber = cleanData.get("phoneNumber")
 
-            if cleanData.get("isValidated"):
-                user.isValidated = cleanData.get("isValidated")
+            if cleanData.get("isVerified"):
+                user.isVerified = cleanData.get("isVerified")
 
             db.session.commit()
             res = user.serialize()
@@ -151,20 +151,18 @@ def signup(request):
 
 @user_bp.route("/login", methods=["POST"])
 def login(request):
-    try:
-        emailAddress = request.json.get("emailAddress")
-        password = request.json.get("password")
-        user = utils.get_account_by_email(emailAddress)
+    # try:
+    emailAddress = request.json.get("emailAddress")
+    password = request.json.get("password")
+    user = utils.get_account_by_email(emailAddress)
 
-        if not user:
-            return response.json(
-                {"error": "No account for provided email address"}, 400
-            )
+    if not user:
+        return response.json({"error": "No account for provided email address"}, 400)
 
-        if not user.pass_matches(password):
-            return response.json({"error": "Invalid credentials"}, 400)
+    if not user.pass_matches(password):
+        return response.json({"error": "Invalid credentials"}, 400)
 
-        return response.json(user.serialize(jwt=True), 200)
+    return response.json(user.serialize(jwt=True), 200)
 
-    except Exception as e:
-        return utils.exeption_handler(e, "Login failed", 400)
+    # except Exception as e:
+    #     return utils.exeption_handler(e, "Login failed", 400)

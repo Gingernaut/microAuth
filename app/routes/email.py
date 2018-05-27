@@ -20,7 +20,7 @@ async def confirm_account(request, token):
         if not user:
             return response.json({"error": "No user for given token"}, 400)
 
-        user.isValidated = True
+        user.isVerified = True
         db.session.commit()
 
         resp = user.serialize(jwt=True)
