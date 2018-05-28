@@ -11,8 +11,7 @@ load_dotenv(dotenv_path=env_path)
 class BaseConfig:
     """Base configuration"""
     API_ENV = os.getenv("API_ENV", "DEVELOPMENT")
-    LOGO = None
-    JSON_LOGGING=True
+    LOGO = None # Sanic logged logo
     DB_USERNAME = os.getenv("LOCAL_DB_USERNAME", NotImplementedError("db username required"))
     DB_PASSWORD = os.getenv("LOCAL_DB_PASSWORD", NotImplementedError("db password required"))
     DB_URL = "0.0.0.0:5432"

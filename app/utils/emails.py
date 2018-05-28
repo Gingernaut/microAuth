@@ -10,7 +10,6 @@ sg = sendgrid.SendGridAPIClient(apikey=appConfig.SENDGRID_API_KEY)
 
 
 def send_reset_email(user, reset):
-
     def build_reset_email():
 
         reset_email = open(f"{email_path}/password-reset.html", "r").read()
@@ -19,7 +18,7 @@ def send_reset_email(user, reset):
             "{{ttl}}", str(appConfig.PASSWORD_RESET_LINK_TTL_HOURS)
         )
         reset_email = reset_email.replace(
-            "{{action_url}}", f"{appConfig.FROM_WEBSITE_URL}/confirm-reset/{reset.UUID}"
+            "{{action_url}}", f"{appConfig.FROM_WEBSITE_URL}/reset/{reset.UUID}"
         )
 
         name = user.firstName
@@ -39,13 +38,13 @@ def send_reset_email(user, reset):
 
 
 def send_welcome_email(user):
-
     def build_welcome_email():
         welcome_email = open(f"{email_path}/welcome-email.html", "r").read()
 
         welcome_email = welcome_email.replace("{{from_org}}", appConfig.FROM_ORG_NAME)
         welcome_email = welcome_email.replace(
-            "{{action_url}}", f"{appConfig.FROM_WEBSITE_URL}/confirm/{user.UUID}"
+            "{{action_url}}",
+            f"{appConfig.FROM_WEBSITE_URL}/confirm-account/{user.UUID}",
         )
 
         name = user.firstName

@@ -7,7 +7,6 @@ from models.base import Base
 
 
 class SQLAlchemy:
-
     def __init__(self, autocommit=False):
         self.engine = None
         self.session = None

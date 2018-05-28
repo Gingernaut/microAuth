@@ -1,21 +1,18 @@
-
+"""
+https://locust.io/
+"""
 import sys
 
 sys.path.append("./app")
 
 from locust import HttpLocust, TaskSet, task
-
 from config import get_config
 
 
 appConfig = get_config()
-"""
-Load testing. https://locust.io/
-"""
 
 
 class WebsiteTasks(TaskSet):
-
     @task
     def index(self):
         self.client.get("/")

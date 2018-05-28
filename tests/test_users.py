@@ -12,7 +12,6 @@ async def create_account_jwt(test_server):
 
 
 class TestSignup:
-
     async def test_valid_signup(self, test_server):
         payload = {"emailAddress": "test@example.com", "password": "123456"}
         res = await test_server.post("/signup", data=ujson.dumps(payload))
@@ -64,7 +63,6 @@ class TestSignup:
 
 
 class TestLogin:
-
     async def test_login(self, test_server, create_account_jwt):
         # creates a "test@example.com" account
         unusedJwt = await create_account_jwt
@@ -104,7 +102,6 @@ class TestLogin:
 
 
 class TestAccount:
-
     async def test_get_account_without_auth(self, test_server):
         res = await test_server.get("/account")
         assert res.status == 401

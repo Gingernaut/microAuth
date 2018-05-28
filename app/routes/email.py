@@ -12,7 +12,7 @@ email_bp = Blueprint("email_blueprint")
 
 
 @utils.sengrid_enabled()
-@email_bp.route("/confirm-account/<token>", methods=["POST"])
+@email_bp.route("/validate-account/<token>", methods=["POST"])
 async def confirm_account(request, token):
     try:
         user = db.session.query(User).filter_by(UUID=token).first()
@@ -67,9 +67,9 @@ async def reset(request, token):
             return response.json({"error": "Reset token has expired."}, 400)
 
         # Invalidate all resets for this user
-        db.session.query(PasswordReset).filter_by(userId=reset.userId).update(
-            {"isValid": False}
-        )
+        # db.session.query(PasswordReset).filter_by(userId=reset.userId).update(
+        #     {"isValid": False}
+        # )
         db.session.commit()
 
         user = utils.get_account_by_id(reset.userId)

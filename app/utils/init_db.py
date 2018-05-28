@@ -12,6 +12,8 @@ from models.base import Base
 from models.users import User
 from models.resets import PasswordReset
 
+# All models must be imported so the appropriate tables are created
+
 
 def init_db(env=None):
     print("\n")

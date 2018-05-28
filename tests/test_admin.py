@@ -4,7 +4,6 @@ import ujson
 
 
 class TestAdminAccount:
-
     @pytest.fixture
     def admin_credentials(self, app_config):
         return {

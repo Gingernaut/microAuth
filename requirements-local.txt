@@ -3,3 +3,4 @@ pytest==3.6.1
 pytest-sanic==0.1.9
 black==18.6b1
 pre-commit==1.10.1
+flake8==3.5.0

@@ -13,7 +13,7 @@ GET /account
 PUT /account
 DELETE /account
 
-POST /confirm-account/<token>
+POST /validate-account/<token>
 POST /reset-password/<emailAddress>
 POST /confirm-reset/<token>
 
@@ -34,7 +34,7 @@ _requires Python3.6+, Docker, and Docker-compose_
 2.  Install dependencies with `pip3 install -r requirements.txt`
 3.  Copy `default.env` to `.env`
 4.  Run `docker-compose up -d database` to run a PostgreSQL instance for testing and development.
-5.  Run tests with `pytest`
+5.  Run tests with `pytest` _(also initializes database)_.
 6.  Run the application with `python3 app/main.py`
 
 #### Production
@@ -59,9 +59,7 @@ Tests are always run against the local docker PostgreSQL instance. The database 
 #### Logging
 
 Logs are written to stdout while testing/development, and to `/var/log/access.log` and `/var/log/error.log` when run inside Docker.
-Logs are written in JSON format for easy usage in tools like ElasticSearch/Kibana. This can be turned off if desired by setting `JSON_LOGGING` to `False` in `config.py`.
-
-You can mount the logs from inside the Dockerized app to your machine by running `command here`
+Logs are written in JSON format for easy usage in tools like ElasticSearch/Kibana.
 
 
 ## Contributing

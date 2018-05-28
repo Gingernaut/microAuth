@@ -12,9 +12,7 @@ appConfig = get_config()
 
 
 def authorized(requireAdmin=False):
-
     def decorator(f):
-
         @wraps(f)
         async def decorated_function(request, *args, **kwargs):
             userId = get_id_from_jwt(request)
@@ -35,9 +33,7 @@ def authorized(requireAdmin=False):
 
 
 def sengrid_enabled():
-
     def decorator(f):
-
         @wraps(f)
         async def decorated_function(request, *args, **kwargs):
             if not request.app.config["SENDGRID_API_KEY"]:

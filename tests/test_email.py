@@ -14,11 +14,10 @@ async def create_account(test_server):
 
 
 class TestValidateSignup:
-
     @sendgrid_enabled
     async def test_confirm_account(self, test_server, create_account):
         accData = await create_account
-        res = await test_server.post(f"/confirm-account/{accData['UUID']}")
+        res = await test_server.post(f"/validate-account/{accData['UUID']}")
         resData = await res.json()
 
         assert res.status == 200
@@ -27,7 +26,7 @@ class TestValidateSignup:
 
     @sendgrid_enabled
     async def test_failed_confirmation(self, test_server):
-        res = await test_server.post(f"/confirm-account/abcdefghijk")
+        res = await test_server.post(f"/validate-account/abcdefghijk")
         resData = await res.json()
 
         assert res.status == 400
@@ -42,7 +41,6 @@ class TestValidateSignup:
 
 
 class TestPasswordReset:
-
     @sendgrid_enabled
     async def test_create_reset(self, test_server, create_account):
         accData = await create_account
