@@ -1,14 +1,44 @@
 # microAuth
 
-#### Tired of reinventing the wheel every time you need user authentication on a new project?
+## Tired of reinventing the wheel every time you need user authentication in a project?
 
 Fill out a simple config file and have RESTful API endpoints for everything needed for account management.
+
+### Example Usage
+
+Sending a POST request to `localhost:5000/login` with the following JSON payload:
+```JSON
+{
+	"emailAddress": "root@example.com",
+	"password": "123456"
+}
+```
+
+Will return a response like:
+```JSON
+{
+	"id": 1,
+	"firstName": null,
+	"lastName": null,
+	"emailAddress": "root@example.com",
+	"createdTime": "2018-06-05 18:51:10.954461",
+	"modifiedTime": "2018-06-05 18:51:10.954615",
+	"UUID": "6a14a972-0f3c-4c42-9ead-2376d158f108",
+	"phoneNumber": null,
+	"isVerified": true,
+	"userRole": "ADMIN",
+	"jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImV4cCI6MTUyODc5MzcyNn0.CgTQv1emsQvJD3fsoWcgfZQSt0BY6I0DRT_8gJGm5Lg"
+}
+```
+
+The JWT Token should then be included as an `Authorization` header for any subsequent requests to `/account` or `/accounts`.
 
 ### Endpoints
 
 ```
 POST /login
 POST /signup
+
 GET /account
 PUT /account
 DELETE /account
@@ -24,7 +54,7 @@ PUT /accounts/<id>
 DELETE /accounts/<id>
 ```
 
-## Get up and running in minutes
+## Get up and running
 
 #### Running locally
 
@@ -32,7 +62,7 @@ _requires Python3.6+, Docker, and Docker-compose_
 
 1.  Create a virtual environment with `python3 -m venv .venv/`. Activate it with `source .venv/bin/activate`
 2.  Install dependencies with `pip3 install -r requirements.txt`
-3.  Copy `default.env` to `.env`
+3.  Copy `default.env` to a new file `.env`
 4.  Run `docker-compose up -d database` to run a PostgreSQL instance for testing and development.
 5.  Run tests with `pytest` _(also initializes database)_.
 6.  Run the application with `python3 app/main.py`
@@ -44,6 +74,7 @@ _requires Python3.6+, Docker, and Docker-compose_
 3.  Initialize the database with `python3 app/utils/init_db.py`
 4.  Build the project with `docker build -t microauth .`
 5.  Run with `docker run -p 5000:5000 -d microauth`
+
 
 ### Email Resets (Optional)
 
@@ -58,8 +89,8 @@ Tests are always run against the local docker PostgreSQL instance. The database 
 
 #### Logging
 
-Logs are written to stdout while testing/development, and to `/var/log/access.log` and `/var/log/error.log` when run inside Docker.
-Logs are written in JSON format for easy usage in tools like ElasticSearch/Kibana.
+Logs are written to stdout during testing/development, and to `/var/log/access.log` and `/var/log/error.log` inside the Docker container.
+Logs are written in JSON format for easy analysis in tools like ElasticSearch/Kibana.
 
 
 ## Contributing
@@ -71,5 +102,6 @@ Contributions are welcome and appreciated. Potential improvements include:
 * OAuth support.
 * Revokable tokens.
 * 2 Factor Authentication (with an authenticator app).
+* Additional example documentation.
 
 Run `pre-commit install` to enable Black formatting on commit.
