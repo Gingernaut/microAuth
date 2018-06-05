@@ -6,7 +6,7 @@ Fill out a simple config file and have RESTful API endpoints for everything need
 
 ### Example Usage
 
-Sending a POST request to `localhost:5000/login` with the following JSON payload:
+Sending a POST request to `/login` with the following JSON payload:
 ```JSON
 {
 	"emailAddress": "root@example.com",
@@ -14,7 +14,7 @@ Sending a POST request to `localhost:5000/login` with the following JSON payload
 }
 ```
 
-Will return a response like:
+Example response:
 ```JSON
 {
 	"id": 1,
@@ -91,7 +91,12 @@ Tests are always run against the local docker PostgreSQL instance. The database 
 
 Logs are written to stdout during testing/development, and to `/var/log/access.log` and `/var/log/error.log` inside the Docker container.
 Logs are written in JSON format for easy analysis in tools like ElasticSearch/Kibana.
-
+```json
+{"levelname": "INFO", "message": "created app", "name": "create_app", "timestamp": "2018-06-05 23:49:17 UTC"}
+{"levelname": "INFO", "message": "Goin' Fast @ http://0.0.0.0:5000", "timestamp": "2018-06-05 23:49:17 UTC"}
+{"levelname": "INFO", "message": "Starting worker [13250]", "timestamp": "2018-06-05 23:49:17 UTC"}
+{"levelname": "INFO", "method": "POST", "status": 200, "timestamp": "2018-06-05 23:49:20 UTC", "url": "http://localhost:5000/login"}
+```
 
 ## Contributing
 
@@ -100,7 +105,7 @@ Logs are written in JSON format for easy analysis in tools like ElasticSearch/Ki
 Contributions are welcome and appreciated. Potential improvements include:
 
 * OAuth support.
-* Revokable tokens.
+* Invalidate existing jwt tokens on password change/reset.
 * 2 Factor Authentication (with an authenticator app).
 * Additional example documentation.
 
