@@ -16,7 +16,7 @@ class CustomFormatter(jsonlogger.JsonFormatter):
         if not log_record.get("levelname"):
             log_record["levelname"] = record.levelname.upper()
 
-        # if it's a custom log, log the file that created it
+        # if it's a custom log, add the logger name
         if not record.name in ["root", "sanic.access", "sanic.error"]:
             log_record["name"] = f"{record.name}"
 

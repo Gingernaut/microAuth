@@ -34,11 +34,6 @@ def create_app(env=None):
             if request.method == "OPTIONS":
                 return response.HTTPResponse()
 
-    # Routes
-    @app.route("/")
-    async def index(request):
-        return response.json({"message": "/ reached"}, 200)
-
     app.blueprint(user_bp)
     app.blueprint(admin_bp)
     app.blueprint(email_bp)

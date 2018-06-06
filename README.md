@@ -54,9 +54,8 @@ PUT /accounts/<id>
 DELETE /accounts/<id>
 ```
 
-## Get up and running
 
-#### Running locally
+### Running locally
 
 _requires Python3.6+, Docker, and Docker-compose_
 
@@ -67,7 +66,7 @@ _requires Python3.6+, Docker, and Docker-compose_
 5.  Run tests with `pytest` _(also initializes database)_.
 6.  Run the application with `python3 app/main.py`
 
-#### Production
+### Production
 
 1.  Create a PostgreSQL RDS instance on AWS _(or host your own)_.
 2.  Copy `default.env` to `.env`, fill it out with your credentials, and change `API_ENV` to `PRODUCTION`.
@@ -104,9 +103,9 @@ Logs are written in JSON format for easy analysis in tools like ElasticSearch/Ki
 
 Contributions are welcome and appreciated. Potential improvements include:
 
+* Invalidate existing JWT tokens on password change/reset.
+* 2FA with an authenticator app.
 * OAuth support.
-* Invalidate existing jwt tokens on password change/reset.
-* 2 Factor Authentication (with an authenticator app).
 * Additional example documentation.
 
 Run `pre-commit install` to enable Black formatting on commit.

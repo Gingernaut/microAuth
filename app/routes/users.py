@@ -17,6 +17,8 @@ class Account_Endpoints(HTTPMethodView):
         try:
             userId = utils.get_id_from_jwt(request)
             user = utils.get_account_by_id(userId)
+            if not user:
+                return response.json({"error": "User not found"}, 404)
             return response.json(user.serialize(), 200)
 
         except Exception as e:
@@ -28,7 +30,7 @@ class Account_Endpoints(HTTPMethodView):
             user = utils.get_account_by_id(userId)
 
             if not user:
-                return response.json({"error": "User not found"}, 400)
+                return response.json({"error": "User not found"}, 404)
 
             user.modifiedTime = pendulum.now("UTC")
             cleanData = utils.format_body_params(request.json)
@@ -151,18 +153,20 @@ def signup(request):
 
 @user_bp.route("/login", methods=["POST"])
 def login(request):
-    # try:
-    emailAddress = request.json.get("emailAddress")
-    password = request.json.get("password")
-    user = utils.get_account_by_email(emailAddress)
+    try:
+        emailAddress = request.json.get("emailAddress")
+        password = request.json.get("password")
+        user = utils.get_account_by_email(emailAddress)
 
-    if not user:
-        return response.json({"error": "No account for provided email address"}, 400)
+        if not user:
+            return response.json(
+                {"error": "No account for provided email address"}, 400
+            )
 
-    if not user.pass_matches(password):
-        return response.json({"error": "Invalid credentials"}, 400)
+        if not user.pass_matches(password):
+            return response.json({"error": "Invalid credentials"}, 400)
 
-    return response.json(user.serialize(jwt=True), 200)
+        return response.json(user.serialize(jwt=True), 200)
 
-    # except Exception as e:
-    #     return utils.exeption_handler(e, "Login failed", 400)
+    except Exception as e:
+        return utils.exeption_handler(e, "Login failed", 400)

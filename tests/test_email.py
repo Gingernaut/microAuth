@@ -32,13 +32,6 @@ class TestValidateSignup:
         assert res.status == 400
         assert resData["error"] == "No user for given token"
 
-        # res2 = await test_server.get(
-        #     "/account", headers=[("Authorization", accData["jwt"])]
-        # )
-        # res2Data = await res2.json()
-
-        # assert res2Data["isVerified"] == True
-
 
 class TestPasswordReset:
     @sendgrid_enabled
