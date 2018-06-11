@@ -27,6 +27,7 @@ class CustomFormatter(jsonlogger.JsonFormatter):
     def process_log_record(self, log_record):
         super(CustomFormatter, self).process_log_record(log_record)
         tmp_log = {}
+        skipped_keys = {"host", "byte"}
         for k, v in log_record.items():
             # makes HTTP requests easier to parse and filter
             if k == "request" and v:
@@ -34,12 +35,12 @@ class CustomFormatter(jsonlogger.JsonFormatter):
                 tmp_log["method"] = req[0]
                 tmp_log["url"] = req[1]
             # better hostname matching than default
-            elif k == "host" and v:
-                tmp_log["host"] = socket.getfqdn()
+            elif k in skipped_keys:
+                pass
             # if no specific processing, include if the value is not null
             elif v:
                 tmp_log[k] = v
-        # alphabetically sort the log. JsonFormatter expects OrderedDict.
+        # alphabetically sort the log.
         return OrderedDict(sorted(tmp_log.items()))
 
 
