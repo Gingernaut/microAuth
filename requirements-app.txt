@@ -12,4 +12,4 @@ sendgrid==5.4.0
 json-logging==0.0.1
 sanic-cors==0.9.4
 logzero==1.5.0
-python-json-logger==0.1.8
+python-json-logger==0.1.9
