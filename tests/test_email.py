@@ -1,5 +1,4 @@
 import pytest
-
 import ujson
 from tests.conftest import sendgrid_enabled
 
@@ -16,7 +15,7 @@ async def create_account(test_server):
 class TestValidateSignup:
     @sendgrid_enabled
     async def test_confirm_account(self, test_server, create_account):
-        accData = await create_account
+        accData = create_account
         res = await test_server.post(f"/validate-account/{accData['UUID']}")
         resData = await res.json()
 
@@ -36,7 +35,7 @@ class TestValidateSignup:
 class TestPasswordReset:
     @sendgrid_enabled
     async def test_create_reset(self, test_server, create_account):
-        accData = await create_account
+        accData = create_account
         res = await test_server.post(f"/reset-password/{accData['emailAddress']}")
         resData = await res.json()
 
@@ -53,7 +52,7 @@ class TestPasswordReset:
         self, test_server, create_account, test_db, test_passreset
     ):
 
-        accData = await create_account
+        accData = create_account
         res = await test_server.post(f"/reset-password/{accData['emailAddress']}")
 
         reset = (

@@ -1,5 +1,4 @@
 import pytest
-
 import ujson
 
 
@@ -32,7 +31,7 @@ class TestAdminAccount:
         assert res.status == 401
 
     async def test_get_info(self, test_server, get_admin_jwt, admin_credentials):
-        jwtToken = await get_admin_jwt
+        jwtToken = get_admin_jwt
         res = await test_server.get("/account", headers=[("Authorization", jwtToken)])
         resData = await res.json()
 
@@ -42,7 +41,7 @@ class TestAdminAccount:
         assert resData["userRole"] == "ADMIN"
 
     async def test_update_role(self, test_server, get_admin_jwt):
-        jwtToken = await get_admin_jwt
+        jwtToken = get_admin_jwt
         payload = {"firstName": "thor", "lastName": "odinson", "userRole": "avenger"}
         res = await test_server.put(
             "/account", headers=[("Authorization", jwtToken)], data=ujson.dumps(payload)
@@ -58,8 +57,8 @@ class TestAdminAccount:
     async def test_access_all_accounts(
         self, test_server, get_admin_jwt, get_five_acccount_ids
     ):
-        jwtToken = await get_admin_jwt
-        userIds = await get_five_acccount_ids
+        jwtToken = get_admin_jwt
+        userIds = get_five_acccount_ids
         res = await test_server.get("/accounts", headers=[("Authorization", jwtToken)])
         resData = await res.json()
 
@@ -71,8 +70,8 @@ class TestAdminAccount:
     async def test_access_other_accounts(
         self, test_server, get_admin_jwt, get_five_acccount_ids
     ):
-        jwtToken = await get_admin_jwt
-        userIds = await get_five_acccount_ids
+        jwtToken = get_admin_jwt
+        userIds = get_five_acccount_ids
 
         for userId in userIds:
             res = await test_server.get(
@@ -86,8 +85,8 @@ class TestAdminAccount:
     async def test_update_other_accounts(
         self, test_server, get_admin_jwt, get_five_acccount_ids
     ):
-        jwtToken = await get_admin_jwt
-        userIds = await get_five_acccount_ids
+        jwtToken = get_admin_jwt
+        userIds = get_five_acccount_ids
         payload = {"firstName": "agent", "lastName": "smith"}
 
         for userId in userIds:
@@ -106,8 +105,8 @@ class TestAdminAccount:
     async def test_delete_other_accounts(
         self, test_server, get_admin_jwt, get_five_acccount_ids
     ):
-        jwtToken = await get_admin_jwt
-        userIds = await get_five_acccount_ids
+        jwtToken = get_admin_jwt
+        userIds = get_five_acccount_ids
 
         for userId in userIds:
             res = await test_server.delete(
@@ -119,7 +118,7 @@ class TestAdminAccount:
             assert resData["success"] == "Account deleted"
 
     async def test_access_nonexistent_account(self, test_server, get_admin_jwt):
-        jwtToken = await get_admin_jwt
+        jwtToken = get_admin_jwt
         res = await test_server.get(
             "/accounts/10000", headers=[("Authorization", jwtToken)]
         )

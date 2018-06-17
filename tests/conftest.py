@@ -1,5 +1,4 @@
 import sys
-
 import pytest
 
 sys.path.append("./app")
@@ -9,7 +8,7 @@ from utils.init_db import init_db
 from db.db_client import db
 from models.resets import PasswordReset
 
-
+# Avoid testing email endpoints if functionality is not enabled
 sendgrid_enabled = pytest.mark.skipif(
     get_config("TESTING").SENDGRID_API_KEY == None, reason="Sendgrid API key required"
 )
