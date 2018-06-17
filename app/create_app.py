@@ -10,12 +10,7 @@ from utils import logger
 Log = logger.get_logger(__name__)
 
 
-def create_app(env=None):
-    app = Sanic(__name__, log_config=logger.get_sanic_log_config())
-    app.config.from_object(get_config(env))
-
-    db.init_engine(env)
-
+def setup_middleware(app):
     @app.listener("before_server_start")
     async def setup_connection(app, loop):
         db.connect()
@@ -33,6 +28,14 @@ def create_app(env=None):
         async def req_cors(request):
             if request.method == "OPTIONS":
                 return response.HTTPResponse()
+
+
+def create_app(env=None):
+    app = Sanic(__name__, log_config=logger.get_sanic_log_config())
+    app.config.from_object(get_config(env))
+
+    db.init_engine(env)
+    setup_middleware(app)
 
     app.blueprint(user_bp)
     app.blueprint(admin_bp)
