@@ -1,5 +1,5 @@
 sanic==0.7.0
-gunicorn==19.8.1
+gunicorn==19.9.0
 SQLAlchemy==1.2.8
 psycopg2-binary==2.7.5
 ujson==1.35
