@@ -1,6 +1,6 @@
 sanic==0.7.0
 gunicorn==19.8.1
-SQLAlchemy==1.2.8
+SQLAlchemy==1.2.10
 psycopg2-binary==2.7.5
 ujson==1.35
 pendulum==2.0.2
