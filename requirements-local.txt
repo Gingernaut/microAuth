@@ -2,5 +2,5 @@ locustio==0.8.1
 pytest==3.6.2
 pytest-sanic==0.1.12
 black==18.6b3
-pre-commit==1.10.2
+pre-commit==1.10.4
 flake8==3.5.0
