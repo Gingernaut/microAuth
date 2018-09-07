@@ -1,4 +1,4 @@
-sanic==0.7.0
+sanic==0.8.1
 gunicorn==19.8.1
 SQLAlchemy==1.2.8
 psycopg2-binary==2.7.5
