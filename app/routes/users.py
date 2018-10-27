@@ -36,14 +36,12 @@ class Account_Endpoints(HTTPMethodView):
             cleanData = utils.format_body_params(request.json)
 
             if not cleanData:
-                # db.session.rollback()
                 return response.json(
                     {"error": "No valid data provided for update"}, 400
                 )
 
             if cleanData.get("userRole"):
                 if user.userRole != "ADMIN":
-                    # db.session.rollback()
                     return response.json({"error": "Unauthorized to update role"}, 401)
 
                 user.userRole = cleanData.get("userRole")
@@ -51,7 +49,6 @@ class Account_Endpoints(HTTPMethodView):
             if cleanData.get("password"):
                 providedPass = cleanData.get("password")
                 if len(providedPass) < request.app.config["MIN_PASS_LENGTH"]:
-                    # db.session.rollback()
                     return response.json(
                         {"error": "New password does not meet length requirements"}, 400
                     )
@@ -65,7 +62,6 @@ class Account_Endpoints(HTTPMethodView):
                     utils.email_account_exists(newEmail)
                     and utils.get_account_by_email(newEmail).id != user.id
                 ):
-                    # db.session.rollback()
                     return response.json(
                         {"error": "Email address associated with another account"}, 400
                     )
