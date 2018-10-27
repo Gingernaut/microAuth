@@ -96,6 +96,9 @@ Logs are written in JSON format for easy analysis in tools like ElasticSearch/Ki
 {"levelname": "INFO", "message": "Starting worker [13250]", "timestamp": "2018-06-05 23:49:17 UTC"}
 {"levelname": "INFO", "method": "POST", "status": 200, "timestamp": "2018-06-05 23:49:20 UTC", "url": "http://localhost:5000/login"}
 ```
+## Frontend
+
+Want a ready-to-go frontend that works perfectly with this project? Check out [microAuth](https://github.com/gingernaut/Peridot), a fully featured Vue 3 boilerplate.
 
 ## Contributing
 
