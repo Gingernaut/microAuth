@@ -6,7 +6,7 @@ ujson==1.35
 pendulum==2.0.4
 python-dotenv==0.9.1
 PyJWT==1.6.4
-argon2-cffi==18.3.0
+argon2-cffi==19.1.0
 passlib==1.7.1
 sendgrid==5.6.0
 json-logging==0.0.9
