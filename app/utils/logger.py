@@ -31,9 +31,12 @@ class CustomFormatter(jsonlogger.JsonFormatter):
         for k, v in log_record.items():
             # makes HTTP requests easier to parse and filter
             if k == "request" and v:
-                req = v.split(" ")
-                tmp_log["method"] = req[0]
-                tmp_log["url"] = req[1]
+                try:
+                    req = v.split(" ")
+                    tmp_log["method"] = req[0]
+                    tmp_log["url"] = req[1]
+                except:
+                    tmp_log["request"] = v
             # better hostname matching than default
             elif k in skipped_keys:
                 pass

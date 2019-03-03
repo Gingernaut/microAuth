@@ -30,8 +30,8 @@ def app():
 
 
 @pytest.fixture
-def test_server(loop, app, test_client):
-    return loop.run_until_complete(test_client(app))
+def test_server(loop, app, sanic_client):
+    return loop.run_until_complete(sanic_client(app))
 
 
 @pytest.fixture
