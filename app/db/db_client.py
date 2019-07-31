@@ -3,8 +3,6 @@ from sqlalchemy import create_engine, orm
 from config import get_config
 from models.base import Base
 
-# https://github.com/fantix/gino ?
-
 
 class SQLAlchemy:
     def __init__(self, autocommit=False):
