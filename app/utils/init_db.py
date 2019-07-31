@@ -1,15 +1,15 @@
+# flake8: noqa
 import sys
 import time
 
 sys.path.append("./app")
 
-from passlib.hash import argon2
-
 from config import get_config
 from db.db_client import db
 from models.base import Base
-from models.users import User
-from models.resets import PasswordReset
+from models.user import User
+from models.reset import PasswordReset
+from passlib.hash import argon2
 
 # All models must be imported so the appropriate tables are created
 
@@ -18,32 +18,38 @@ def init_db(env=None):
     print("\n")
 
     try:
-        appConfig = get_config(env)
+        app_config = get_config(env)
 
-        if appConfig.API_ENV == "PRODUCTION":
-            for i in range(5, -1, -1):
-                print(
-                    f">Running initalization against PRODUCTION database in {i} seconds...",
-                    end="\r",
-                )
-                time.sleep(1)
-            print("\n")
+        if app_config.API_ENV == "PRODUCTION":
+            should_run = input(
+                "!! Running database initialization against PRODUCTION database. This will delete all data & tables. \n Do you want to proceed? [Y/N]  "
+            )
+            if should_run.upper() != "Y":
+                print("exiting DB intialization script")
+                exit(0)
 
+        print("---------")
         print(">Creating tables and default admin account. \n")
-        db.init_engine(env)
-        Base.metadata.drop_all(bind=db.engine)
-        db.create_tables()
+        db.initialize_connection(env)
+        db.sessionmaker.close_all()
 
+        print("initialized connection")
+        print("droppint tables")
+        Base.metadata.drop_all(bind=db.engine)
+        print("creating new tables")
+        db.create_tables()
+        print("adding admin")
         admin = User(
-            emailAddress=appConfig.ADMIN_EMAIL,
-            password=argon2.hash(appConfig.ADMIN_PASSWORD),
+            emailAddress=app_config.ADMIN_EMAIL,
+            password=argon2.hash(app_config.ADMIN_PASSWORD),
             userRole="ADMIN",
             isVerified=True,
         )
+        session = db.new_session()
 
-        db.session.add(admin)
-        db.session.commit()
-        db.close()
+        session.add(admin)
+        session.commit()
+        session.remove()
 
         print("---------")
         print(">Database succesfully initialized")

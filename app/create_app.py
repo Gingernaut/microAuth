@@ -1,47 +1,83 @@
-from sanic import Sanic, response
-
+import time
+from fastapi import FastAPI
+from starlette.requests import Request
 from config import get_config
+
+from routes import admin, account, login_signup, reset_verify
 from db.db_client import db
-from routes.admins import Admin_Endpoints, admin_bp
-from routes.users import Account_Endpoints, user_bp
-from routes.email import email_bp
-from utils import logger
-
-Log = logger.get_logger(__name__)
+from db.user_queries import UserQueries
+from db.reset_queries import PasswordResetQueries
 
 
-def setup_middleware(app):
-    @app.listener("before_server_start")
-    async def setup_connection(app, loop):
-        db.connect()
+def setup_middleware(app, configuration):
+    @app.middleware("http")
+    async def add_config(request: Request, call_next):
+        request.state.config = configuration
+        return await call_next(request)
 
-    @app.listener("after_server_stop")
-    async def close_connection(app, loop):
-        db.close()
+    @app.middleware("http")
+    async def db_connection_manager(request: Request, call_next):
+        db_session = db.new_session()
+        try:
+            request.state.user_queries = UserQueries(db_session)
+            request.state.reset_queries = PasswordResetQueries(db_session)
 
-    if app.config["ENABLE_CORS"]:
-        from sanic_cors import CORS
+            response = await call_next(request)
 
-        CORS(app)
+            db_session.flush()
+            return response
+        finally:
+            db_session.remove()
 
-        @app.middleware("request")
-        async def req_cors(request):
-            if request.method == "OPTIONS":
-                return response.HTTPResponse()
+    @app.middleware("http")
+    async def add_headers_and_log(request: Request, call_next):
+
+        start_time = time.time()
+        response = await call_next(request)
+        process_time_ms = round((time.time() - start_time) * 1000, 2)
+        response.headers["X-process-time-ms"] = str(process_time_ms)
+
+        request_data = {
+            "method": request.method,
+            "path": request.url.path,
+            "client": {"host": request.client.host, "port": request.client.port},
+            "elapsed_ms": str(process_time_ms),
+            "status_code": response.status_code,
+        }
+
+        print(request_data)
+        return response
 
 
-def create_app(env=None):
-    app = Sanic(__name__, log_config=logger.get_sanic_log_config())
-    app.config.from_object(get_config(env))
+def setup_db_connection(app, configuration):
+    @app.on_event("startup")
+    async def startup_event():
+        db.initialize_connection(configuration.API_ENV)
 
-    db.init_engine(env)
-    setup_middleware(app)
+    @app.on_event("shutdown")
+    def shutdown_event():
+        db.sessionmaker.close_all()
 
-    app.blueprint(user_bp)
-    app.blueprint(admin_bp)
-    app.blueprint(email_bp)
-    app.add_route(Account_Endpoints.as_view(), "/account")
-    app.add_route(Admin_Endpoints.as_view(), "/accounts/<id>")
 
-    Log.info("created app")
+def create_app(configuration):
+
+    app = FastAPI()
+
+    app.include_router(admin.router)
+    app.include_router(account.router)
+    app.include_router(login_signup.router)
+    app.include_router(reset_verify.router)
+
+    setup_middleware(app, configuration)
+    setup_db_connection(app, configuration)
+
+    print("-----------")
+    print(f"Created {configuration.API_ENV} application")
+    print("-----------")
     return app
+
+
+# called from uvicorn in `main.py`
+if __name__ == "create_app":
+    configuration = get_config()
+    app = create_app(configuration)

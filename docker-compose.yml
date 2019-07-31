@@ -7,9 +7,14 @@
       environment:
         POSTGRES_USER: "${LOCAL_DB_USERNAME}"
         POSTGRES_PASSWORD: "${LOCAL_DB_PASSWORD}"
+      network_mode: "host"
+    
     microauth:
       build: .
       ports:
-        - "5000:5000"
+        - "8000:8000"
       depends_on:
         - database
+      env_file:
+        - .env
+      network_mode: "host"

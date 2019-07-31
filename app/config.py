@@ -5,16 +5,19 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 env_path = Path.cwd() / ".env"
-load_dotenv(dotenv_path=env_path)
+load_dotenv(dotenv_path=env_path, override=False)
 
 # fmt: off
+
+
 class BaseConfig:
     """Base configuration"""
     API_ENV = os.getenv("API_ENV", "DEVELOPMENT")
-    LOGO = None # Sanic logged logo
+    LOGO = None  # Sanic logged logo
     DB_USERNAME = os.getenv("LOCAL_DB_USERNAME", NotImplementedError("db username required"))
     DB_PASSWORD = os.getenv("LOCAL_DB_PASSWORD", NotImplementedError("db password required"))
-    DB_URL = "0.0.0.0:5432"
+    DB_HOST = os.getenv("LOCAL_DB_HOST", NotImplementedError("db host required"))
+    DB_PORT = os.getenv("LOCAL_DB_PORT", NotImplementedError("db port required"))
     DB_NAME = os.getenv("LOCAL_DB_USERNAME", NotImplementedError("db username required"))
     ADMIN_EMAIL = os.getenv("LOCAL_ADMIN_EMAIL", NotImplementedError("admin user email required"))
     ADMIN_PASSWORD = os.getenv("LOCAL_ADMIN_PASSWORD", NotImplementedError("admin user password required"))
@@ -23,7 +26,7 @@ class BaseConfig:
     MIN_PASS_LENGTH = 6
     JWT_ALGORITHM = "HS256"
     HOST = "0.0.0.0"
-    PORT = 5000
+    PORT = 8000
     WORKERS = 4
     ENABLE_CORS = True
 
@@ -50,8 +53,9 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """Production configuration"""
     API_ENV = "PRODUCTION"
-    JWT_SECRET = os.getenv("JWT_SECRET",  NotImplementedError("jwt secret required"))
-    DB_URL = os.getenv("DB_URL", NotImplementedError("production db url required"))
+    JWT_SECRET = os.getenv("JWT_SECRET", NotImplementedError("jwt secret required"))
+    DB_HOST = os.getenv("DB_HOST", NotImplementedError("production db host required"))
+    DB_PORT = os.getenv("DB_PORT", NotImplementedError("production db port required"))
     DB_NAME = os.getenv("DB_NAME", NotImplementedError("production db name required"))
     DB_USERNAME = os.getenv("DB_USERNAME", NotImplementedError("production db username required"))
     DB_PASSWORD = os.getenv("DB_PASSWORD", NotImplementedError("production db password required"))

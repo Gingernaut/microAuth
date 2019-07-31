@@ -1,6 +1,5 @@
-locustio==0.11.0    
-pytest==4.6.3
-pytest-sanic==1.0.0
-black==18.9b0
 pre-commit==1.17.0
+black==19.3b0
 flake8==3.7.8
+pytest==5.0.1
+requests==2.22.0
