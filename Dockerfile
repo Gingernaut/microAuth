@@ -10,7 +10,9 @@ RUN apk add --no-cache \
     && pip3 install --upgrade pip setuptools \
     && if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi \
     && if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi \
-    && pip3 install --no-cache-dir -r /requirements.txt
+    && pip3 install --no-cache-dir -r /requirements.txt \
+    && pip3 install git+git://github.com/esnme/ultrajson.git
+    # ujson 1.35 is broken on alpine, but from git repo works
 
 COPY supervisord.conf /etc/supervisord.conf
 COPY gunicorn.conf /app
