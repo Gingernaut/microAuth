@@ -35,10 +35,10 @@ def send_reset_email(request: Request, email_address: str):
     if not user_account:
         raise HTTPException(status_code=404)
 
-    # reset=
-    request.state.reset_queries.create_reset(user_account.id)
+    reset = request.state.reset_queries.create_reset(user_account.id)
 
     if app_config.API_ENV != "TESTING":
+        print(reset.gen_token())
         print("send email here")
 
     return {"success": f"reset initiated for account {email_address}"}
@@ -63,7 +63,9 @@ def get_user_from_token(request: Request, token: str):
     try:
         print(token)
         tokenData = jwt.decode(
-            token, app_config.JWT_SECRET, algorithms=[app_config.JWT_ALGORITHM]
+            token.replace("__DT__", "."),
+            app_config.JWT_SECRET,
+            algorithms=[app_config.JWT_ALGORITHM],
         )
 
         reset = request.state.reset_queries.get_reset_by_id(tokenData["id"])

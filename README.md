@@ -25,25 +25,22 @@ _uses Python3.6+, Docker, and Docker-compose_
 6.  Run test suite with `pytest` _(also initializes database)_.
 7.  Run the application with `python3 app/main.py`
 
+View documentation at `http://localhost:8000/docs`
+
 ### Production
 
-1.  Create a PostgreSQL instance on the cloud provider of your choice _(AWS, Digital Ocean, etc_.
+1.  Create a PostgreSQL instance on the cloud provider of your choice _(AWS, Digital Ocean, etc)_.
 2.  Fill out `.env` with your credentials, and change `API_ENV` to `PRODUCTION`.
 3.  Initialize the database with `python3 app/utils/init_db.py`
 4.  Build the project with `docker build -t microauth .`
 5.  Run with `docker run -p 5000:5000 -d microauth`
 
 
-## TODO
-
-revisit Sqlalchemy sessions and opening/closing connections per request, what the settings should be
-set up cascade deletes relationship for user/resets
-
 
 
 ### Email Resets (Optional)
 
-To enable signup verification and password resets for your users, sign up for a [Sendgrid Account](https://sendgrid.com) and add your API Key to `.env`.
+If you would like users to be able to verify their email address and reset their passwords, sign up for a [Sendgrid Account](https://sendgrid.com) and add your API Key to `.env`.
 
 [Credit for the email HTML templates](https://github.com/wildbit/postmark-templates)
 

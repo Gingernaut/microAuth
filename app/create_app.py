@@ -1,4 +1,5 @@
 import time
+import pendulum
 from fastapi import FastAPI
 from starlette.requests import Request
 from config import get_config
@@ -40,6 +41,7 @@ def setup_middleware(app, configuration):
         request_data = {
             "method": request.method,
             "path": request.url.path,
+            "request_time": pendulum.from_timestamp(start_time).to_datetime_string(),
             "client": {"host": request.client.host, "port": request.client.port},
             "elapsed_ms": str(process_time_ms),
             "status_code": response.status_code,

@@ -33,4 +33,4 @@ class PasswordReset(Base):
             jwt.encode(payload, app_config.JWT_SECRET, app_config.JWT_ALGORITHM).decode(
                 "utf-8"
             )
-        )
+        ).replace(".", "__DT__")
