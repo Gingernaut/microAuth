@@ -45,6 +45,9 @@ class User(Base):
         self.createdTime = now
         self.modifiedTime = now
 
+    def __str__(self):
+        return "id: {} email: {}".format(self.id, self.emailAddress)
+
     def gen_token(self, expire_hours=app_config.TOKEN_TTL_HOURS):
         payload = {
             "userId": self.id,

@@ -15,8 +15,6 @@ from passlib.hash import argon2
 
 
 def init_db(env=None):
-    print("\n")
-
     try:
         app_config = get_config(env)
 
@@ -30,11 +28,10 @@ def init_db(env=None):
 
         print("---------")
         print(">Creating tables and default admin account. \n")
-        db.initialize_connection(env)
+        db.initialize_connection(app_config.API_ENV)
         db.sessionmaker.close_all()
 
-        print("initialized connection")
-        print("droppint tables")
+        print("dropping tables")
         Base.metadata.drop_all(bind=db.engine)
         print("creating new tables")
         db.create_tables()
