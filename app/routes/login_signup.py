@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from starlette.responses import UJSONResponse
-from utils.security import encrypt_password
 from starlette.requests import Request
-
+from utils.security import encrypt_password
+from utils import email
 from schemas.user import UserCreate, LoggedInUser
 from models.user import User as UserModel
 
@@ -34,10 +34,15 @@ async def signup(request: Request, userPayload: UserCreate):
 
     new_account = request.state.user_queries.create_user(user)
 
-    # if send email:
-    # send email
-    # reset=
-    request.state.reset_queries.create_reset(user.id)
+    if request.state.config.SENDGRID_API_KEY:
+        verify_reset = request.state.reset_queries.create_reset(user.id)
+
+        if request.state.config.API_ENV != "TESTING":
+            try:
+                email.send_confirmation_email(user, verify_reset)
+            except Exception as e:
+                request.state.reset_queries.invalidate_resets_for_user(user.id)
+                print(e.message)
 
     new_account.jwt = new_account.gen_token()
     return LoggedInUser.from_orm(new_account)

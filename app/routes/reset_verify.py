@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from schemas.user import LoggedInUser
 from starlette.responses import UJSONResponse
 from starlette.requests import Request
+from utils import email
 
 import jwt
 from config import get_config
@@ -37,9 +38,8 @@ def send_reset_email(request: Request, email_address: str):
 
     reset = request.state.reset_queries.create_reset(user_account.id)
 
-    if app_config.API_ENV != "TESTING":
-        print(reset.gen_token())
-        print("send email here")
+    if request.state.config.API_ENV != "TESTING":
+        email.send_reset_email(user_account, reset)
 
     return {"success": f"reset initiated for account {email_address}"}
 
@@ -48,14 +48,15 @@ def send_reset_email(request: Request, email_address: str):
     "/confirm-reset/{token}", response_class=UJSONResponse, response_model=LoggedInUser
 )
 def confirm_reset(request: Request, token: str):
-    # try:
-    user = get_user_from_token(request, token)
+    try:
+        user = get_user_from_token(request, token)
 
-    request.state.reset_queries.invalidate_resets_for_user(user.id)
-    user.jwt = user.gen_token()
-    return LoggedInUser.from_orm(user)
-    # except:
-    #     raise HTTPException(403)
+        request.state.reset_queries.invalidate_resets_for_user(user.id)
+        user.jwt = user.gen_token()
+        return LoggedInUser.from_orm(user)
+    except Exception as e:
+        print(e.message)
+        raise HTTPException(403)
 
 
 def get_user_from_token(request: Request, token: str):

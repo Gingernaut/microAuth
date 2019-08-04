@@ -9,9 +9,10 @@ Fill out a simple config file and have RESTful API endpoints for everything need
 
 Features
 * Full API documentation available via Swagger at `/docs`
-* Dockerized production setup 
+* Account confirmation and password resets via email, powered by [Sendgrid](https://sendgrid.com)
+* Thorough unit test coverage
 
-Uses 
+![Screenshot](./github/documentation.png)
 
 ### Running locally
 
