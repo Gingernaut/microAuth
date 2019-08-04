@@ -9,4 +9,5 @@ PyJWT==1.7.1
 argon2-cffi==19.1.0
 passlib==1.7.1
 pendulum==2.0.5
-sendgrid==6.0.5 
+sendgrid==6.0.5
+python-json-logger==0.1.11

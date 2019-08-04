@@ -26,9 +26,6 @@ async def update_account(
     elif payload.userRole:
         userModel.userRole = payload.userRole
 
-    if payload.firstName:
-        userModel.firstName = payload.firstName
-
     if payload.emailAddress:
         existing_email_account = request.state.user_queries.get_user_by_email(
             payload.emailAddress
@@ -40,8 +37,14 @@ async def update_account(
         else:
             userModel.emailAddress = payload.emailAddress.lower()
 
+    if payload.firstName:
+        userModel.firstName = payload.firstName
+
     if payload.lastName:
         userModel.lastName = payload.lastName
+
+    if payload.phoneNumber:
+        userModel.phoneNumber = payload.phoneNumber
 
     if payload.password:
         userModel.password = encrypt_password(payload.password)

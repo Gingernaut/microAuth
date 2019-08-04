@@ -11,6 +11,18 @@ from db.reset_queries import PasswordResetQueries
 
 
 def setup_middleware(app, configuration):
+
+    if configuration.ENABLE_CORS:
+        from starlette.middleware.cors import CORSMiddleware
+
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+
     @app.middleware("http")
     async def add_config(request: Request, call_next):
         request.state.config = configuration
