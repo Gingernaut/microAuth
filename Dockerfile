@@ -15,6 +15,7 @@ RUN apk add --no-cache \
     # ujson 1.35 is broken on alpine3.9, but from git repo works
 
 COPY supervisord.conf /etc/supervisord.conf
+COPY email-templates/ /app/email-templates
 COPY gunicorn.conf /app
 COPY .env /app
 COPY app /app

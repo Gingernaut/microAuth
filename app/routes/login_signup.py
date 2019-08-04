@@ -38,11 +38,12 @@ async def signup(request: Request, userPayload: UserCreate):
         verify_reset = request.state.reset_queries.create_reset(user.id)
 
         if request.state.config.API_ENV != "TESTING":
+            email.send_confirmation_email(user, verify_reset)
             try:
                 email.send_confirmation_email(user, verify_reset)
             except Exception as e:
                 request.state.reset_queries.invalidate_resets_for_user(user.id)
-                print(e.message)
+                print(e)
 
     new_account.jwt = new_account.gen_token()
     return LoggedInUser.from_orm(new_account)

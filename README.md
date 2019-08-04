@@ -9,7 +9,7 @@ Fill out a simple config file and have RESTful API endpoints for everything need
 ![Screenshot](./.github/documentation.png)
 
 
-Features
+Features:
 
 * Full API documentation available via Swagger at `/docs`
 * Account confirmation and password resets via email, powered by [Sendgrid](https://sendgrid.com)
@@ -35,7 +35,7 @@ View documentation at `http://localhost:8000/docs`
 2.  Fill out `.env` with your credentials, and change `API_ENV` to `PRODUCTION`.
 3.  Initialize the database with `python3 app/utils/init_db.py`
 4.  Build the project with `docker build -t microauth .`
-5.  Run with `docker run -p 5000:5000 -d microauth`
+5.  Run with `docker run -p 8000:8000 -d microauth`
 
 
 

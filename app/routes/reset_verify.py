@@ -55,7 +55,7 @@ def confirm_reset(request: Request, token: str):
         user.jwt = user.gen_token()
         return LoggedInUser.from_orm(user)
     except Exception as e:
-        print(e.message)
+        print(e)
         raise HTTPException(403)
 
 
