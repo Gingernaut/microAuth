@@ -1,5 +1,6 @@
 import uvicorn
 from config import get_config
+from utils.logger import create_logger
 
 """
 Application is run from the root of the project directory with `python3 app/main.py`
@@ -17,4 +18,5 @@ if __name__ == "__main__":
         debug=(conf.API_ENV != "PRODUCTION"),
         reload=(conf.API_ENV != "PRODUCTION"),
         access_log=False,  # disabled in favor of logging middleware,
+        logger=create_logger(__name__),
     )

@@ -8,9 +8,9 @@ from routes import admin, account, login_signup, reset_verify
 from db.db_client import db
 from db.user_queries import UserQueries
 from db.reset_queries import PasswordResetQueries
-import logging
+from utils.logger import create_logger
 
-logger = logging.getLogger(__name__)
+log = create_logger(__name__)
 
 
 def setup_middleware(app, configuration):
@@ -62,7 +62,7 @@ def setup_middleware(app, configuration):
             "status_code": response.status_code,
         }
 
-        print(request_data)
+        log.info(request_data)
         return response
 
 
@@ -91,9 +91,9 @@ def create_app(configuration):
     setup_middleware(app, configuration)
     setup_db_connection(app, configuration)
 
-    print("-----------")
-    print(f"Created {configuration.API_ENV} application")
-    print("-----------")
+    log.info("-----------")
+    log.info(f"Created {configuration.API_ENV} application")
+    log.info("-----------")
     return app
 
 
