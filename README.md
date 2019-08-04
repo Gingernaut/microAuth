@@ -11,9 +11,11 @@ Fill out a simple config file and have RESTful API endpoints for everything need
 
 Features:
 
-* Full API documentation available via Swagger at `/docs`
+* Full API documentation via Swagger at `/docs`
 * Account confirmation and password resets via email, powered by [Sendgrid](https://sendgrid.com)
+* Production Docker setup
 * Thorough unit test coverage
+* json logging
 
 ### Running locally
 
@@ -38,7 +40,17 @@ View documentation at `http://localhost:8000/docs`
 5.  Run with `docker run -p 8000:8000 -d microauth`
 
 
+### Logging
 
+Logs are written in json format to stdout/stderr during local development and to `/var/log/app.log` inside Docker.
+
+```
+{"message": "-----------"}
+{"message": "Created DEVELOPMENT application"}
+{"message": "-----------"}
+{"message": null, "method": "POST", "path": "/signup", "request_time": "2019-08-04 21:57:38", "client": {"host": "127.0.0.1", "port": 48786}, "elapsed_ms": "375.78", "status_code": 201}
+{"message": null, "method": "POST", "path": "/login", "request_time": "2019-08-04 21:57:42", "client": {"host": "127.0.0.1", "port": 48786}, "elapsed_ms": "37.8", "status_code": 200}
+```
 
 ### Email Resets (Optional)
 
