@@ -8,6 +8,9 @@ from routes import admin, account, login_signup, reset_verify
 from db.db_client import db
 from db.user_queries import UserQueries
 from db.reset_queries import PasswordResetQueries
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def setup_middleware(app, configuration):

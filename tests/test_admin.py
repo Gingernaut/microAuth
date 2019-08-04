@@ -75,7 +75,6 @@ class TestAdminAccount:
                 f"/accounts/{userId}", headers={"Authorization": f"Bearer {admin_jwt}"}
             )
             resData = res.json()
-            print(resData)
 
             assert res.status_code == 200
             assert resData["id"] == userId

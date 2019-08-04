@@ -18,16 +18,16 @@ app_config = get_config()
     response_model=LoggedInUser,
 )
 def confirm_account(request: Request, token: str):
-    # try:
-    user = get_user_from_token(request, token)
-    user.isVerified = True
-    request.state.user_queries.update_user(user)
-    request.state.reset_queries.invalidate_resets_for_user(user.id)
-    user.jwt = user.gen_token()
+    try:
+        user = get_user_from_token(request, token)
+        user.isVerified = True
+        request.state.user_queries.update_user(user)
+        request.state.reset_queries.invalidate_resets_for_user(user.id)
+        user.jwt = user.gen_token()
 
-    return LoggedInUser.from_orm(user)
-    # except:
-    #     raise HTTPException(403)
+        return LoggedInUser.from_orm(user)
+    except:
+        raise HTTPException(403)
 
 
 @router.post("/initiate-reset/{email_address}", response_class=UJSONResponse)
@@ -62,7 +62,6 @@ def confirm_reset(request: Request, token: str):
 def get_user_from_token(request: Request, token: str):
 
     try:
-        print(token)
         tokenData = jwt.decode(
             token.replace("__DT__", "."),
             app_config.JWT_SECRET,

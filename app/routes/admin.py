@@ -47,6 +47,9 @@ async def update_user(
     if payload.lastName:
         userModel.lastName = payload.lastName
 
+    if payload.phoneNumber:
+        userModel.phoneNumber = payload.phoneNumber
+
     if payload.password:
         userModel.password = encrypt_password(payload.password)
 
