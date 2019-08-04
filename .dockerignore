@@ -8,3 +8,4 @@ __pycache__
 *.log
 LICENSE.txt
 default.env
+.github/

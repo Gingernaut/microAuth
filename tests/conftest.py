@@ -1,17 +1,15 @@
+# flake8: noqa: E402
 import sys
 import pytest
+import ujson
 
 sys.path.append("./app")
 from config import get_config
 from create_app import create_app
-from utils.init_db import init_db
 from db.db_client import db
-from models.resets import PasswordReset
+from utils.init_db import init_db
 
-# Avoid testing email endpoints if functionality is not enabled
-sendgrid_enabled = pytest.mark.skipif(
-    get_config("TESTING").SENDGRID_API_KEY == None, reason="Sendgrid API key required"
-)
+from starlette.testclient import TestClient
 
 
 @pytest.fixture
@@ -20,29 +18,30 @@ def app_config():
 
 
 @pytest.fixture
-def app():
-    """
-    Run for each test. init_db environment specified to prevent tests being run against
-    Production database even if API_ENV in .env is set to PRODUCTION.
-    """
-    init_db("TESTING")
-    yield create_app("TESTING")
+def init_app(app_config):
+    # Re-initializes local postgres DB before each test
+    init_db(app_config.API_ENV)
+    yield create_app(app_config)
 
 
 @pytest.fixture
-def test_server(loop, app, sanic_client):
-    return loop.run_until_complete(sanic_client(app))
+def test_server(init_app):
+    return TestClient(init_app)
 
 
 @pytest.fixture
-def test_db():
-    return db
+def db_session():
+    session = db.new_session()
+    yield session
+    session.remove()
 
 
-# Needed for DB queries against model table
 @pytest.fixture
-def test_passreset():
-    return PasswordReset
+def create_account_jwt(test_server):
+    payload = {"emailAddress": "test@example.com", "password": "123456"}
+    res = test_server.post("/signup", data=ujson.dumps(payload))
+    resData = res.json()
+    return resData["jwt"]
 
 
 # initialize database when tests are done.
