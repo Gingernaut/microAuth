@@ -59,6 +59,18 @@ If you would like users to be able to verify their email address and reset their
 [Credit for the email HTML templates](https://github.com/wildbit/postmark-templates)
 
 
+#### Adding new models
+
+1. Create sqlalchemy model in `app/models/`.
+2. Create database queries for the model in `app/db/`
+3. Create Pydantic "Schema" in `app/schemas/` for API validation and documentation
+4. Import model in `alembic/env.py`
+
+Now you should be ready to apply a change to your existing database with alembic.
+`alembic revision -m "made some change" --autogenerate` _(generates migration plan in `alembic/versions/`)_
+`alembic upgrade head` _(applies database changes)_
+
+
 #### Testing
 
 Tests are always run against the local docker PostgreSQL instance. The database is re-initialized before each test, and after the last test is run.

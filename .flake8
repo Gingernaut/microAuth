@@ -1,5 +1,6 @@
 [flake8]
 max-line-length = 88
+exclude = .git,__pycache__,alembic,versions
 ...
 select = C,E,F,W,B,B950
 ignore = E501,E722
