@@ -25,12 +25,13 @@ import sys
 
 sys.path.append("./app")
 from db.db_client import db
-from models.base import Base
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
+
+# Import models for migrations
+from models.base import Base
+from models.user import User
+from models.reset import PasswordReset
+
 target_metadata = Base.metadata
 
 
