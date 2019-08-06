@@ -4,12 +4,13 @@ from schemas.user import LoggedInUser
 from starlette.responses import UJSONResponse
 from starlette.requests import Request
 from utils import email
-
+from utils.logger import create_logger
 import jwt
 from config import get_config
 
 router = APIRouter()
 app_config = get_config()
+log = create_logger(__name__)
 
 
 @router.post(
@@ -26,7 +27,8 @@ def confirm_account(request: Request, token: str):
         user.jwt = user.gen_token()
 
         return LoggedInUser.from_orm(user)
-    except:
+    except Exception as e:
+        log.error(e)
         raise HTTPException(403)
 
 
@@ -82,5 +84,5 @@ def get_user_from_token(request: Request, token: str):
             raise HTTPException(status_code=404)
         return user
     except Exception as e:
-        print(e)
+        log.error(e)
         raise HTTPException(403)

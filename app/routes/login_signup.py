@@ -5,8 +5,11 @@ from utils.security import encrypt_password
 from utils import email
 from schemas.user import UserCreate, LoggedInUser
 from models.user import User as UserModel
+from utils.logger import create_logger
 
 router = APIRouter()
+
+log = create_logger(__name__)
 
 
 @router.post(
@@ -43,7 +46,7 @@ async def signup(request: Request, userPayload: UserCreate):
                 email.send_confirmation_email(user, verify_reset)
             except Exception as e:
                 request.state.reset_queries.invalidate_resets_for_user(user.id)
-                print(e)
+                log.error(e)
 
     new_account.jwt = new_account.gen_token()
     return LoggedInUser.from_orm(new_account)
