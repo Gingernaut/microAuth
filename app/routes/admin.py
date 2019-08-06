@@ -38,6 +38,17 @@ async def update_user(
     if not userModel:
         raise HTTPException(status_code=404, detail=f"Account not found")
 
+    if payload.emailAddress:
+        existing_email_account = request.state.user_queries.get_user_by_email(
+            payload.emailAddress
+        )
+        if existing_email_account and existing_email_account.id != current_user.id:
+            raise HTTPException(
+                status_code=403, detail=f"Account with that email already exists"
+            )
+        else:
+            userModel.emailAddress = payload.emailAddress.lower()
+
     if payload.userRole:
         userModel.userRole = payload.userRole
 

@@ -22,6 +22,10 @@ def send_confirmation_email(user: UserModel, reset: ResetModel):
             f"{appConfig.FROM_WEBSITE_URL}/confirm-account/{reset.gen_token()}",
         )
 
+        welcome_email = welcome_email.replace(
+            "__WEBSITE_URL__", f"{appConfig.FROM_WEBSITE_URL}/"
+        )
+
         name = user.firstName
         if not name:
             name = user.emailAddress
