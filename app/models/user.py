@@ -4,6 +4,7 @@ import jwt
 import pendulum
 from passlib.hash import argon2
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, String
+from sqlalchemy.dialects.postgresql import UUID
 from config import get_config
 from models.base import Base
 
@@ -19,7 +20,7 @@ class User(Base):
     password = Column(String(100), nullable=False)
     createdTime = Column(DateTime, nullable=False)
     modifiedTime = Column(DateTime, nullable=False)
-    UUID = Column(String(36), nullable=False, default=uuid.uuid4())
+    UUID = Column(UUID(as_uuid=True), nullable=False, default=uuid.uuid4())
     phoneNumber = Column(String(14), nullable=True, default=None)
     isVerified = Column(Boolean, nullable=False, default=False)
     userRole = Column(String(14), nullable=False, default="USER")

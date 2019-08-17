@@ -64,7 +64,7 @@ If you would like users to be able to verify their email address and reset their
 1. Create sqlalchemy model in `app/models/`.
 2. Create database queries for the model in `app/db/`
 3. Create Pydantic "Schema" in `app/schemas/` for API validation and documentation
-4. Import model in `alembic/env.py`
+4. Import model in `alembic/env.py` and `utils/init_db.py`
 
 Now you should be ready to apply a change to your existing database with alembic.
 `alembic revision -m "made some change" --autogenerate` _(generates migration plan in `alembic/versions/`)_
