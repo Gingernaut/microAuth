@@ -1,6 +1,8 @@
 import pendulum
 import jwt
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 from config import get_config
 from models.base import Base
 
@@ -11,7 +13,7 @@ app_config = get_config()
 
 class PasswordReset(Base):
     __tablename__ = "password_reset"
-    id = Column(BigInteger, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True)
     userId = Column(
         BigInteger, ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
@@ -19,11 +21,12 @@ class PasswordReset(Base):
     isValid = Column(Boolean, nullable=False, default=True)
 
     def __init__(self, userId):
+        self.id = uuid.uuid4()
         self.userId = userId
 
     def gen_token(self):
         payload = {
-            "id": self.id,
+            "id": str(self.id),
             "userId": self.userId,
             "exp": pendulum.now("UTC").add(
                 hours=int(app_config.PASSWORD_RESET_LINK_TTL_HOURS)

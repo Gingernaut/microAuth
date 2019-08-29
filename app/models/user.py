@@ -20,7 +20,7 @@ class User(Base):
     password = Column(VARCHAR, nullable=False)
     createdTime = Column(DateTime, nullable=False)
     modifiedTime = Column(DateTime, nullable=False)
-    UUID = Column(UUID(as_uuid=True), nullable=False, default=uuid.uuid4())
+    UUID = Column(UUID(as_uuid=True), nullable=False)
     phoneNumber = Column(VARCHAR, nullable=True, default=None)
     isVerified = Column(Boolean, nullable=False, default=False)
     userRole = Column(VARCHAR, nullable=False, default="USER")
@@ -45,6 +45,7 @@ class User(Base):
         self.isVerified = isVerified
         self.createdTime = now
         self.modifiedTime = now
+        self.UUID = uuid.uuid4()
 
     def __str__(self):
         return "id: {} email: {}".format(self.id, self.emailAddress)
