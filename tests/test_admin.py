@@ -97,6 +97,8 @@ class TestAdminAccount:
             assert resData["firstName"] == "agent"
             assert resData["lastName"] == "smith"
 
+    # TODO: Add test case for successful and non-successful email update
+
     def test_delete_other_accounts(
         self, test_server, get_admin_jwt, get_five_acccount_ids
     ):
