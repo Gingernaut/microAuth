@@ -17,7 +17,7 @@ class BaseConfig:
     DB_PASSWORD = os.getenv("LOCAL_DB_PASSWORD", NotImplementedError("db password required"))
     DB_HOST = os.getenv("LOCAL_DB_HOST", NotImplementedError("db host required"))
     DB_PORT = os.getenv("LOCAL_DB_PORT", NotImplementedError("db port required"))
-    DB_NAME = os.getenv("LOCAL_DB_USERNAME", NotImplementedError("db username required"))
+    DB_NAME = os.getenv("LOCAL_DB_NAME", NotImplementedError("db username required"))
     ADMIN_EMAIL = os.getenv("LOCAL_ADMIN_EMAIL", NotImplementedError("admin user email required"))
     ADMIN_PASSWORD = os.getenv("LOCAL_ADMIN_PASSWORD", NotImplementedError("admin user password required"))
     TOKEN_TTL_HOURS = 158
