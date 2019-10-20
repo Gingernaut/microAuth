@@ -4,7 +4,7 @@ fastapi==0.40.0
 gunicorn==19.9.0
 passlib==1.7.1
 pendulum==2.0.5
-psycopg2-binary==2.8.3
+psycopg2-binary==2.8.4
 PyJWT==1.7.1
 python-dotenv==0.10.3
 python-json-logger==0.1.11
