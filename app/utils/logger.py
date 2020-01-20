@@ -1,15 +1,16 @@
 import logging
 from gunicorn import glogging
-from pythonjsonlogger import jsonlogger
+
+# from pythonjsonlogger import jsonlogger
 
 
 def create_logger(name):
     logger = logging.getLogger(name)
-    syslog = logging.StreamHandler()
-    formatter = jsonlogger.JsonFormatter()
-    syslog.setFormatter(formatter)
+    # syslog = logging.StreamHandler()
+    # formatter = jsonlogger.JsonFormatter()
+    # syslog.setFormatter(formatter)
     logger.setLevel(logging.INFO)
-    logger.addHandler(syslog)
+    # logger.addHandler(syslog)
 
     return logger
 
