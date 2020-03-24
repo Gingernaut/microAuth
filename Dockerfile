@@ -1,4 +1,4 @@
-FROM alpine:3.11.3
+FROM alpine:3.11.5
 WORKDIR /app
 
 COPY requirements-app.txt /requirements.txt
