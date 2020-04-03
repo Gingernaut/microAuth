@@ -2,6 +2,7 @@ import pytest
 import ujson
 
 from models.reset import PasswordReset
+from conftest import hasSengridEnabled
 
 
 @pytest.fixture
@@ -12,6 +13,7 @@ def create_account(test_server):
 
 
 class TestValidateSignup:
+    @hasSengridEnabled
     def test_confirm_account(self, test_server, create_account, db_session):
         accData = create_account
 
@@ -26,22 +28,24 @@ class TestValidateSignup:
         assert confirmResponse.status_code == 200
         assert confirmResponse.json()["isVerified"] is True
 
+    @hasSengridEnabled
     def test_failed_confirmation(self, test_server):
-        res = test_server.post(f"/confirm-account/abcdefghijk")
+        res = test_server.post("/confirm-account/abcdefghijk")
         assert res.status_code == 403
 
 
 class TestPasswordReset:
+    @hasSengridEnabled
     def test_create_reset(self, test_server, create_account):
         accData = create_account
         res = test_server.post(f"/initiate-reset/{accData['emailAddress']}")
-
         assert res.status_code == 200
 
         def test_failed_create_reset(self, test_server):
             res = test_server.post("/initiate-reset/does_not_exist@example.com")
             assert res.status_code == 404
 
+    @hasSengridEnabled
     def test_valid_reset_token(self, test_server, create_account, db_session):
 
         accData = create_account
@@ -59,6 +63,7 @@ class TestPasswordReset:
         assert "jwt" in res2Data
         assert res2Data["emailAddress"] == accData["emailAddress"]
 
+    @hasSengridEnabled
     def test_invalid_reset_token(self, test_server):
         res = test_server.post("/initiate-reset/does_not_exist")
 
