@@ -5,7 +5,7 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Run Tests
+  - name: Run PYtest
     task:
       jobs:
         - name: pytest
@@ -16,4 +16,10 @@ blocks:
             - python -m pip install --upgrade pip poetry
             - poetry install
             - pytest
-            - flake8 app tests
+      agent:
+        machine:
+          type: e1-standard-2
+          os_image: ubuntu1804
+        containers:
+          - name: main
+            image: 'semaphoreci/ubuntu:18.04'
