@@ -21,6 +21,9 @@ log = create_logger(__name__)
 def confirm_account(request: Request, token: str):
     try:
         user = get_user_from_token(request, token)
+        if not user:
+            raise HTTPException(status_code=403)
+
         user.isVerified = True
         request.state.user_queries.update_user(user)
         request.state.reset_queries.invalidate_resets_for_user(user.id)
@@ -53,11 +56,14 @@ def confirm_reset(request: Request, token: str):
     try:
         user = get_user_from_token(request, token)
 
+        if not user:
+            raise HTTPException(status_code=403)
+
         request.state.reset_queries.invalidate_resets_for_user(user.id)
         user.jwt = user.gen_token()
         return LoggedInUser.from_orm(user)
     except Exception as e:
-        print(e)
+        log.error(e)
         raise HTTPException(403)
 
 
@@ -80,7 +86,7 @@ def get_user_from_token(request: Request, token: str):
 
         user = request.state.user_queries.get_user_by_id(tokenData["userId"])
         if not user:
-            print("no user for token")
+            log.error("no user for token")
             raise HTTPException(status_code=404)
         return user
     except Exception as e:
