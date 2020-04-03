@@ -83,10 +83,7 @@ def create_app(configuration):
     app.include_router(admin.router)
     app.include_router(account.router)
     app.include_router(login_signup.router)
-
-    # only enable account confirmation and resets if emails can be sent
-    if configuration.SENDGRID_API_KEY:
-        app.include_router(reset_verify.router)
+    app.include_router(reset_verify.router)
 
     setup_middleware(app, configuration)
     setup_db_connection(app, configuration)

@@ -75,23 +75,19 @@ def get_user_from_token(request: Request, token: str):
             app_config.JWT_SECRET,
             algorithms=[app_config.JWT_ALGORITHM],
         )
-        print("got token data!!")
-        print(tokenData)
+
         reset = request.state.reset_queries.get_reset_by_id(tokenData["id"])
         if not reset:
-            print("no reset for token")
             log.error("no reset for token")
             raise HTTPException(
                 status_code=404, detail="no reset found for provided token"
             )
         elif not reset.isValid:
-            print("reset is invalid")
             log.error("invalid reset")
             raise HTTPException(status_code=403, detail="Reset token is expired")
 
         user = request.state.user_queries.get_user_by_id(tokenData["userId"])
         if not user:
-            print("no user for token")
             log.error("no user for token")
             raise HTTPException(status_code=404, detail="No user found for token")
 
