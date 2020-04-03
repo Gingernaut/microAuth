@@ -554,14 +554,6 @@ version = "3.2.7"
 
 [[package]]
 category = "main"
-description = "A python library adding a json log formatter"
-name = "python-json-logger"
-optional = false
-python-versions = ">=2.7"
-version = "0.1.11"
-
-[[package]]
-category = "main"
 description = "The Olson timezone database for Python."
 name = "pytzdata"
 optional = false
@@ -799,7 +791,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "bb86abf4d6274c5d3c90a8fe3a6c963ee8b3b3d41e04ab8b21295ee3b259d1fa"
+content-hash = "f162c0de0ca12551cff218c737004c3035cb0af0e8b571a43869cfddf4c33579"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1130,9 +1122,6 @@ python-editor = [
 ]
 python-http-client = [
     {file = "python_http_client-3.2.7.tar.gz", hash = "sha256:93d6a26b426e48b04e589c1f103e7c040193e4ccc379ea50cd6e12f94cca7c69"},
-]
-python-json-logger = [
-    {file = "python-json-logger-0.1.11.tar.gz", hash = "sha256:b7a31162f2a01965a5efb94453ce69230ed208468b0bbc7fdfc56e6d8df2e281"},
 ]
 pytzdata = [
     {file = "pytzdata-2019.3-py2.py3-none-any.whl", hash = "sha256:84c52b9a47d097fcd483f047a544979de6c3a86e94c845e3569e9f8acd0fa071"},
