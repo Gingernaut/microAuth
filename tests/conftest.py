@@ -11,25 +11,20 @@ from create_app import create_app
 from db.db_client import db
 from utils.init_db import init_db
 
-config = get_config("TESTING")
-
-
-class TestContainer(PostgresContainer):
-    POSTGRES_USER = config.DB_USERNAME
-    POSTGRES_PASSWORD = config.DB_PASSWORD
-    POSTGRES_DB = config.DB_NAME
-
-
-container = TestContainer("postgres:11.4")
-
 
 @pytest.fixture
 def app_config():
-    return config
+    return get_config("TESTING")
 
 
 @pytest.fixture(autouse=True)
-def get_db_container(monkeypatch):
+def get_db_container(app_config, monkeypatch):
+    class TestContainer(PostgresContainer):
+        POSTGRES_USER = app_config.DB_USERNAME
+        POSTGRES_PASSWORD = app_config.DB_PASSWORD
+        POSTGRES_DB = app_config.DB_NAME
+
+    container = TestContainer("postgres:11.4")
     monkeypatch.setattr(db, "get_conn_str", container.get_connection_url)
     yield container
 
@@ -47,7 +42,9 @@ def test_server(init_app):
 
 
 @pytest.fixture
-def db_session(app_config):
+def db_session(test_server, app_config):
+    foo = test_server  # noqa - this is to maintain the DB container override
+    # with get_db_container as dbcontainer:
     db.initialize_connection(app_config.API_ENV)
     session = db.new_session()
     yield session
