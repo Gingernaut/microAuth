@@ -11,10 +11,17 @@ from create_app import create_app
 from db.db_client import db
 from utils.init_db import init_db
 
+conf = get_config("TESTING")
+
+hasSengridEnabled = pytest.mark.skipif(
+    not conf.SENDGRID_API_KEY,
+    reason="Reset routes aren't added to controller if API key is not set",
+)
+
 
 @pytest.fixture
 def app_config():
-    return get_config("TESTING")
+    return conf
 
 
 @pytest.fixture(autouse=True)
