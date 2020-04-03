@@ -20,6 +20,10 @@ class TestValidateSignup:
             .filter(PasswordReset.userId == accData["id"])
             .first()
         )
+        print("!!!")
+        print(accData)
+        print(reset)
+        print("!!!")
 
         confirmResponse = test_server.post(f"/confirm-account/{reset.gen_token()}")
 
@@ -27,7 +31,10 @@ class TestValidateSignup:
         assert confirmResponse.json()["isVerified"] is True
 
     def test_failed_confirmation(self, test_server):
-        res = test_server.post(f"/confirm-account/abcdefghijk")
+        res = test_server.post("/confirm-account/abcdefghijk")
+        print("!!!")
+        print(res.json())
+        print("!!!")
         assert res.status_code == 403
 
 
@@ -35,7 +42,10 @@ class TestPasswordReset:
     def test_create_reset(self, test_server, create_account):
         accData = create_account
         res = test_server.post(f"/initiate-reset/{accData['emailAddress']}")
-
+        print("!!!")
+        print(accData)
+        print(res.json())
+        print("!!!")
         assert res.status_code == 200
 
         def test_failed_create_reset(self, test_server):
@@ -48,6 +58,11 @@ class TestPasswordReset:
         test_server.post(f"/initiate-reset/{accData['emailAddress']}")
 
         reset = db_session.query(PasswordReset).filter_by(userId=accData["id"]).first()
+
+        print("!!!")
+        print(accData)
+        print(reset)
+        print("!!!")
 
         assert reset.userId == accData["id"]
         assert reset.isValid is True
