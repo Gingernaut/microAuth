@@ -17,12 +17,12 @@ Features:
 * Thorough unit test coverage
 * json logging
 
-### Running locally
+### Running locally (first time)
 
 _uses Python3.6+, Docker, and Docker-compose_
 
 1.  Create a virtual environment for dependencies with `python3 -m venv .venv/`. Activate it with `source .venv/bin/activate`
-2.  Install dependencies with `pip3 install -r requirements.txt`
+2.  Dependencies are managed with [Poetry](https://python-poetry.org). Install dependencies with `poetry install`
 3.  Run `pre-commit install` to configure git commit hooks (for `flake8` checking and `black` formatting)
 4.  Copy `default.env` to a new file `.env`
 5.  Run `docker-compose up -d database` to run a local PostgreSQL instance for testing and development.
@@ -40,17 +40,6 @@ View documentation at `http://localhost:8000/docs`
 5.  Run with `docker run -p 8000:8000 -d microauth`
 
 
-### Logging
-
-Logs are written in json format to stdout/stderr during local development and to `/var/log/app.log` inside Docker.
-
-```
-{"message": "-----------"}
-{"message": "Created DEVELOPMENT application"}
-{"message": "-----------"}
-{"message": null, "method": "POST", "path": "/signup", "request_time": "2019-08-04 21:57:38", "client": {"host": "127.0.0.1", "port": 48786}, "elapsed_ms": "375.78", "status_code": 201}
-{"message": null, "method": "POST", "path": "/login", "request_time": "2019-08-04 21:57:42", "client": {"host": "127.0.0.1", "port": 48786}, "elapsed_ms": "37.8", "status_code": 200}
-```
 
 ### Email Resets (Optional)
 
