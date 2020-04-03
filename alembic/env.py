@@ -47,7 +47,6 @@ def run_migrations_offline():
     script output.
 
     """
-    print(db.get_conn_str())
     url = db.get_conn_str()
     context.configure(url=url, target_metadata=target_metadata, literal_binds=True)
 

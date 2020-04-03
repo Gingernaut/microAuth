@@ -18,9 +18,12 @@ log = create_logger(__name__)
     response_class=UJSONResponse,
     response_model=LoggedInUser,
 )
-def confirm_account(request: Request, token: str):
+async def confirm_account(request: Request, token: str):
     try:
         user = get_user_from_token(request, token)
+        if not user:
+            raise HTTPException(status_code=403)
+
         user.isVerified = True
         request.state.user_queries.update_user(user)
         request.state.reset_queries.invalidate_resets_for_user(user.id)
@@ -33,7 +36,7 @@ def confirm_account(request: Request, token: str):
 
 
 @router.post("/initiate-reset/{email_address}", response_class=UJSONResponse)
-def send_reset_email(request: Request, email_address: str):
+async def send_reset_email(request: Request, email_address: str):
     user_account = request.state.user_queries.get_user_by_email(email_address)
     if not user_account:
         raise HTTPException(status_code=404)
@@ -49,15 +52,18 @@ def send_reset_email(request: Request, email_address: str):
 @router.post(
     "/confirm-reset/{token}", response_class=UJSONResponse, response_model=LoggedInUser
 )
-def confirm_reset(request: Request, token: str):
+async def confirm_reset(request: Request, token: str):
     try:
         user = get_user_from_token(request, token)
+
+        if not user:
+            raise HTTPException(status_code=403)
 
         request.state.reset_queries.invalidate_resets_for_user(user.id)
         user.jwt = user.gen_token()
         return LoggedInUser.from_orm(user)
     except Exception as e:
-        print(e)
+        log.error(e)
         raise HTTPException(403)
 
 
@@ -69,19 +75,24 @@ def get_user_from_token(request: Request, token: str):
             app_config.JWT_SECRET,
             algorithms=[app_config.JWT_ALGORITHM],
         )
-
+        print("got token data!!")
+        print(tokenData)
         reset = request.state.reset_queries.get_reset_by_id(tokenData["id"])
         if not reset:
             print("no reset for token")
+            log.error("no reset for token")
             raise HTTPException(status_code=404)
         elif not reset.isValid:
-            print("invalid reset")
+            print("reset is invalid")
+            log.error("invalid reset")
             raise HTTPException(status_code=403, detail="Reset token is expired")
 
         user = request.state.user_queries.get_user_by_id(tokenData["userId"])
         if not user:
             print("no user for token")
+            log.error("no user for token")
             raise HTTPException(status_code=404)
+
         return user
     except Exception as e:
         log.error(e)
