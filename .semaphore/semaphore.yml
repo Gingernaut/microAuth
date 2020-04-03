@@ -28,5 +28,7 @@ blocks:
       jobs:
         - name: "Build Docker Image"
           commands:
+            - checkout
+            - cp default.env .env
             - docker build -t microauth .
             - docker images
