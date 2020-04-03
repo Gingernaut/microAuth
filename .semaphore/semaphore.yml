@@ -16,3 +16,5 @@ blocks:
             - python -m pip install --upgrade pip poetry
             - poetry install
             - pytest -vv
+      secrets:
+        - name: Placeholder Sendgrid API Key
