@@ -18,7 +18,7 @@ log = create_logger(__name__)
     response_class=UJSONResponse,
     response_model=LoggedInUser,
 )
-def confirm_account(request: Request, token: str):
+async def confirm_account(request: Request, token: str):
     try:
         user = get_user_from_token(request, token)
         if not user:
@@ -36,7 +36,7 @@ def confirm_account(request: Request, token: str):
 
 
 @router.post("/initiate-reset/{email_address}", response_class=UJSONResponse)
-def send_reset_email(request: Request, email_address: str):
+async def send_reset_email(request: Request, email_address: str):
     user_account = request.state.user_queries.get_user_by_email(email_address)
     if not user_account:
         raise HTTPException(status_code=404)
@@ -52,7 +52,7 @@ def send_reset_email(request: Request, email_address: str):
 @router.post(
     "/confirm-reset/{token}", response_class=UJSONResponse, response_model=LoggedInUser
 )
-def confirm_reset(request: Request, token: str):
+async def confirm_reset(request: Request, token: str):
     try:
         user = get_user_from_token(request, token)
 
@@ -88,6 +88,7 @@ def get_user_from_token(request: Request, token: str):
         if not user:
             log.error("no user for token")
             raise HTTPException(status_code=404)
+
         return user
     except Exception as e:
         log.error(e)

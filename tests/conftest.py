@@ -42,9 +42,7 @@ def test_server(init_app):
 
 
 @pytest.fixture
-def db_session(test_server, app_config):
-    foo = test_server  # noqa - this is to maintain the DB container override
-    # with get_db_container as dbcontainer:
+def db_session(app_config):
     db.initialize_connection(app_config.API_ENV)
     session = db.new_session()
     yield session
