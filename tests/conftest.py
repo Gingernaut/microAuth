@@ -47,7 +47,8 @@ def test_server(init_app):
 
 
 @pytest.fixture
-def db_session():
+def db_session(app_config):
+    db.initialize_connection(app_config.API_ENV)
     session = db.new_session()
     yield session
     session.remove()
