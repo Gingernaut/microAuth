@@ -15,4 +15,6 @@ blocks:
             - cp default.env .env
             - python -m pip install --upgrade pip poetry
             - poetry install
-            - pytest
+            - pytest -vv
+      secrets:
+        - name: Placeholder Sendgrid API Key
