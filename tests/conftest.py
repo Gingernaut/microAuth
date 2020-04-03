@@ -11,25 +11,27 @@ from create_app import create_app
 from db.db_client import db
 from utils.init_db import init_db
 
-config = get_config("TESTING")
+conf = get_config("TESTING")
 
-
-class TestContainer(PostgresContainer):
-    POSTGRES_USER = config.DB_USERNAME
-    POSTGRES_PASSWORD = config.DB_PASSWORD
-    POSTGRES_DB = config.DB_NAME
-
-
-container = TestContainer("postgres:11.4")
+hasSengridEnabled = pytest.mark.skipif(
+    not conf.SENDGRID_API_KEY,
+    reason="Reset routes aren't added to controller if API key is not set",
+)
 
 
 @pytest.fixture
 def app_config():
-    return config
+    return conf
 
 
 @pytest.fixture(autouse=True)
-def get_db_container(monkeypatch):
+def get_db_container(app_config, monkeypatch):
+    class TestContainer(PostgresContainer):
+        POSTGRES_USER = app_config.DB_USERNAME
+        POSTGRES_PASSWORD = app_config.DB_PASSWORD
+        POSTGRES_DB = app_config.DB_NAME
+
+    container = TestContainer("postgres:11.4")
     monkeypatch.setattr(db, "get_conn_str", container.get_connection_url)
     yield container
 
@@ -47,7 +49,8 @@ def test_server(init_app):
 
 
 @pytest.fixture
-def db_session():
+def db_session(app_config):
+    db.initialize_connection(app_config.API_ENV)
     session = db.new_session()
     yield session
     session.remove()
