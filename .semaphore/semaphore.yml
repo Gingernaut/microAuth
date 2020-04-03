@@ -16,4 +16,3 @@ blocks:
             - python -m pip install --upgrade pip poetry
             - poetry install
             - pytest
-            - flake8 app tests
