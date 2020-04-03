@@ -27,7 +27,7 @@ class TestValidateSignup:
         assert confirmResponse.json()["isVerified"] is True
 
     def test_failed_confirmation(self, test_server):
-        res = test_server.post(f"/confirm-account/abcdefghijk")
+        res = test_server.post("/confirm-account/abcdefghijk")
         assert res.status_code == 403
 
 
@@ -35,7 +35,6 @@ class TestPasswordReset:
     def test_create_reset(self, test_server, create_account):
         accData = create_account
         res = test_server.post(f"/initiate-reset/{accData['emailAddress']}")
-
         assert res.status_code == 200
 
         def test_failed_create_reset(self, test_server):
