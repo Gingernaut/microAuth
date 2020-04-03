@@ -1,0 +1,19 @@
+version: v1.0
+name: Python
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Run Tests
+    task:
+      jobs:
+        - name: pytest
+          commands:
+            - sem-version python 3.7
+            - checkout
+            - cp default.env .env
+            - python -m pip install --upgrade pip poetry
+            - poetry install
+            - pytest
+            - flake8 app tests
