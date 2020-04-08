@@ -196,14 +196,14 @@ description = "FastAPI framework, high performance, easy to learn, fast to code,
 name = "fastapi"
 optional = false
 python-versions = ">=3.6"
-version = "0.54.0"
+version = "0.54.1"
 
 [package.dependencies]
 pydantic = ">=0.32.2,<2.0.0"
 starlette = "0.13.2"
 
 [package.extras]
-all = ["graphene", "requests", "aiofiles", "jinja2", "python-multipart", "itsdangerous", "pyyaml", "ujson", "orjson", "email-validator", "uvicorn", "async-exit-stack", "async-generator"]
+all = ["requests", "aiofiles", "jinja2", "python-multipart", "itsdangerous", "pyyaml", "graphene", "ujson", "orjson", "email-validator", "uvicorn", "async-exit-stack", "async-generator"]
 dev = ["pyjwt", "passlib", "autoflake", "flake8", "uvicorn", "graphene"]
 doc = ["mkdocs", "mkdocs-material", "markdown-include", "typer", "typer-cli", "pyyaml"]
 test = ["pytest (>=4.0.0)", "pytest-cov", "mypy", "black", "isort", "requests", "email-validator", "sqlalchemy", "peewee", "databases", "orjson", "async-exit-stack", "async-generator", "python-multipart", "aiofiles", "flask"]
@@ -791,7 +791,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "673ca409de6e1cb10c8f57cf825dd2b42b8ddbbbd7e08a9f0946b4920380111d"
+content-hash = "e71d98f52bdffc11797e52c15ab0ae471d12ac27def05c5a952f3be28eb547bc"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -904,8 +904,8 @@ entrypoints = [
     {file = "entrypoints-0.3.tar.gz", hash = "sha256:c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"},
 ]
 fastapi = [
-    {file = "fastapi-0.54.0-py3-none-any.whl", hash = "sha256:c7ec84df59addd5d013c39b5b762b6a4afa4766fb344380abd2674f93e726d6a"},
-    {file = "fastapi-0.54.0.tar.gz", hash = "sha256:33188cc5abe96fb93a9e01bd953c72194f04536eb3d7b87d880d434efd283268"},
+    {file = "fastapi-0.54.1-py3-none-any.whl", hash = "sha256:1ee9a49f28d510b62b3b51a9452b274853bfc9c5d4b947ed054366e2d49f9efa"},
+    {file = "fastapi-0.54.1.tar.gz", hash = "sha256:72f40f47e5235cb5cbbad1d4f97932ede6059290c07e12e9784028dcd1063d28"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
