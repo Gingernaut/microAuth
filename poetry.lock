@@ -609,7 +609,7 @@ description = "Twilio SendGrid library for Python"
 name = "sendgrid"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "6.2.1"
+version = "6.3.0"
 
 [package.dependencies]
 python-http-client = ">=3.2.1"
@@ -791,7 +791,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "5dfc9b68b993451154dd675f0e5ac7579e4bbec6bd3eff2e87d759bed2676010"
+content-hash = "1f05bd305f03f8ab2bc1bc5ecf0167e302c623d6d479bf1757207a34f3a675f0"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1180,9 +1180,9 @@ requests = [
     {file = "requests-2.23.0.tar.gz", hash = "sha256:b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6"},
 ]
 sendgrid = [
-    {file = "sendgrid-6.2.1-py3-none-any.whl", hash = "sha256:2954caf82c94c3566147e78ff7772f0883a7cc668de5a1c5ff1c49dcb9c1af31"},
-    {file = "sendgrid-6.2.1-py3.6.egg", hash = "sha256:7c606125c59d1df7354e20581ca645d109be1d026f5b01dd62112e07348b2d87"},
-    {file = "sendgrid-6.2.1.tar.gz", hash = "sha256:a58c8d3f99e1b4fed6c041e6bb0e30893a6c40ffc0ecd33430a08d044fe78832"},
+    {file = "sendgrid-6.3.0-py3-none-any.whl", hash = "sha256:37d8215974ec3c79085fc455332961bb788eb5d899adde1469640b605a940ec4"},
+    {file = "sendgrid-6.3.0-py3.6.egg", hash = "sha256:a74a70faf8d84be4ca07924bf229ca0e28f5607e0b10cb0adffce23e03bb9ccb"},
+    {file = "sendgrid-6.3.0.tar.gz", hash = "sha256:692c0ac35a6afed093e66e883b86dc7ec60b6b774bf5ef931d42efd19443a1fc"},
 ]
 six = [
     {file = "six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"},
