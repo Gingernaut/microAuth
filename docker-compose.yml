@@ -8,7 +8,7 @@
         POSTGRES_DB: "${LOCAL_DB_NAME}"
         POSTGRES_USER: "${LOCAL_DB_USERNAME}"
         POSTGRES_PASSWORD: "${LOCAL_DB_PASSWORD}"
-      network_mode: "host"
+      # network_mode: "host"
     
     microauth:
       build:
@@ -20,4 +20,4 @@
         - database
       env_file:
         - .env
-      network_mode: "host"
+      # network_mode: "host"

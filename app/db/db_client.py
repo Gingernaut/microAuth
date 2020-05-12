@@ -43,5 +43,23 @@ class SQLAlchemy:
             expire_on_commit=True,
         )
 
+    def dump_metadata(self, connection_env=None):
+        def print_schema(sql, *multiparams, **params):
+            print("metadata!!")
+            print(sql.compile(dialect=db.engine.dialect))
+
+        self.config = get_config(connection_env)
+        self._conn_str = self.get_conn_str()
+        self.engine = create_engine(
+            self._conn_str, strategy="mock", executor=print_schema
+        )
+
+        self.sessionmaker = orm.sessionmaker(
+            bind=self.engine,
+            autoflush=True,
+            autocommit=self._autocommit,
+            expire_on_commit=True,
+        )
+
 
 db = SQLAlchemy()
