@@ -21,13 +21,13 @@ Features:
 
 _uses Python3.6+, Docker, and Docker-compose_
 
-1.  Create a virtual environment for dependencies with `python3 -m venv .venv/`. Activate it with `source .venv/bin/activate`
-2.  Dependencies are managed with [Poetry](https://python-poetry.org). Install dependencies with `poetry install`
-3.  Run `pre-commit install` to configure git commit hooks (for `flake8` checking and `black` formatting)
-4.  Copy `default.env` to a new file `.env`
+1.  Create a virtual environment for dependencies with `python3 -m venv .venv/`. Activate it with `source .venv/bin/activate`.
+2.  Dependencies are managed with [Poetry](https://python-poetry.org). Install dependencies with `poetry install`.
+3.  Run `pre-commit install` to configure git commit hooks (for `flake8` checking and `black` formatting).
+4.  Copy `default.env` to a new file `.env`.
 5.  Run `docker-compose up -d database` to run a local PostgreSQL instance for testing and development.
-6.  Run test suite with `pytest` _(also initializes database)_.
-7.  Run the application with `python3 app/main.py`
+6.  Initialize the database with `python3 app/utils/init_db.py`.
+7.  Run the application with `python3 app/main.py`.
 
 View documentation at `http://localhost:8000/docs`
 
@@ -39,6 +39,9 @@ View documentation at `http://localhost:8000/docs`
 4.  Build the project with `docker build -t microauth .`
 5.  Run with `docker run -p 8000:8000 -d microauth`
 
+### Tests
+
+ Run test suite with `pytest --cov=app tests/`.
 
 
 ### Email Resets (Optional)
