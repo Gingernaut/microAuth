@@ -676,7 +676,7 @@ description = "Library provides lightweight, throwaway instances of common datab
 name = "testcontainers"
 optional = false
 python-versions = "~=3.5"
-version = "2.6.0"
+version = "3.0.0"
 
 [package.dependencies]
 blindspin = "*"
@@ -688,9 +688,11 @@ wrapt = "*"
 docker-compose = ["docker-compose"]
 google-cloud-pubsub = ["google-cloud-pubsub"]
 mongo = ["pymongo"]
+mssqlserver = ["pyodbc"]
 mysql = ["sqlalchemy", "pymysql"]
 oracle = ["sqlalchemy", "cx-oracle"]
 postgresql = ["sqlalchemy", "psycopg2-binary"]
+redis = ["redis"]
 selenium = ["selenium"]
 
 [[package]]
@@ -811,7 +813,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "96ff94399a9c83d8ec98badd785e03d2beddcdffaab70a5af52e37f94f2566f1"
+content-hash = "562669447d8a1b347b5b4fca7148008fcdf07d43a7ced1933cde7f504ad57573"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1270,7 +1272,7 @@ starlette = [
     {file = "starlette-0.13.2.tar.gz", hash = "sha256:a9bb130fa7aa736eda8a814b6ceb85ccf7a209ed53843d0d61e246b380afa10f"},
 ]
 testcontainers = [
-    {file = "testcontainers-2.6.0.tar.gz", hash = "sha256:16f5cda7484b1f19bcd5de5dacea26f2aa99d79a744ed5f2f141c6c23eac4f4a"},
+    {file = "testcontainers-3.0.0.tar.gz", hash = "sha256:ead47008f05a9fe7884dacebe36fe81f073d53fea2c82b7b19f44703a9d770e1"},
 ]
 toml = [
     {file = "toml-0.10.0-py2.7.egg", hash = "sha256:f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"},
