@@ -166,6 +166,17 @@ colorama = "*"
 
 [[package]]
 category = "dev"
+description = "A library to handle automated deprecations"
+name = "deprecation"
+optional = false
+python-versions = "*"
+version = "2.1.0"
+
+[package.dependencies]
+packaging = "*"
+
+[[package]]
+category = "dev"
 description = "Distribution utilities"
 name = "distlib"
 optional = false
@@ -675,12 +686,13 @@ category = "dev"
 description = "Library provides lightweight, throwaway instances of common databases, Selenium web browsers, or anything else that can run in a Docker container"
 name = "testcontainers"
 optional = false
-python-versions = "~=3.5"
-version = "2.6.0"
+python-versions = ">=3.5"
+version = "3.0.2"
 
 [package.dependencies]
 blindspin = "*"
 crayons = "*"
+deprecation = "*"
 docker = "*"
 wrapt = "*"
 
@@ -688,9 +700,11 @@ wrapt = "*"
 docker-compose = ["docker-compose"]
 google-cloud-pubsub = ["google-cloud-pubsub"]
 mongo = ["pymongo"]
+mssqlserver = ["pyodbc"]
 mysql = ["sqlalchemy", "pymysql"]
 oracle = ["sqlalchemy", "cx-oracle"]
 postgresql = ["sqlalchemy", "psycopg2-binary"]
+redis = ["redis"]
 selenium = ["selenium"]
 
 [[package]]
@@ -811,7 +825,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "48a065d2fc0e7113d5ffb7139e73d3fbb9baae28a51d852592e4cadfe3b1fff9"
+content-hash = "a013b76a816da2ed8299944dfa716915f7c343b38823ab023f660dfadc970689"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -944,6 +958,10 @@ coverage = [
 crayons = [
     {file = "crayons-0.3.0-py2.py3-none-any.whl", hash = "sha256:8c9e4a3a607bc10e9a9140d496ecd16c6805088dd16c852c378f1f1d5db7aeb6"},
     {file = "crayons-0.3.0.tar.gz", hash = "sha256:50e5fa729d313e2c607ae8bf7b53bb487652e10bd8e7a1e08c4bc8bf62755ffc"},
+]
+deprecation = [
+    {file = "deprecation-2.1.0-py2.py3-none-any.whl", hash = "sha256:a10811591210e1fb0e768a8c25517cabeabcba6f0bf96564f8ff45189f90b14a"},
+    {file = "deprecation-2.1.0.tar.gz", hash = "sha256:72b3bde64e5d778694b0cf68178aed03d15e15477116add3fb773e581f9518ff"},
 ]
 distlib = [
     {file = "distlib-0.3.0.zip", hash = "sha256:2e166e231a26b36d6dfe35a48c4464346620f8645ed0ace01ee31822b288de21"},
@@ -1270,7 +1288,7 @@ starlette = [
     {file = "starlette-0.13.2.tar.gz", hash = "sha256:a9bb130fa7aa736eda8a814b6ceb85ccf7a209ed53843d0d61e246b380afa10f"},
 ]
 testcontainers = [
-    {file = "testcontainers-2.6.0.tar.gz", hash = "sha256:16f5cda7484b1f19bcd5de5dacea26f2aa99d79a744ed5f2f141c6c23eac4f4a"},
+    {file = "testcontainers-3.0.2.tar.gz", hash = "sha256:66bba8ac8ded8dd3cae8d052dab207192d0973be3071b93027f56a752e7aa875"},
 ]
 toml = [
     {file = "toml-0.10.0-py2.7.egg", hash = "sha256:f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"},
