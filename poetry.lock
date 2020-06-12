@@ -199,7 +199,7 @@ description = "FastAPI framework, high performance, easy to learn, fast to code,
 name = "fastapi"
 optional = false
 python-versions = ">=3.6"
-version = "0.54.1"
+version = "0.56.0"
 
 [package.dependencies]
 pydantic = ">=0.32.2,<2.0.0"
@@ -811,7 +811,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "48a065d2fc0e7113d5ffb7139e73d3fbb9baae28a51d852592e4cadfe3b1fff9"
+content-hash = "a27dde9c7cfc943dbc0e023edaa1ae666b8cf270de8afc3be3de9141b32f5d1f"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -953,8 +953,8 @@ docker = [
     {file = "docker-4.2.0.tar.gz", hash = "sha256:ddae66620ab5f4bce769f64bcd7934f880c8abe6aa50986298db56735d0f722e"},
 ]
 fastapi = [
-    {file = "fastapi-0.54.1-py3-none-any.whl", hash = "sha256:1ee9a49f28d510b62b3b51a9452b274853bfc9c5d4b947ed054366e2d49f9efa"},
-    {file = "fastapi-0.54.1.tar.gz", hash = "sha256:72f40f47e5235cb5cbbad1d4f97932ede6059290c07e12e9784028dcd1063d28"},
+    {file = "fastapi-0.56.0-py3-none-any.whl", hash = "sha256:c0ba776275e91920b2f0eab1066f4c3f83fc05695f3e654f2013e6fcd9084969"},
+    {file = "fastapi-0.56.0.tar.gz", hash = "sha256:35394a965e66af64b64f0ce18d5ab49403876eabf0f6a4f2f2a20f794214997b"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
