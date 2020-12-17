@@ -1,5 +1,5 @@
 ##############################################
-FROM alpine:3.12.2 as project-base
+FROM alpine:3.12.3 as project-base
 WORKDIR /app
 
 ENV VIRTUAL_ENV=/opt/venv
